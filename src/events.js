@@ -10,7 +10,25 @@ goog.require('goog.events');
 annotorious.events.EventBroker = function() {
   /** @private **/
   this._handlers = [];
-}
+};
+
+annotorious.events.sanitizeCoordinates = function(event, parent) {
+  var points;
+  var offset = annotorious.dom.getOffset;
+  if (!event.offsetX || !event.offsetY) {
+    points = {
+      x: event.changedTouches[0].pageX - offset(parent).left,
+      y: event.changedTouches[0].pageY - offset(parent).top
+    };
+  } else {
+    points = {
+      x: event.offsetX,
+      y: event.offsetY
+    };
+  }
+  
+  return points;
+};
 
 /**
  * Adds an event handler.
@@ -22,7 +40,7 @@ annotorious.events.EventBroker.prototype.addHandler = function(type, handler) {
     this._handlers[type] = [];
 
   this._handlers[type].push(handler);  
-}
+};
 
 /**
  * Removes an event handler.
@@ -33,7 +51,7 @@ annotorious.events.EventBroker.prototype.removeHandler = function(type, handler)
   var handlers = this._handlers[type];
   if (handlers)
     goog.array.remove(handlers, handler);  
-}
+};
 
 /**
  * Fires an event, triggering execution of all registered handlers.
@@ -47,7 +65,7 @@ annotorious.events.EventBroker.prototype.fireEvent = function(type, event) {
       handler(event);
     });
   }    
-}
+};
 
 /**
  * Annotation lifecycle events
