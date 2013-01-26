@@ -53,7 +53,6 @@
     
     this._mouseMoveListener = canvas.addEventListener(humanEvents.MOVE, function(event) {
       var points = annotorious.events.sanitizeCoordinates(event, canvas);
-      debugger;
       
       if (self._enabled) {
         self._opposite = { x: points.x, y: points.y };
