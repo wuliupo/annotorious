@@ -13,12 +13,13 @@ annotorious.events.EventBroker = function() {
 };
 
 annotorious.events.sanitizeCoordinates = function(event, parent) {
-  var points;
+  var points = false;
   var offset = annotorious.dom.getOffset;
-  if (!event.offsetX || !event.offsetY) {
+  
+  if (!event.offsetX || !event.offsetY && event.event_.changedTouches) {
     points = {
-      x: event.changedTouches[0].pageX - offset(parent).left,
-      y: event.changedTouches[0].pageY - offset(parent).top
+      x: event.event_.changedTouches[0].pageX - offset(parent).left,
+      y: event.event_.changedTouches[0].pageY - offset(parent).top
     };
   } else {
     points = {

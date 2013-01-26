@@ -51,9 +51,9 @@
     var self = this;  
     var canvas = this._canvas;
     
-    this._mouseMoveListener = canvas.addEventListener(humanEvents.MOVE, function(event) {
+    this._mouseMoveListener = goog.events.listen(canvas, humanEvents.MOVE, function(event) {
       var points = annotorious.events.sanitizeCoordinates(event, canvas);
-      
+      event.preventDefault();
       if (self._enabled) {
         self._opposite = { x: points.x, y: points.y };
 
@@ -78,7 +78,7 @@
       }
     });
 
-    this._mouseUpListener = goog.events.listen(this._canvas, goog.events.EventType.MOUSEUP, function(event) {
+    this._mouseUpListener = goog.events.listen(this._canvas, humanEvents.UP, function(event) {
       self._enabled = false;
       var shape = self.getShape();
       if (shape) {
@@ -96,12 +96,12 @@
    */
   annotorious.plugins.selection.RectDragSelector.prototype._detachListeners = function() {
     if (this._mouseMoveListener) {
-      goog.events.unlistenByKey(this._mouseMoveListener);
+      goog.events.unlisten(this._canvas, humanEvents.MOVE);
       delete this._mouseMoveListener;
     }
 
     if (this._mouseUpListener) {
-      goog.events.unlistenByKey(this._mouseUpListener);
+      goog.events.unlisten(this._canvas, humanEvents.UP);
       delete this._UpListener;
     }
   }

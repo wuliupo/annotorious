@@ -96,12 +96,13 @@
       }
     });
 
-    goog.events.listen(viewCanvas, humanEvents.DOWN, function(event) {
+    goog.events.listener(viewCanvas, humanEvents.DOWN, function(event) {
+      var points = annotorious.events.sanitizeCoordinates(event);
       event.preventDefault();
       if (self._selectionEnabled) {
         goog.style.showElement(self._editCanvas, true);
         self._viewer.highlightAnnotation(undefined);
-        self._currentSelector.startSelection(event.offsetX, event.offsetY);
+        self._currentSelector.startSelection(points.x, points.y);
       }
     });
 

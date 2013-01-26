@@ -121,7 +121,7 @@
         eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
     });
 
-    viewCanvas.addEventListener(humanEvents.DOWN, function(event) {
+    goog.events.listen(viewCanvas, humanEvents.DOWN, function(event) {
       var points = annotorious.events.sanitizeCoordinates(event, viewCanvas);
       event.preventDefault();
       goog.style.showElement(editCanvas, true);
