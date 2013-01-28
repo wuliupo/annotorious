@@ -79,6 +79,7 @@
     });
 
     this._mouseUpListener = goog.events.listen(this._canvas, humanEvents.UP, function(event) {
+      event = (event.event_) ? event.event_ : event;
       self._enabled = false;
       var shape = self.getShape();
       if (shape) {

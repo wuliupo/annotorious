@@ -50,7 +50,6 @@
     this._keepHighlighted = false;
 
     var self = this;
-    console.log(humanEvents.MOVE);
      
     goog.events.listen(this._canvas, humanEvents.MOVE, function(event) {
       if (self._eventsEnabled) {
@@ -66,9 +65,12 @@
     });
 
     annotator.addHandler(annotorious.events.EventType.BEFORE_POPUP_HIDE, function() {
+      var points, mouseX, mouseY;
+          
       if (!self._eventsEnabled && self._cachedMouseEvent) {
-        var mouseX = self._cachedMouseEvent.offsetX;
-        var mouseY = self._cachedMouseEvent.offsetY;
+        points = annotorious.events.sanitizeCoordinates(self._cachedMouseEvent);
+        mouseX = points.x;
+        mouseY = points.y;
 
         var previousAnnotation = self._currentAnnotation;
         self._currentAnnotation = self.topAnnotationAt(mouseX, mouseY);
@@ -207,7 +209,8 @@
    * @private
    */
   annotorious.modules.image.Viewer.prototype._onMouseMove = function(event) {
-    var topAnnotation = this.topAnnotationAt(event.offsetX, event.offsetY);
+    var points = annotorious.events.sanitizeCoordinates(event);
+    var topAnnotation = this.topAnnotationAt(points.x, points.y);
 
     // TODO remove code duplication
 

@@ -79,25 +79,29 @@
      * Unfortunately Annotator makes this task a little complex...
      */                       
     var isMouseEventInside = function(event) {
-      var relatedTarget = event.relatedTarget;
-
+      var isMouseInside = false, relatedTarget = event.relatedTarget || false;
+      
       // No related target - mouse was inside the annotationLayer on page load
       if (!relatedTarget)
-        return true;  
+        isMouseInside = true;  
 
       // Related target is a child of the annotation layer - inside
       if (goog.dom.contains(annotationLayer, relatedTarget))
-        return true;
+        isMouseInside = true;
 
       // Related target is part of the Annotator editor - inside
       if (goog.dom.contains(okfnAnnotator.editor.element[0], relatedTarget) && isEditorCurrentlyOwned())
-        return true;
+        isMouseInside = true;
 
       // Related target is part of the Annotator popup - inside
       if (goog.dom.contains(okfnAnnotator.viewer.element[0], relatedTarget) && popup.isViewerCurrentlyOwned())
-        return true;
+        isMouseInside = true;
+        
+      if (event.event_ && event.event_.touches) {
+        isMouseInside = false;
+      }
 
-      return false;
+      return isMouseInside;
     };
 
     var self = this;  
