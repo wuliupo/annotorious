@@ -51,6 +51,8 @@
 
     var self = this;
      
+     
+     
     goog.events.listen(this._canvas, humanEvents.MOVE, function(event) {
       if (self._eventsEnabled) {
         self._onMouseMove(event);

@@ -78,7 +78,7 @@
       }
     });
 
-    this._mouseUpListener = goog.events.listen(this._canvas, humanEvents.UP, function(event) {
+    this._mouseUpListener = goog.events.listen(canvas, humanEvents.UP, function(event) {
       event = (event.event_) ? event.event_ : event;
       self._enabled = false;
       var shape = self.getShape();
@@ -97,12 +97,12 @@
    */
   annotorious.plugins.selection.RectDragSelector.prototype._detachListeners = function() {
     if (this._mouseMoveListener) {
-      goog.events.unlisten(this._canvas, humanEvents.MOVE);
+      goog.events.unlistenByKey(this._mouseMoveListener);
       delete this._mouseMoveListener;
     }
 
     if (this._mouseUpListener) {
-      goog.events.unlisten(this._canvas, humanEvents.UP);
+      goog.events.unlistenByKey(this._mouseUpListener);
       delete this._UpListener;
     }
   }
@@ -138,7 +138,7 @@
     this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
       offsetX: x, offsetY: y});
 
-    goog.style.setStyle(document.body, '-webkit-user-select', 'none');
+//    goog.style.setStyle(document.body, '-webkit-user-select', 'none');
   }
 
   /**

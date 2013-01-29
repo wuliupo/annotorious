@@ -1,10 +1,8 @@
 (function(window, body, goog, undefined) {
-  var hasTouch;
+  var hasTouch = 'ontouchstart' in window;
 
   goog.provide('annotorious.humanEvents');
   goog.require('goog.events.EventType');
-  
-  hasTouch = 'ontouchstart' in window;
   
   annotorious.humanEvents = {
     DOWN: (hasTouch) ? goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN,
