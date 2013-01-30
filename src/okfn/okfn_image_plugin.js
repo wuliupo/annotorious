@@ -37,8 +37,10 @@
 
     var editCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, 
       { width:image.width, height:image.height });
-    goog.style.showElement(editCanvas, false); 
+   // goog.style.showElement(editCanvas, false); 
     goog.dom.appendChild(annotationLayer, editCanvas);  
+    
+    goog.dom.classes.addRemove(editCanvas, null, "edit-canvas");
 
     var selector = new annotorious.plugins.selection.RectDragSelector();
     selector.init(editCanvas, eventBroker);
@@ -125,12 +127,12 @@
         eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
     });
 
-    goog.events.listen(viewCanvas, humanEvents.DOWN, function(event) {
+    goog.events.listen(editCanvas, humanEvents.DOWN, function(event) {
       var points = annotorious.events.sanitizeCoordinates(event, viewCanvas);
       event.preventDefault();
       goog.style.showElement(editCanvas, true);
+
       viewer.highlightAnnotation(undefined);
-      
       selector.startSelection(points.x, points.y);
     });
 

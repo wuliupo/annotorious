@@ -138,7 +138,7 @@
     this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
       offsetX: x, offsetY: y});
 
-//    goog.style.setStyle(document.body, '-webkit-user-select', 'none');
+    goog.style.setStyle(document.body, '-webkit-user-select', 'none');
   }
 
   /**
