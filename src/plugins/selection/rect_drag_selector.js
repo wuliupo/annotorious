@@ -16,12 +16,14 @@
    * @param {element} canvas the canvas to draw on
    * @param {object} annotator reference to the annotator
    */
-  annotorious.plugins.selection.RectDragSelector.prototype.init = function(canvas, annotator) {
+  annotorious.plugins.selection.RectDragSelector.prototype.init = function(canvas, annotator, viewer, popup) {
     /** @private **/
     this._canvas = canvas;
 
     /** @private **/
     this._annotator = annotator;
+    
+    this.popup = popup;
 
     /** @private **/
     this._g2d = canvas.getContext('2d');
@@ -41,13 +43,15 @@
 
     /** @private **/
     this._mouseUpListener;
+    
+    this.viewer = viewer;
   }
 
   /**
    * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
    * @private
    */
-  annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function() {
+  annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function(startPoint) {
     var self = this;  
     var canvas = this._canvas;
     
@@ -79,15 +83,31 @@
     });
 
     this._mouseUpListener = goog.events.listen(canvas, humanEvents.UP, function(event) {
+      var points = annotorious.events.sanitizeCoordinates(event, canvas);
+      var annotation;
+      var shape, bbox;
+      var shape = self.getShape();
+      
       event = (event.event_) ? event.event_ : event;
       self._enabled = false;
-      var shape = self.getShape();
+
       if (shape) {
         self._annotator.fireEvent(annotorious.events.EventType.SELECTION_COMPLETED,
           { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds() }); 
       } else {
-        self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED); 
-      }
+        
+        self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
+        // TODO dup code from image_viewer line 269
+        if (annotorious.humanEvents.hasTouch) {
+          annotation = self.viewer.topAnnotationAt(points.x, points.y);
+          console.log(annotation)
+          if (annotation) {
+            shape = self.viewer._shapes[goog.getUid(annotation)];
+            bbox = annotorious.shape.getBoundingRect(shape);
+            self.popup.show(annotation, { x: bbox.x, y: bbox.y + bbox.height + 5 });
+          }
+        }
+      }      
     });
   }
 
@@ -132,8 +152,12 @@
    * @param {number} y the Y coordinate
    */
   annotorious.plugins.selection.RectDragSelector.prototype.startSelection = function(x, y) {
+    var startPoint = {
+      x: x,
+      y: y
+    };
     this._enabled = true;
-    this._attachListeners();
+    this._attachListeners(startPoint);
     this._anchor = new annotorious.shape.geom.Point(x, y);
     this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
       offsetX: x, offsetY: y});

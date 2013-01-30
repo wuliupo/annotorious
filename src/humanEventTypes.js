@@ -11,6 +11,9 @@
     UP: (hasTouch) ? goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEUP,
     OUT: (hasTouch) ? goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEOUT,
     CLICK: (hasTouch) ? goog.events.EventType.TOUCHEND : goog.events.EventType.CLICK
-  };  
+  };
+  
+  annotorious.humanEvents.hasTouch = hasTouch;
+  
   
 })(window, document.body, goog);

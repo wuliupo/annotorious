@@ -31,19 +31,22 @@
 
     var viewCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas,
       { width:image.width, height:image.height });
-    goog.dom.appendChild(annotationLayer, viewCanvas);   
+    goog.dom.appendChild(annotationLayer, viewCanvas);
 
     var popup = new annotorious.okfn.Popup(image, eventBroker, okfnAnnotator, baseOffset);
 
     var editCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, 
       { width:image.width, height:image.height });
-    goog.style.showElement(editCanvas, false); 
-    goog.dom.appendChild(annotationLayer, editCanvas);  
+    if (!annotorious.humanEvents.hasTouch) {
+      goog.style.showElement(editCanvas, false);
+    }
+    goog.dom.appendChild(annotationLayer, editCanvas);
+    
+    var viewer = new annotorious.modules.image.Viewer(viewCanvas, popup, eventBroker);
 
     var selector = new annotorious.plugins.selection.RectDragSelector();
-    selector.init(editCanvas, eventBroker);
+    selector.init(editCanvas, eventBroker, viewer, popup);
 
-    var viewer = new annotorious.modules.image.Viewer(viewCanvas, popup, eventBroker);
 
     var hint = new annotorious.hint.Hint(eventBroker, annotationLayer);
 
@@ -125,7 +128,7 @@
         eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
     });
 
-    goog.events.listen(viewCanvas, humanEvents.DOWN, function(event) {
+    goog.events.listen(( (annotorious.humanEvents.hasTouch) ? editCanvas : viewCanvas ), humanEvents.DOWN, function(event) {
       var points = annotorious.events.sanitizeCoordinates(event, viewCanvas);
       event.preventDefault();
       goog.style.showElement(editCanvas, true);
@@ -159,7 +162,10 @@
     });
 
     eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
-      goog.style.showElement(editCanvas, false);
+      if (!annotorious.humanEvents.hasTouch) {
+        goog.style.showElement(editCanvas, false);
+      }
+      
       selector.stopSelection();
     });
 
@@ -210,7 +216,10 @@
     });
 
     okfnAnnotator.subscribe('annotationEditorHidden', function(editor) {
-      goog.style.showElement(editCanvas, false);
+      if (!annotorious.humanEvents.hasTouch) {
+        goog.style.showElement(editCanvas, false);
+      }
+      
       selector.stopSelection();
 
       // TODO workaround before we have decent 'edit' behavior in Annotorious standalone!
