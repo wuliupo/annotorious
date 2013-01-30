@@ -37,12 +37,19 @@
 
     var editCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, 
       { width:image.width, height:image.height });
+<<<<<<< HEAD
     if (!annotorious.humanEvents.hasTouch) {
       goog.style.showElement(editCanvas, false);
     }
     goog.dom.appendChild(annotationLayer, editCanvas);
     
     var viewer = new annotorious.modules.image.Viewer(viewCanvas, popup, eventBroker);
+=======
+   // goog.style.showElement(editCanvas, false); 
+    goog.dom.appendChild(annotationLayer, editCanvas);  
+    
+    goog.dom.classes.addRemove(editCanvas, null, "edit-canvas");
+>>>>>>> 9cc7b9a90f4fdf2626109f1953731ba4d134af52
 
     var selector = new annotorious.plugins.selection.RectDragSelector();
     selector.init(editCanvas, eventBroker, viewer, popup);
@@ -128,12 +135,16 @@
         eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
     });
 
+<<<<<<< HEAD
     goog.events.listen(( (annotorious.humanEvents.hasTouch) ? editCanvas : viewCanvas ), humanEvents.DOWN, function(event) {
+=======
+    goog.events.listen(editCanvas, humanEvents.DOWN, function(event) {
+>>>>>>> 9cc7b9a90f4fdf2626109f1953731ba4d134af52
       var points = annotorious.events.sanitizeCoordinates(event, viewCanvas);
       event.preventDefault();
       goog.style.showElement(editCanvas, true);
+
       viewer.highlightAnnotation(undefined);
-      
       selector.startSelection(points.x, points.y);
     });
 

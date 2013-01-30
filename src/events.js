@@ -31,6 +31,14 @@ annotorious.events.sanitizeCoordinates = function(event, parent) {
   return points;
 };
 
+annotorious.events.dispatch = function(typeOfEvent, element) {
+  var evt = document.createEvent(annotorious.humanEvents.dispatchType);
+
+  evt[annotorious.humanEvents.initType](typeOfEvent, true, true, window);
+
+  element.dispatchEvent(evt);
+};
+
 /**
  * Adds an event handler.
  * @param {annotorious.events.EventType} type the event type

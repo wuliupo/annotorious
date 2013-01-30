@@ -68,7 +68,7 @@
 
     annotator.addHandler(annotorious.events.EventType.BEFORE_POPUP_HIDE, function() {
       var points, mouseX, mouseY;
-          
+      
       if (!self._eventsEnabled && self._cachedMouseEvent) {
         points = annotorious.events.sanitizeCoordinates(self._cachedMouseEvent);
         mouseX = points.x;
