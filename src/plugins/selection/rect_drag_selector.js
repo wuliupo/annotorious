@@ -100,7 +100,7 @@
         // TODO dup code from image_viewer line 269
         if (annotorious.humanEvents.hasTouch) {
           annotation = self.viewer.topAnnotationAt(points.x, points.y);
-          console.log(annotation)
+
           if (annotation) {
             shape = self.viewer._shapes[goog.getUid(annotation)];
             bbox = annotorious.shape.getBoundingRect(shape);
