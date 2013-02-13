@@ -1,4 +1,4 @@
-(function(window, body, goog, undefined) {
+(function(undefined) {
   var hasTouch = 'ontouchstart' in window;
 
   goog.provide('annotorious.humanEvents');
@@ -18,4 +18,4 @@
   annotorious.humanEvents.dispatchType = (hasTouch) ? "TouchEvent" : "MouseEvent";
   annotorious.humanEvents.initType = (hasTouch) ? "initTouchEvent" : "initMouseEvent";
   
-})(window, document.body, goog);
+})();

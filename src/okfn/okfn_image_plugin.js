@@ -231,17 +231,17 @@
   /**
    * OKFN plugin interface.
    */
-  window.Annotator.Plugin.AnnotoriousImagePlugin = (function() {
+  window['Annotator']['Plugin']['AnnotoriousImagePlugin'] = (function() {
 
     function AnnotoriousImagePlugin(element, options) {    
       this._el = element;
     }
 
-    AnnotoriousImagePlugin.prototype.pluginInit = function() {
+    AnnotoriousImagePlugin.prototype['pluginInit'] = function() {
       var images = this._el.getElementsByTagName('img');
       var self = this;
       goog.array.forEach(images, function(img, idx, array) {
-        new annotorious.okfn.ImagePlugin(img, self.annotator);
+        new annotorious.okfn.ImagePlugin(img, self['annotator']);
       });
     }
 
