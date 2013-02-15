@@ -259,9 +259,11 @@ annotorious.modules.image.ImageModule.prototype.getAvailableSelectors = function
 annotorious.modules.image.ImageModule.prototype.highlightAnnotation = function(annotation) {
   if (this.annotatesItem(annotation.src)) {
     var annotator = this._annotators.get(annotation.src);
-    if (annotator)
+    if (annotator) {
       annotator.highlightAnnotation(annotation);
-  }  
+    }
+  }
+
 }
 
 /**

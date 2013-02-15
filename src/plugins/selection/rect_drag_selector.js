@@ -96,15 +96,20 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
     } else {
         
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
+      
       // TODO dup code from image_viewer line 269
-      if (annotorious.humanEvents.hasTouch) {
-        annotation = self.viewer.topAnnotationAt(points.x, points.y);
+      annotation = self.viewer.topAnnotationAt(points.x, points.y);
 
-        if (annotation) {
-          shape = self.viewer._shapes[goog.getUid(annotation)];
-          bbox = annotorious.shape.getBoundingRect(shape);
-          self.popup.show(annotation, { x: bbox.x, y: bbox.y + bbox.height + 5 });
-        }
+      if (annotation) {
+        shape = self.viewer._shapes[goog.getUid(annotation)];
+        bbox = annotorious.shape.getBoundingRect(shape);
+        self.popup.show(annotation, { x: bbox.x, y: bbox.y + bbox.height + 5 });
+        annotorious.events.dispatch({
+          element: document,
+          name: "annotoriousSelectsAnnotation",
+          data: annotation
+        });
+        this.viewer.highlightAnnotation(annotation);
       }
     }      
   });

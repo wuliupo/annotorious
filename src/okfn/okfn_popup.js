@@ -140,7 +140,7 @@ annotorious.okfn.Popup.prototype.clearHideTimer = function() {
 annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   goog.dom.classes.remove(this._okfnAnnotator.viewer.element[0], 'annotator-hide');
 
-  var imgOffset = annotorious.dom.getOffset(this._image); 
+  var imgOffset = annotorious.dom.getOffset(this._image);
 
   goog.style.setPosition(this._okfnAnnotator.viewer.element[0], 0, window.pageYOffset - this._baseOffset.top);
   this._okfnAnnotator.viewer.load([annotation]);   

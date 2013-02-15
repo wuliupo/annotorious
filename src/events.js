@@ -31,12 +31,13 @@ annotorious.events.sanitizeCoordinates = function(event, parent) {
   return points;
 };
 
-annotorious.events.dispatch = function(typeOfEvent, element) {
-  var evt = document.createEvent(annotorious.humanEvents.dispatchType);
-
-  evt[annotorious.humanEvents.initType](typeOfEvent, true, true, window);
-
-  element.dispatchEvent(evt);
+annotorious.events.dispatch = function(options) {
+  var event, eventName = options.name;
+  type = options.type || "HTMLEvents";
+  event = document.createEvent("HTMLEvents");
+  event.initEvent(eventName);
+  event.data = options.data || {};
+  options.element.dispatchEvent(event);
 };
 
 /**

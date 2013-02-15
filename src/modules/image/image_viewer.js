@@ -193,6 +193,7 @@ annotorious.modules.image.Viewer.prototype.annotationsAt = function(px, py) {
   var intersectedAnnotations = [];
 
   var self = this;
+
   goog.array.forEach(this._annotations, function(annotation) {
     if (annotorious.shape.intersects(self._shapes[goog.getUid(annotation)], px, py)) {
       intersectedAnnotations.push(annotation);

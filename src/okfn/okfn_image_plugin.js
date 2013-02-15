@@ -47,7 +47,6 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
   var selector = new annotorious.plugins.selection.RectDragSelector();
   selector.init(editCanvas, eventBroker, viewer, popup);
 
-
   var hint = new annotorious.hint.Hint(eventBroker, annotationLayer);
 
   // TODO clean up this mess
@@ -107,7 +106,12 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
     return isMouseInside;
   };
 
-  var self = this;  
+  var self = this;
+  
+  document.addEventListener("annotoriousOpenAnnotation", function(event) {
+    viewer.highlightAnnotation(event.data);
+  });
+  
   goog.events.listen(annotationLayer, humanEvents.OVER, function(event) {
     if (!isMouseEventInside(event))
       eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATABLE_ITEM);
