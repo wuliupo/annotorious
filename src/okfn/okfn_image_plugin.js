@@ -107,8 +107,8 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
   };
 
   var self = this;
-  
   document.addEventListener("annotoriousOpenAnnotation", function(event) {
+    okfnAnnotator.clearViewerHideTimer();
     viewer.highlightAnnotation(event.data);
   });
   
@@ -223,7 +223,6 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
     if (!annotorious.humanEvents.hasTouch) {
       goog.style.showElement(editCanvas, false);
     }
-      
     selector.stopSelection();
 
     // TODO workaround before we have decent 'edit' behavior in Annotorious standalone!

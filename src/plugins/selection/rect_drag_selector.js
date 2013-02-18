@@ -86,7 +86,7 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
     var annotation;
     var shape, bbox;
     var shape = self.getShape();
-      
+          
     event = (event.event_) ? event.event_ : event;
     self._enabled = false;
 
@@ -101,15 +101,12 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
       annotation = self.viewer.topAnnotationAt(points.x, points.y);
 
       if (annotation) {
-        shape = self.viewer._shapes[goog.getUid(annotation)];
-        bbox = annotorious.shape.getBoundingRect(shape);
-        self.popup.show(annotation, { x: bbox.x, y: bbox.y + bbox.height + 5 });
         annotorious.events.dispatch({
           element: document,
           name: "annotoriousSelectsAnnotation",
           data: annotation
         });
-        this.viewer.highlightAnnotation(annotation);
+        self.viewer.highlightAnnotation(annotation);
       }
     }      
   });
