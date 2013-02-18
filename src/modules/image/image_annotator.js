@@ -5,6 +5,7 @@ provide('annotorious.modules.image.ImageAnnotator');
 
 goog.require('goog.soy');
 goog.require('goog.dom');
+goog.require('goog.dom.classes');
 goog.require('goog.dom.query');
 goog.require('goog.events');
 goog.require('goog.math');
@@ -42,13 +43,14 @@ annotorious.modules.image.ImageAnnotator = function(image) {
 
   annotationLayer = goog.dom.createDom('div', 'annotorious-annotationlayer');
   goog.style.setStyle(annotationLayer, 'position', 'relative');
+  goog.style.setStyle(annotationLayer, 'display', 'inline-block');
   goog.style.setSize(annotationLayer, image.width, image.height); 
   goog.dom.replaceNode(annotationLayer, image);
   goog.dom.appendChild(annotationLayer, image);
 
   viewCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas,
     { width:image.width, height:image.height });
-  goog.style.setOpacity(viewCanvas, 0.4); 
+  goog.dom.classes.add(viewCanvas, 'annotorious-item-unfocus');
   goog.dom.appendChild(annotationLayer, viewCanvas);   
 
   /** @private **/
@@ -83,7 +85,7 @@ annotorious.modules.image.ImageAnnotator = function(image) {
     var relatedTarget = event.relatedTarget;
     if (!relatedTarget || !goog.dom.contains(annotationLayer, relatedTarget)) {
       self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATABLE_ITEM);
-      goog.style.setOpacity(viewCanvas, 1.0); 
+      goog.dom.classes.addRemove(viewCanvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
     }
   });
 
@@ -91,7 +93,7 @@ annotorious.modules.image.ImageAnnotator = function(image) {
     var relatedTarget = event.relatedTarget;
     if (!relatedTarget || !goog.dom.contains(annotationLayer, relatedTarget)) {
       self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
-      goog.style.setOpacity(viewCanvas, 0.4);
+      goog.dom.classes.addRemove(viewCanvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
     }
   });
 
@@ -118,12 +120,46 @@ annotorious.modules.image.ImageAnnotator = function(image) {
   });
 }
 
+annotorious.modules.image.ImageAnnotator.prototype.editAnnotation = function(annotation) {
+  // Step 1 - remove from viewer
+  this._viewer.removeAnnotation(annotation);
+  
+  // Step 2 - find a suitable selector for the shape
+  var selector = goog.array.find(this._selectors, function(selector) {
+    return selector.getSupportedShapeType() == annotation.shapes[0].type;
+  });
+  
+  // Step 3 - open annotation in editor
+  if (selector) {
+    goog.style.showElement(this._editCanvas, true);
+    this._viewer.highlightAnnotation(undefined);
+    
+    // TODO make editable - not just draw (selector implementation required)
+    var g2d = this._editCanvas.getContext('2d');
+    var shape = annotation.shapes[0];
+    
+    var self = this;
+    var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function(xy) { return self.fromItemCoordinates(xy); }) ;
+    selector.drawShape(g2d, viewportShape);
+  }
+  
+  var bounds = annotorious.shape.getBoundingRect(annotation.shapes[0]);
+  var anchor = (annotation.shapes[0].units == 'pixel') ?
+    ({ x: bounds.x, y: bounds.y + bounds.height }) :
+    this.fromItemCoordinates({ x: bounds.x, y: bounds.y + bounds.height });   
+  
+  this.editor.setPosition({ x: anchor.x + this._image.offsetLeft,
+                            y: anchor.y + 4 + this._image.offsetTop });
+  this.editor.open(annotation);  
+}
+
 /**
  * Standard Annotator method: adds annotation to this annotator's viewer.
  * @param {annotorious.annotation.Annotation} annotation the annotation
+ * @param {Annotation} opt_replace optionally, an existing annotation to replace
  */
-annotorious.modules.image.ImageAnnotator.prototype.addAnnotation = function(annotation) {
-  this._viewer.addAnnotation(annotation);
+annotorious.modules.image.ImageAnnotator.prototype.addAnnotation = function(annotation, opt_replace) {
+  this._viewer.addAnnotation(annotation, opt_replace);
 }
 
 /**
@@ -249,9 +285,13 @@ annotorious.modules.image.ImageAnnotator.prototype.setSelectionEnabled = functio
 /**
  * Standard Annotator method: stops the selection (if any).
  */
-annotorious.modules.image.ImageAnnotator.prototype.stopSelection = function() {
+annotorious.modules.image.ImageAnnotator.prototype.stopSelection = function(original_annotation) {
    goog.style.showElement(this._editCanvas, false);
    this._currentSelector.stopSelection();
+   
+   // If this was an edit of an annotation (rather than creation of a new one) re-add to viewer!
+   if (original_annotation)
+     this._viewer.addAnnotation(original_annotation);
 }
 
 /**

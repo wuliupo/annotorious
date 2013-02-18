@@ -32,6 +32,9 @@ annotorious.modules.image.ImageModule = function() {
   
   /** @private **/
   this._bufferedForRemoval = [];
+
+  /** @private **/
+  this._isSelectionEnabled = true;
 }
   
 /**
@@ -67,46 +70,54 @@ annotorious.modules.image.ImageModule.prototype._initPlugin = function(plugin, a
 /**
  * @private
  */
-annotorious.modules.image.ImageModule.prototype._lazyLoad = function() {
-  // Keep track of changes
-  var loadedImages = [];
-  var addedAnnotations = [];
-  var removedAnnotations = [];
-        
+annotorious.modules.image.ImageModule.prototype._lazyLoad = function() {        
   var self = this;
   goog.array.forEach(this._imagesToLoad, function(image) {
     if (annotorious.dom.isInViewport(image)) {
-      var annotator = new annotorious.modules.image.ImageAnnotator(image);
-      var image_src = annotorious.modules.image.ImageModule.getItemURL(image);
+      self._initAnnotator(image);
+    }
+  });
+}
 
-      // Attach handlers that are already registered
-      goog.array.forEach(self._eventHandlers, function(eventHandler) {
-        annotator.addHandler(eventHandler.type, eventHandler.handler);
-      });
+/**
+ * @private
+ */
+annotorious.modules.image.ImageModule.prototype._initAnnotator = function(image) {
+  // Keep track of changes
+  var addedAnnotations = [];
+  var removedAnnotations = [];
 
-      // Callback to registered plugins
-      goog.array.forEach(self._plugins, function(plugin) {
-        self._initPlugin(plugin, annotator);
-      });
-            
-      // Cross-check with annotation add/remove buffers
-      goog.array.forEach(self._bufferedForAdding, function(annotation) {
-        if (annotation.src == image_src) {
-          annotator.addAnnotation(annotation);
-          addedAnnotations.push(annotation);
-        }
-      });
-      
-      goog.array.forEach(self._bufferedForRemoval, function(annotation) {
-        if (annotation.src == image_src) {
-          annotator.removeAnnotation(annotation);
-          removedAnnotations.push(annotation);
-        }
-      });
+  var self = this;
+
+  var annotator = new annotorious.modules.image.ImageAnnotator(image);
   
-      // Update _annotators and _imagesToLoad lists
-      self._annotators.set(image_src, annotator);
-      loadedImages.push(image);
+  if (!this._isSelectionEnabled)
+    annotator.setSelectionEnabled(false);
+
+  var image_src = annotorious.modules.image.ImageModule.getItemURL(image);
+
+  // Attach handlers that are already registered
+  goog.array.forEach(this._eventHandlers, function(eventHandler) {
+    annotator.addHandler(eventHandler.type, eventHandler.handler);
+  });
+
+  // Callback to registered plugins
+  goog.array.forEach(this._plugins, function(plugin) {
+    self._initPlugin(plugin, annotator);
+  });
+            
+  // Cross-check with annotation add/remove buffers
+  goog.array.forEach(this._bufferedForAdding, function(annotation) {
+    if (annotation.src == image_src) {
+      annotator.addAnnotation(annotation);
+      addedAnnotations.push(annotation);
+    }
+  });
+      
+  goog.array.forEach(this._bufferedForRemoval, function(annotation) {
+    if (annotation.src == image_src) {
+      annotator.removeAnnotation(annotation);
+      removedAnnotations.push(annotation);
     }
   });
 
@@ -119,11 +130,10 @@ annotorious.modules.image.ImageModule.prototype._lazyLoad = function() {
     goog.array.remove(self._bufferedForRemoval, annotation);
   });
   
-  goog.array.forEach(loadedImages, function(image) {
-    goog.array.remove(self._imagesToLoad, image);
-  });
+  // Update _annotators and _imagesToLoad lists
+  this._annotators.set(image_src, annotator);
+  goog.array.remove(this._imagesToLoad, image);
 }
-
 
 /**
  * Annotations should be bound to the URL defined in the 'data-original' attribute of
@@ -142,14 +152,18 @@ annotorious.modules.image.ImageModule.getItemURL = function(image) {
 /**
  * Standard module method: adds an annotation.
  * @param {Annotation} the annotation
+ * @param {Annotation} opt_replace optionally, an existing annotation to replace
  */
-annotorious.modules.image.ImageModule.prototype.addAnnotation = function(annotation) {
+annotorious.modules.image.ImageModule.prototype.addAnnotation = function(annotation, opt_replace) {
   if (this.annotatesItem(annotation.src)) {
     var annotator = this._annotators.get(annotation.src);
-    if (annotator)
-      annotator.addAnnotation(annotation)
-    else
+    if (annotator) {
+      annotator.addAnnotation(annotation, opt_replace)
+    } else {
       this._bufferedForAdding.push(annotation);
+      if (opt_replace)
+        goog.array.remove(this._bufferedForAdding, opt_replace);
+    }
   }
 }
 
@@ -257,13 +271,17 @@ annotorious.modules.image.ImageModule.prototype.getAvailableSelectors = function
  * @param {Annotation} annotation the annotation
  */
 annotorious.modules.image.ImageModule.prototype.highlightAnnotation = function(annotation) {
-  if (this.annotatesItem(annotation.src)) {
-    var annotator = this._annotators.get(annotation.src);
-    if (annotator) {
-      annotator.highlightAnnotation(annotation);
-    }
+  if (annotation) {
+    if (this.annotatesItem(annotation.src)) {
+      var annotator = this._annotators.get(annotation.src);
+      if (annotator)
+        annotator.highlightAnnotation(annotation);
+    }  
+  } else {
+    goog.array.forEach(this._annotators.getValues(), function(annotator) {
+      annotator.highlightAnnotation();
+    });
   }
-
 }
 
 /**
@@ -273,8 +291,7 @@ annotorious.modules.image.ImageModule.prototype.highlightAnnotation = function(a
 annotorious.modules.image.ImageModule.prototype.makeAnnotatable = function(item) {
   if (this.supports(item)) {
     this._allImages.push(item);
-    this._imagesToLoad.push(item);
-    this._lazyLoad();
+    this._initAnnotator(item);
   }
 }
 
@@ -312,6 +329,7 @@ annotorious.modules.image.ImageModule.prototype.setActiveSelector = function(ite
  * @param {boolean} enabled if <code>true</code> new annotations can be created
  */
 annotorious.modules.image.ImageModule.prototype.setSelectionEnabled = function(enabled) {
+  this._isSelectionEnabled = enabled;
   goog.array.forEach(this._annotators.getValues(), function(annotator) {
     annotator.setSelectionEnabled(enabled);
   });

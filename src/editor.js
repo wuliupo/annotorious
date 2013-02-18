@@ -12,14 +12,12 @@ goog.require('goog.string.html.htmlSanitize');
 
 
 /**
- * Base annotation edit form.
- * @param {annotorious.selection.Selector} selection reference to the selection widget
+ * Annotation edit form.
  * @param {annotorious.modules.image.ImageAnnotator} annotator reference to the annotator
  * @param {element} parentEl the DOM element to attach the editor to
- * @param {annotorious.annotation.Annotation} the (optional) existing annotation to edit
  * @constructor
  */
-annotorious.editor.Editor = function(annotator, parentEl, opt_annotation) {
+annotorious.editor.Editor = function(annotator, parentEl) {
   this.element = goog.soy.renderAsElement(annotorious.templates.editform);
 
   /** @private **/
@@ -27,6 +25,9 @@ annotorious.editor.Editor = function(annotator, parentEl, opt_annotation) {
 
   /** @private **/
   this._item = annotator.getItem();
+  
+  /** @private **/
+  this._original_annotation;
 
   /** @private **/
   this._textarea = goog.dom.query('.annotorious-editor-text', this.element)[0];
@@ -46,14 +47,15 @@ annotorious.editor.Editor = function(annotator, parentEl, opt_annotation) {
   var self = this;
   goog.events.listen(this._btnCancel, humanEvents.CLICK, function(event) {
     event.preventDefault();
-    annotator.stopSelection();
+    annotator.stopSelection(self._original_annotation);
     self.close();
   });
 
   goog.events.listen(this._btnSave, humanEvents.CLICK, function(event) {
     event.preventDefault();
-    annotator.addAnnotation(self.getAnnotation());
-    annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, self.getAnnotation());
+    var annotation = self.getAnnotation();
+    annotator.addAnnotation(annotation);
+    annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation);
     annotator.stopSelection();
     self.close();
   });
@@ -80,7 +82,15 @@ annotorious.editor.Editor.prototype.addField = function(field) {
   goog.dom.insertSiblingBefore(fieldEl, this._btnContainer);
 }
 
-annotorious.editor.Editor.prototype.open = function() {
+/**
+ * Opens the edit form with an annotation.
+ * @param {Annotation} opt_annotation the annotation to edit or undefined to create a new annotation
+ */
+annotorious.editor.Editor.prototype.open = function(opt_annotation) {
+  this._original_annotation = opt_annotation;
+  if (opt_annotation)
+    this._textarea.value = opt_annotation.text;
+
   goog.style.showElement(this.element, true);
   this._textarea.focus();
 
@@ -96,7 +106,7 @@ annotorious.editor.Editor.prototype.close = function() {
 }
 
 /**
- * Sets the position (i.e. CSS left/top value) of the editor element.
+ * (Re-)sets the position (i.e. CSS left/top value) of the editor element.
  * @param {annotorious.geom.Point} xy the viewport coordinate
  */
 annotorious.editor.Editor.prototype.setPosition = function(xy) {
@@ -111,7 +121,13 @@ annotorious.editor.Editor.prototype.getAnnotation = function() {
   var sanitized = goog.string.html.htmlSanitize(this._textarea.value, function(url) {
     return url;
   });
-  return new annotorious.annotation.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());
+
+  if (this._original_annotation) {
+    this._original_annotation.text = sanitized;
+    return this._original_annotation;
+  } else {
+    return new annotorious.annotation.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());  
+  }
 }
 
 // Export addField API method

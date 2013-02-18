@@ -102,25 +102,34 @@ annotorious.modules.image.Viewer = function(canvas, popup, annotator) {
 /**
  * Adds an annotation to the viewer.
  * @param {annotorious.annotation.Annotation} the annotation
+ * @param {Annotation} opt_replace optionally, an existing annotation to replace
  */
-annotorious.modules.image.Viewer.prototype.addAnnotation = function(annotation) {
+annotorious.modules.image.Viewer.prototype.addAnnotation = function(annotation, opt_replace) {
+  // Remove opt_replace, if specified
+  if (opt_replace) {
+    if (opt_replace == this._currentAnnotation)
+      delete this._currentAnnotation;
+   
+      goog.array.remove(this._annotations, opt_replace);
+      delete this._shapes[annotorious.shape.hashCode(opt_replace.shapes[0])];
+  }
+
   this._annotations.push(annotation);
 
-  // The viewer operates in pixel coordinates for efficiency reasons
+  // The viewer always operates in pixel coordinates for efficiency reasons
   var shape = annotation.shapes[0];
   if (shape.units == annotorious.shape.Units.PIXEL) {
-    this._shapes[goog.getUid(annotation)] = shape;     
-    this._draw(shape);
+    this._shapes[annotorious.shape.hashCode(annotation.shapes[0])] = shape;     
   } else {
     var self = this;
     var viewportShape = annotorious.shape.transform(shape, function(xy) {
       return self._annotator.fromItemCoordinates(xy); 
     });
-
-    this._shapes[goog.getUid(annotation)] = viewportShape;
-    this._draw(viewportShape);
+    this._shapes[annotorious.shape.hashCode(annotation.shapes[0])] = viewportShape;
   }
-};
+
+  this._redraw();
+}
 
 /**
  * Removes an annotation from the viewer.
@@ -131,7 +140,7 @@ annotorious.modules.image.Viewer.prototype.removeAnnotation = function(annotatio
     delete this._currentAnnotation;
 
   goog.array.remove(this._annotations, annotation);
-  delete this._shapes[goog.getUid(annotation)];
+  delete this._shapes[annotorious.shape.hashCode(annotation.shapes[0])];
   this._redraw();
 };
 
@@ -195,13 +204,13 @@ annotorious.modules.image.Viewer.prototype.annotationsAt = function(px, py) {
   var self = this;
 
   goog.array.forEach(this._annotations, function(annotation) {
-    if (annotorious.shape.intersects(self._shapes[goog.getUid(annotation)], px, py)) {
+    if (annotorious.shape.intersects(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])], px, py)) {
       intersectedAnnotations.push(annotation);
     }
   });
 
   goog.array.sort(intersectedAnnotations, function(a, b) {
-    return annotorious.shape.size(a.shapes[0]) > annotorious.shape.size(b.shapes[0]);
+    return annotorious.shape.getSize(a.shapes[0]) > annotorious.shape.getSize(b.shapes[0]);
   });
 
   return intersectedAnnotations;
@@ -263,11 +272,11 @@ annotorious.modules.image.Viewer.prototype._redraw = function() {
 
   var self = this;
   goog.array.forEach(this._annotations, function(annotation) {
-    self._draw(self._shapes[goog.getUid(annotation)]);
+    self._draw(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])]);
   });
 
   if (this._currentAnnotation) {
-    var shape = this._shapes[goog.getUid(this._currentAnnotation)];
+    var shape = this._shapes[annotorious.shape.hashCode(this._currentAnnotation.shapes[0])];
     this._draw(shape, true);
     var bbox = annotorious.shape.getBoundingRect(shape);
     this._popup.show(this._currentAnnotation, { x: bbox.x, y: bbox.y + bbox.height + 5 });

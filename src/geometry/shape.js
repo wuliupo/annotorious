@@ -33,11 +33,7 @@ annotorious.shape.Units = {
   FRACTION: 'fraction'
 }
 
-
-
 /** Helper functions & geometry computation utilities **/
-
-
 
 /**
  * Checks whether a given shape intersects a point.
@@ -62,21 +58,19 @@ annotorious.shape.intersects = function(shape, px, py) {
     
       return true;
     } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
-      var oddNodes = false;
       var points = shape.geometry.points;
-      var sides = shape.geometry.points.length - 1;
+      var inside = false;
 
-      var j = sides;
-      for (var i=0; i<sides; i++) {
-        if ((points[i].y < py && points[j].y >= py) ||  (points[j].y < py && points[i].y >= py)) {
-          if (points[i].x + (py - points[i].y) / (points[j].y - points[i].y) * (points[j].x - points[i].x) < px) {
-            oddNodes = !oddNodes;
-          } 
+      var j = points.length - 1;
+      for (var i=0; i<points.length; i++) {
+        if ((points[i].y > py) != (points[j].y > py) && 
+            (px < (points[j].x - points[i].x) * (py - points[i].y) / (points[j].y-points[i].y) + points[i].x)) {
+          inside = !inside;
         }
-        j = i;   
+        j = i;
       }
 
-      return oddNodes;
+      return inside;
     }
     
     return false;
@@ -87,9 +81,20 @@ annotorious.shape.intersects = function(shape, px, py) {
  * @param {annotorious.shape.Shape} shape the shape
  * @returns {number} the size
  */
-annotorious.shape.size = function(shape) {
+annotorious.shape.getSize = function(shape) {
   if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
     return shape.geometry.width * shape.geometry.height;
+  } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
+    var points = shape.geometry.points;
+    var area = 0.0;
+
+    var j = points.length - 1;
+    for (var i=0; i<points.length; i++) {
+      area += (points[j].x + points[i].x) * (points[j].y -points[i].y); 
+      j = i; 
+    }
+
+    return Math.abs(area / 2);
   }
   
   return 0;
@@ -124,9 +129,41 @@ annotorious.shape.getBoundingRect = function(shape) {
       if (points[i].y < top)
         top = points[i].y;
     }
-
+    
     return new annotorious.shape.geom.Rectangle(left, top, right - left, bottom - top);
   }
+  
+  return undefined;
+}
+
+/**
+ * Computes the centroid coordinate for the specified shape.
+ * @param {annotorious.shape.Shape} shape the shape
+ * @returns {annotorious.shape.geom.Point} the centroid X/Y coordinate
+ */
+annotorious.shape.getCentroid = function(shape) {
+  if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
+    var rect = shape.geometry;
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
+    var points = shape.geometry.points;
+    var x = 0;
+    var y = 0;
+    var f;
+    var j = points.length - 1;
+
+    for (var i=0; i<points.length; i++) {
+      f = points[i].x * points[j].y - points[j].x * points[i].y;
+      x += (points[i].x + points[j].x) * f;
+      y += (points[i].y + points[j].y) * f;
+      j = i;
+    }
+
+    f = annotorious.shape.size(shape) * 6;
+    return { x: Math.abs(x/f), y: Math.abs(y/f) };
+  }
+  
+  return undefined;
 }
 
 /**
@@ -138,6 +175,7 @@ annotorious.shape.getBoundingRect = function(shape) {
  * @returns {annotorious.shape.Shape} the transformed shape
  */
 annotorious.shape.transform = function(shape, transformationFn) {
+      console.log(shape);
   if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
     var geom = shape.geometry;
     var anchor = transformationFn({ x: geom.x, y: geom.y });
@@ -152,4 +190,17 @@ annotorious.shape.transform = function(shape, transformationFn) {
     return new annotorious.shape.Shape(annotorious.shape.ShapeType.POLYGON,
       new annotorious.shape.geom.Polygon(transformedPoints));
   }
+  
+  return undefined;
+}
+
+/**
+ * Computes a 'hashCode' for the specified shape. Not the nicest (and most performat?)
+ * way to do it. But we need a useful .toString kind-of fuctionality to use for hashtable
+ * keys in the viewer!
+ * @param {annotorious.shape.Shape} shape the shape
+ * @returns {string} a 'hashcode' for the shape
+ */
+annotorious.shape.hashCode = function(shape) {
+  return JSON.stringify(shape.geometry);
 }

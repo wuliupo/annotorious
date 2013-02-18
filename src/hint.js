@@ -14,7 +14,7 @@ goog.require('goog.dom.query');
 annotorious.hint.Hint = function(annotator, parent) {
   var self = this;
 
-  this.element = goog.soy.renderAsElement(annotorious.templates.hint);
+  this.element = goog.soy.renderAsElement(annotorious.templates.image.hint);
 
   /** @private **/
   this._annotator = annotator;

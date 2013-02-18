@@ -53,12 +53,13 @@ annotorious.Annotorious.prototype._getModuleForItemSrc = function(item_src) {
 /**
  * Adds an annotation to an item on the page.
  * @param {Annotation} annotation the annotation
+ * @param {Annotation} opt_replace optionally, an existing annotation to replace
  */
-annotorious.Annotorious.prototype.addAnnotation = function(annotation) {
+annotorious.Annotorious.prototype.addAnnotation = function(annotation, opt_replace) {
   var module = this._getModuleForItemSrc(annotation.src);
   
   if (module)
-    module.addAnnotation(annotation);
+    module.addAnnotation(annotation, opt_replace);
 }
 
 /**
@@ -78,7 +79,11 @@ annotorious.Annotorious.prototype.addHandler = function(type, handler) {
  * @param {object} opt_config_options an optional object literal with plugin config options
  */
 annotorious.Annotorious.prototype.addPlugin = function(pluginName, opt_config_options) {
-  this._plugins.push(new window['annotorious']['plugin'][pluginName](opt_config_options));  
+  try {
+    this._plugins.push(new window['annotorious']['plugin'][pluginName](opt_config_options));  
+  } catch (error) {
+    console.log('Could not load plugin: ' + pluginName);
+  }
 }
 
 /**
@@ -146,10 +151,16 @@ annotorious.Annotorious.prototype.getAvailableSelectors = function(item_url) {
  * @param {Annotation} annotation the annotation
  */
 annotorious.Annotorious.prototype.highlightAnnotation = function(annotation) {
-  var module = this._getModuleForItemSrc(annotation.src);
+  if (annotation) {
+    var module = this._getModuleForItemSrc(annotation.src);
 
-  if (module)
-    module.highlightAnnotation(annotation);
+    if (module)
+      module.highlightAnnotation(annotation);
+  } else {
+    goog.array.forEach(this._modules, function(module) {
+      module.highlightAnnotation();
+    });
+  }
 }
 
 /**

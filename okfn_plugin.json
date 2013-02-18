@@ -19,8 +19,8 @@
     "src/events.js",
     "src/hint.js",
 
-    "templates/annotator_templates.soy",
-    "templates/image_templates.soy"
+    "templates/core_elements.soy",
+    "templates/image_elements.soy"
   ],
   "paths": [
     "."
@@ -28,6 +28,6 @@
   "externs": [
     "externs/okfn_annotator.js"
   ],
-  "mode": "RAW", // "ADVANCED"
+  "mode": "ADVANCED", // "ADVANCED"
   "level": "DEFAULT" // "VERBOSE"
 }
