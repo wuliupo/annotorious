@@ -126,7 +126,7 @@ annotorious.modules.image.ImageAnnotator.prototype.editAnnotation = function(ann
   
   // Step 2 - find a suitable selector for the shape
   var selector = goog.array.find(this._selectors, function(selector) {
-    return selector.getSupportedShapeType() == annotation.shapes[0].type;
+    return selector.getSupportedShapeType() == annotation["shapes"][0].type;
   });
   
   // Step 3 - open annotation in editor
@@ -136,15 +136,15 @@ annotorious.modules.image.ImageAnnotator.prototype.editAnnotation = function(ann
     
     // TODO make editable - not just draw (selector implementation required)
     var g2d = this._editCanvas.getContext('2d');
-    var shape = annotation.shapes[0];
+    var shape = annotation["shapes"][0];
     
     var self = this;
     var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function(xy) { return self.fromItemCoordinates(xy); }) ;
     selector.drawShape(g2d, viewportShape);
   }
   
-  var bounds = annotorious.shape.getBoundingRect(annotation.shapes[0]);
-  var anchor = (annotation.shapes[0].units == 'pixel') ?
+  var bounds = annotorious.shape.getBoundingRect(annotation["shapes"][0]);
+  var anchor = (annotation["shapes"][0].units == 'pixel') ?
     ({ x: bounds.x, y: bounds.y + bounds.height }) :
     this.fromItemCoordinates({ x: bounds.x, y: bounds.y + bounds.height });   
   

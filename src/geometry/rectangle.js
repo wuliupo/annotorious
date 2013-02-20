@@ -11,18 +11,18 @@ goog.provide('annotorious.shape.geom.Rectangle');
 annotorious.shape.geom.Rectangle = function(x, y, width, height) {
   // Normalize to positive width and height
   if (width > 0) {
-    this.x = x;
+    this["x"] = x;
     this.width = width;
   } else {
-    this.x = x + width;
+    this["x"] = x + width;
     this.width = -width;
   }
 
   if (height > 0) {
-    this.y = y;
+    this["y"] = y;
     this.height = height;
   } else {
-    this.y = y + height;
+    this["y"] = y + height;
     this.height = -height;
   }
 }

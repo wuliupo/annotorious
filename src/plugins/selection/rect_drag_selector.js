@@ -242,7 +242,7 @@ annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(g2
       lineWidth = 1;
     }
 
-    var geom = shape.geometry;
+    var geom = shape["geometry"];
     g2d.strokeStyle = '#000000';
     g2d.lineWidth = lineWidth;
     g2d.strokeRect(geom.x + 0.5, geom.y + 0.5, geom.width + 1, geom.height + 1);

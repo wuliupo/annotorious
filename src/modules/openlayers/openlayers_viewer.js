@@ -73,7 +73,7 @@ annotorious.modules.openlayers.Viewer.prototype._updateHighlight = function(new_
  * @param {annotorious.annotation.Annotation} the annotation
  */
 annotorious.modules.openlayers.Viewer.prototype.addAnnotation = function(annotation) {
-  var geometry = annotation.shapes[0].geometry;
+  var geometry = annotation["shapes"][0].geometry;
   var marker =
     new OpenLayers.Marker.Box(new OpenLayers.Bounds(geometry.x, geometry.y, geometry.x + geometry.width, geometry.y + geometry.height));
   goog.dom.classes.add(marker.div, 'annotorious-ol-boxmarker-outer');
@@ -101,8 +101,8 @@ annotorious.modules.openlayers.Viewer.prototype.addAnnotation = function(annotat
   this._overlays.push(overlay);
 
   goog.array.sort(this._overlays, function(a, b) {
-    var geomA = a.annotation.shapes[0].geometry;
-    var geomB = b.annotation.shapes[0].geometry;
+    var geomA = a.annotation["shapes"][0].geometry;
+    var geomB = b.annotation["shapes"][0].geometry;
     return annotorious.geom.size(geomB) - annotorious.geom.size(geomA);
   });
  

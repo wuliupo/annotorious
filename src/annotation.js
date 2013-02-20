@@ -11,6 +11,6 @@ goog.provide('annotorious.annotation');
 annotorious.annotation.Annotation = function(src, text, shape) {
   this.src = src;
   this.text = text;
-  this.shapes = [ shape ];
+  this["shapes"] = [ shape ];
   this['context'] = document.URL; // Prevents dead code removal
 }
