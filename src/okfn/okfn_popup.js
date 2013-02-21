@@ -146,7 +146,7 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   this._okfnAnnotator.viewer.load([annotation]);   
   goog.style.setPosition(this._okfnAnnotator.viewer.element[0],
 			 imgOffset.left - this._baseOffset.left + xy.x + 16,
-			 imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y);
+			 imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y - 50);
   this.clearHideTimer();
 }
 
