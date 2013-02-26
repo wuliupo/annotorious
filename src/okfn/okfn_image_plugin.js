@@ -107,9 +107,18 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
   };
 
   var self = this;
+  // Outside event listeners
   document.addEventListener("annotoriousOpenAnnotation", function(event) {
     okfnAnnotator.clearViewerHideTimer();
     viewer.highlightAnnotation(event.data);
+  });
+  
+  document.addEventListener("annotoriousDraw", function(event) {
+    viewer.addAnnotation(event.data.obj);
+  });
+  
+  document.addEventListener("annotoriousDeleteShape", function(event) {
+    viewer.removeAnnotation(event.data.obj);
   });
   
   goog.events.listen(annotationLayer, humanEvents.OVER, function(event) {
