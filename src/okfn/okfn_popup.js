@@ -140,7 +140,7 @@ annotorious.okfn.Popup.prototype.clearHideTimer = function() {
 annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   var top = 0;
   var viewer = this._okfnAnnotator.viewer.element[0];
-  goog.dom.classes.remove(viewer, 'annotator-hide');
+  goog.dom.classes.addRemove(viewer, ['annotator-hide', 'annotator-reverse']);
 
   var imgOffset = annotorious.dom.getOffset(this._image);
 
@@ -148,7 +148,8 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   this._okfnAnnotator.viewer.load([annotation]);   
   top = imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y - 50;
   if (window.innerHeight < top+150) {
-    top = annotation["shapes"][0].geometry.y - 130;
+    top = annotation["shapes"][0].geometry.y - 15;
+    goog.dom.classes.add(viewer, 'annotator-reverse');
   }
   
   goog.style.setPosition(viewer,
