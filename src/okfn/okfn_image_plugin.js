@@ -169,14 +169,21 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
     goog.dom.classes.addRemove(okfnAnnotator.editor.element[0], "annotator-reverse");
     
     okfnAnnotator.publish('beforeAnnotationCreated', annotation);
-    var imgOffset = annotorious.dom.getOffset(image);
-    var geometry = event.shape["geometry"];
-    var x = geometry["x"] + imgOffset.left - baseOffset.left + 16;
-    var y = geometry["y"] + geometry.height + imgOffset.top + window.pageYOffset - baseOffset.top - 40;
-    
-    if ( ( geometry["y"] + imgOffset.top + geometry.height) > window.innerHeight - 200 ) {
-      y = geometry["y"] - 70;
+    var imgOffset = annotorious.dom.getOffset(image),
+        geometry = event.shape["geometry"],
+        x = geometry["x"] + imgOffset.left - baseOffset.left + 16,
+        y,
+        editorHeight = 120,
+        goesAboveLogic = ( geometry["y"] + imgOffset.top + geometry.height) > window.innerHeight - 200,
+        doesFitAboveLogic = geometry["y"] > editorHeight;
+        debugger
+    if ( goesAboveLogic && doesFitAboveLogic) {
+      y = geometry["y"] - editorHeight
       goog.dom.classes.add(okfnAnnotator.editor.element[0], "annotator-reverse");
+    } else if (!doesFitAboveLogic && goesAboveLogic) {
+      y = geometry["y"];
+    } else {
+      y = geometry["y"] + geometry.height + imgOffset.top + window.pageYOffset - baseOffset.top + 10;
     }
 
     okfnAnnotator.showEditor(annotation, {top: window.pageYOffset - baseOffset.top, left: 0});
