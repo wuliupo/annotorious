@@ -235,7 +235,7 @@ annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(g2
   if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
     var color, lineWidth;
     if (highlight) {
-      color = '#fff000';
+      color = '#f4f4f4';
       lineWidth = 1.2;
     } else {
       color = '#ffffff';

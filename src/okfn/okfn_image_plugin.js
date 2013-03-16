@@ -134,6 +134,7 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
 
   goog.events.listen(( (annotorious.humanEvents.hasTouch) ? editCanvas : viewCanvas ), humanEvents.DOWN, function(event) {
     var points = annotorious.events.sanitizeCoordinates(event, viewCanvas);
+
     event.preventDefault();
     goog.style.showElement(editCanvas, true);
 
