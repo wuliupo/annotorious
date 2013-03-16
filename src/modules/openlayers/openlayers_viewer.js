@@ -56,7 +56,7 @@ annotorious.modules.openlayers.Viewer.prototype._updateHighlight = function(new_
   if (new_highlight) {
     var pos = goog.style.getRelativePosition(new_highlight.marker.div, this._map.div);
     var height = parseInt(goog.style.getStyle(new_highlight.marker.div, 'height'), 10);
-    goog.style.setStyle(new_highlight.inner, 'border-color', '#fff000');
+    goog.style.setStyle(new_highlight.inner, 'border-color', '#f4f4f4');
     this._popup.show(new_highlight.annotation, pos.x, pos.y + height + 5);
     this._currentlyHighlightedOverlay = new_highlight;
   } else {

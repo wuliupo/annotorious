@@ -158,12 +158,13 @@ annotorious.modules.image.Viewer.prototype.getAnnotations = function() {
  */
 annotorious.modules.image.Viewer.prototype.highlightAnnotation = function(opt_annotation) {
   this._currentAnnotation = opt_annotation;
-  if (opt_annotation)
+  if (opt_annotation) {
     this._keepHighlighted = true;
-  else
+  } else {
     this._popup.startHideTimer();
-
-  this._redraw();
+  }
+  
+  this._redraw()
 };
 
 /**
@@ -267,7 +268,7 @@ annotorious.modules.image.Viewer.prototype._draw = function(shape, highlight) {
  */
 annotorious.modules.image.Viewer.prototype._redraw = function() {
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
-
+  
   var self = this;
   goog.array.forEach(this._annotations, function(annotation) {
     self._draw(self._shapes[annotorious.shape.hashCode(annotation["shapes"][0])]);
