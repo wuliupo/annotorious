@@ -176,7 +176,7 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
         editorHeight = 120,
         goesAboveLogic = ( geometry["y"] + imgOffset.top + geometry.height) > window.innerHeight - 200,
         doesFitAboveLogic = geometry["y"] > editorHeight;
-        debugger
+        
     if ( goesAboveLogic && doesFitAboveLogic) {
       y = geometry["y"] - editorHeight
       goog.dom.classes.add(okfnAnnotator.editor.element[0], "annotator-reverse");
