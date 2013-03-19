@@ -147,9 +147,17 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   goog.style.setPosition(viewer, 0, window.pageYOffset - this._baseOffset.top);
   this._okfnAnnotator.viewer.load([annotation]);   
   top = imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y;
-  if (window.innerHeight < top+150) {
+  var windowHeight = window.innerHeight;
+  
+  if (windowHeight < top+150) {
     top = annotation["shapes"][0].geometry.y - 60;
+
+    if (annotation["shapes"][0].geometry.y > top) {
+      top = 0;
+    }
+    
     goog.dom.classes.add(viewer, 'annotator-reverse');
+    
   }
   
   goog.style.setPosition(viewer,

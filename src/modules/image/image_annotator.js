@@ -142,7 +142,7 @@ annotorious.modules.image.ImageAnnotator.prototype.editAnnotation = function(ann
     var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function(xy) { return self.fromItemCoordinates(xy); }) ;
     selector.drawShape(g2d, viewportShape);
   }
-  
+  console.log("145 image_annotator", annotation)
   var bounds = annotorious.shape.getBoundingRect(annotation["shapes"][0]);
   var anchor = (annotation["shapes"][0].units == 'pixel') ?
     ({ x: bounds.x, y: bounds.y + bounds.height }) :

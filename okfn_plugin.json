@@ -21,7 +21,7 @@
 
     "templates/core_elements.soy",
     "templates/image_elements.soy"
-  ],
+  ],  
   "paths": [
     "."
   ],
