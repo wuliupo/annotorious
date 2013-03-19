@@ -138,26 +138,25 @@ annotorious.okfn.Popup.prototype.clearHideTimer = function() {
  * @param {annotorious.geom.Point} xy the viewport coordinate (relative to the image)
  */
 annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
-  var top = 0;
-  var viewer = this._okfnAnnotator.viewer.element[0];
+  var top = 0,
+      viewer = this._okfnAnnotator.viewer.element[0],
+      shapeY = annotation["shapes"][0]["geometry"]["y"],
+      imgOffset = annotorious.dom.getOffset(this._image);
+  
   goog.dom.classes.addRemove(viewer, ['annotator-hide', 'annotator-reverse']);
-
-  var imgOffset = annotorious.dom.getOffset(this._image);
-
   goog.style.setPosition(viewer, 0, window.pageYOffset - this._baseOffset.top);
   this._okfnAnnotator.viewer.load([annotation]);   
   top = imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y;
   var windowHeight = window.innerHeight;
   
   if (windowHeight < top+150) {
-    top = annotation["shapes"][0].geometry.y - 60;
+    top = shapeY - 60;
 
-    if (annotation["shapes"][0].geometry.y > top) {
+    if (shapeY > top) {
       top = 0;
     }
     
     goog.dom.classes.add(viewer, 'annotator-reverse');
-    
   }
   
   goog.style.setPosition(viewer,
