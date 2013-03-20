@@ -114,11 +114,11 @@ annotorious.okfn.ImagePlugin = function(image, okfnAnnotator) {
   });
   
   document.addEventListener("annotoriousDraw", function(event) {
-    viewer.addAnnotation(event.data.obj);
+    viewer.addAnnotation(event.data);
   });
   
   document.addEventListener("annotoriousDeleteShape", function(event) {
-    viewer.removeAnnotation(event.data.obj);
+    viewer.removeAnnotation(event.data);
   });
   
   goog.events.listen(annotationLayer, humanEvents.OVER, function(event) {

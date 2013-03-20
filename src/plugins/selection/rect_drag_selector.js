@@ -89,7 +89,6 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
           
     event = (event.event_) ? event.event_ : event;
     self._enabled = false;
-
     if (shape) {
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_COMPLETED,
         { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds() }); 
@@ -99,6 +98,9 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
       
       // TODO dup code from image_viewer line 269
       annotation = self.viewer.topAnnotationAt(points.x, points.y);
+      
+      console.log("annotation in mouse up", annotation)
+      
 
       if (annotation) {
         annotorious.events.dispatch({
