@@ -144,7 +144,7 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
       imgOffset = annotorious.dom.getOffset(this._image),
       windowHeight = window.innerHeight,
       goRightAboveLogic,
-      goAboveLogic;
+      goToTopLogic;
   
   goog.dom.classes.addRemove(viewer, ['annotator-hide', 'annotator-reverse']);
   goog.style.setPosition(viewer, 0, window.pageYOffset - this._baseOffset.top);
@@ -152,15 +152,16 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
   
   top = imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y;
 
-  goRightAboveLogic = windowHeight < top+150;
-  goAboveLogic = windowHeight < top+150 && shapeY > 150;
+  goRightAboveLogic = windowHeight < top+100;
+  goToTopLogic = shapeY < 100;
   
   if (goRightAboveLogic) {
-    top = shapeY - 20;
+    top = shapeY - 65;
     goog.dom.classes.add(viewer, 'annotator-reverse');
-  } else if (goAboveLogic) {
-    top = 0;
-    goog.dom.classes.add(viewer, 'annotator-reverse');
+    
+    if (goToTopLogic) {
+      top = 0;
+    }
   }
   
   goog.style.setPosition(viewer,
