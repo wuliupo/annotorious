@@ -84,6 +84,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator = function(osdViewer
     //goog.style.setStyle(self._editCanvas, 'pointer-events', 'none');
 
     var bounds = event.viewportBounds;
+    // TODO: selection is horribly broken on inline-block and float positioning
     self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left, bounds.bottom + 4));
     self.editor.open();    
   });
@@ -92,7 +93,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator = function(osdViewer
     self.stopSelection();    
   });
   
-  /** End of possible dupplicated code **/ 
+  /** End of possible duplicated code **/ 
 }
 goog.inherits(annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator, annotorious.mediatypes.Annotator);
 
@@ -121,6 +122,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.activateSe
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.editAnnotation = function(annotation) {
   // Step 1 - remove from viewer
   this._viewer.removeAnnotation(annotation);
+  // TODO: should the viewer really remove annotations? read from editor and rerender instead?
 
   // Step 2 - TODO find a suitable selector for the shape
   var selector = this._currentSelector;
@@ -161,11 +163,11 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.fromItemCo
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAnnotations = function() {
-
+// TODO: very loud crickets
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAvailableSelectors = function() {
-
+// TODO: also crickets
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getItem = function() {
@@ -174,7 +176,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getItem = 
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.setActiveSelector = function(selector) {
-
+// TODO: why empty?
 }
 
 /**
