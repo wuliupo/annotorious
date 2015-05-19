@@ -53,11 +53,11 @@ annotorious.mediatypes.Annotator.prototype.stopSelection = function(original_ann
 annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanvas) {
   var self = this;
   goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function(event) {
-    console.log('start selection event');
-    console.log(event);
     var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
     self._viewer.highlightAnnotation(false);
-		if (self._selectionEnabled) {
+    var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
+
+		if (self._selectionEnabled && annotations.length === 0) {
       goog.style.showElement(self._editCanvas, true);      
       self._currentSelector.startSelection(coords.x, coords.y);
 		} else {
