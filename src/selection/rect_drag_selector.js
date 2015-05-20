@@ -112,7 +112,7 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
     if (shape) {
       self._detachListeners();
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_COMPLETED,
-        { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds() }); 
+        { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds(), annotorious: self._annotator }); 
     } else {
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
 
