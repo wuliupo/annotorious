@@ -13,6 +13,7 @@ annotorious.Annotorious.prototype['highlightAnnotation'] = annotorious.Annotorio
 annotorious.Annotorious.prototype['makeAnnotatable'] = annotorious.Annotorious.prototype.makeAnnotatable;
 annotorious.Annotorious.prototype['removeAll'] = annotorious.Annotorious.prototype.removeAll;
 annotorious.Annotorious.prototype['removeAnnotation'] = annotorious.Annotorious.prototype.removeAnnotation;
+annotorious.Annotorious.prototype['removeCurrentSelection'] = annotorious.Annotorious.prototype.removeCurrentSelection;
 annotorious.Annotorious.prototype['reset'] = annotorious.Annotorious.prototype.reset;
 annotorious.Annotorious.prototype['setActiveSelector'] = annotorious.Annotorious.prototype.setActiveSelector;
 annotorious.Annotorious.prototype['setProperties'] = annotorious.Annotorious.prototype.setProperties;

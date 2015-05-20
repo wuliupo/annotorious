@@ -482,6 +482,15 @@ annotorious.mediatypes.Module.prototype.removeAnnotation = function(annotation) 
 }
 
 /**
+ * Removes selection from the item with the specified URL.
+ * @param {annotorious.Annotation} annotation the annotation
+ */
+annotorious.mediatypes.Module.prototype.removeCurrentSelection = function(item_url) {
+    var annotator = this._annotators.get(item_url);;
+    annotator.stopSelection();
+}
+
+/**
  * Sets a specific selector on a particular item.
  * @param {string} item_url the URL of the item on which to set the selector
  * @param {string} selector the name of the selector to set on the item

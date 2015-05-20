@@ -126,7 +126,7 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
     var bounds = event.viewportBounds;
     self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left + self._image.offsetLeft,
                                                             bounds.bottom + 4 + self._image.offsetTop));
-    self.editor.open(false, event);
+        //self.editor.open(false, event);
   });
   
   this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
@@ -380,14 +380,23 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection = function(o
 annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates = function(xy_wh) {
   var imgSize = goog.style.getSize(this._image);  
   if (xy_wh.width) {
-    return { x: xy_wh.x / imgSize.width, y: xy_wh.y / imgSize.height, width: xy_wh.width / imgSize.width, height: xy_wh.height /imgSize.height }; 
+        return {
+            x: xy_wh.x / imgSize.width,
+            y: xy_wh.y / imgSize.height,
+            width: xy_wh.width / imgSize.width,
+            height: xy_wh.height / imgSize.height
+        };
   } else {
-    return { x: xy_wh.x / imgSize.width, y: xy_wh.y / imgSize.height };
+        return {
+            x: xy_wh.x / imgSize.width,
+            y: xy_wh.y / imgSize.height
+        };
   }
 }
 
 /** API exports **/
 annotorious.mediatypes.image.ImageAnnotator.prototype['addSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.addSelector;
+annotorious.mediatypes.image.ImageAnnotator.prototype['stopSelection'] = annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection;
 annotorious.mediatypes.image.ImageAnnotator.prototype['fireEvent'] = annotorious.mediatypes.image.ImageAnnotator.prototype.fireEvent;
 annotorious.mediatypes.image.ImageAnnotator.prototype['setCurrentSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.setCurrentSelector;
 annotorious.mediatypes.image.ImageAnnotator.prototype['toItemCoordinates'] = annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates;
