@@ -35,7 +35,9 @@ annotorious.Annotorious = function() {
     this._plugins = [];
 
     var self = this;
-  annotorious.dom.addOnLoadHandler(function() { self._init(); });
+    annotorious.dom.addOnLoadHandler(function() {
+        self._init();
+    });
 }
 
 annotorious.Annotorious.prototype._init = function() {

@@ -23,117 +23,124 @@ goog.require('annotorious.templates.image');
  * @constructor
  */
 annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
-  annotorious.mediatypes.Annotator.call();
+    annotorious.mediatypes.Annotator.call();
 
-  var hint;
-  
-  /** The container DOM element (DIV) for the annotation layer **/
-  this.element;
-  
-  /** The editor for this annotator (public for use by plugins) **/
-  this.editor;
+    var hint;
 
-  /** The popup for this annotator (public for use by plugins) **/
-  this.popup;
+    /** The container DOM element (DIV) for the annotation layer **/
+    this.element;
 
-  /** @private **/
-  this._image = item;
+    /** The editor for this annotator (public for use by plugins) **/
+    this.editor;
 
-  /** @private **/
-  this._original_bufferspace = { padding: item.style.padding, margin: item.style.margin }
-  
-  /** @private **/
-  this._viewer;
-  
-  /** @private **/
-  this._editCanvas;
-  
-  /** @private **/
-  this._hint;
-  
-  /** @private **/
-  this._eventBroker = new annotorious.events.EventBroker();
+    /** The popup for this annotator (public for use by plugins) **/
+    this.popup;
 
-  /** @private **/
-  this._selectors = [];
-  
-  /** @private **/
-  this._currentSelector;
+    /** @private **/
+    this._image = item;
 
-  /** @private **/
-  this._selectionEnabled = true;
+    /** @private **/
+    this._original_bufferspace = {
+        padding: item.style.padding,
+        margin: item.style.margin
+    }
 
-  this.element = goog.dom.createDom('div', 'annotorious-annotationlayer');
-  goog.style.setStyle(this.element, 'position', 'relative');
-  goog.style.setStyle(this.element, 'display', 'inline-block');
-  this._transferStyles(item, this.element);
+    /** @private **/
+    this._viewer;
 
-  goog.dom.replaceNode(this.element, item);
-  goog.dom.appendChild(this.element, item);
+    /** @private **/
+    this._editCanvas;
 
-  var img_bounds = goog.style.getBounds(item);  
-  this._viewCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas,
-    { width:img_bounds.width, height:img_bounds.height });
-  if (annotorious.events.ui.hasMouse)
-    goog.dom.classes.add(this._viewCanvas, 'annotorious-item-unfocus');
-  goog.dom.appendChild(this.element, this._viewCanvas);   
+    /** @private **/
+    this._hint;
 
-  this._editCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, 
-    { width:img_bounds.width, height:img_bounds.height });
+    /** @private **/
+    this._eventBroker = new annotorious.events.EventBroker();
 
-  if (annotorious.events.ui.hasMouse)
-    goog.style.showElement(this._editCanvas, false); 
-  goog.dom.appendChild(this.element, this._editCanvas);
+    /** @private **/
+    this._selectors = [];
 
-  if (opt_popup)
-    this.popup = opt_popup;
-  else
-    this.popup = new annotorious.Popup(this);
+    /** @private **/
+    this._currentSelector;
 
-  var default_selector = new annotorious.plugins.selection.RectDragSelector();
-  default_selector.init(this, this._editCanvas); 
-  this._selectors.push(default_selector);
-  this._currentSelector = default_selector;
+    /** @private **/
+    this._selectionEnabled = true;
 
-  this.editor = new annotorious.Editor(this);
-  this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this); 
-  this._hint = new annotorious.Hint(this, this.element);
-  
-  var self = this;
+    this.element = goog.dom.createDom('div', 'annotorious-annotationlayer');
+    goog.style.setStyle(this.element, 'position', 'relative');
+    goog.style.setStyle(this.element, 'display', 'inline-block');
+    this._transferStyles(item, this.element);
 
-  if (annotorious.events.ui.hasMouse) {
-    goog.events.listen(this.element, annotorious.events.ui.EventType.OVER, function(event) {
-      var relatedTarget = event.relatedTarget;
-      if (!relatedTarget || !goog.dom.contains(self.element, relatedTarget)) {
-        self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATABLE_ITEM);
-        goog.dom.classes.addRemove(self._viewCanvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
-      }
+    goog.dom.replaceNode(this.element, item);
+    goog.dom.appendChild(this.element, item);
+
+    var img_bounds = goog.style.getBounds(item);
+    this._viewCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, {
+        width: img_bounds.width,
+        height: img_bounds.height
     });
-  
-    goog.events.listen(this.element, annotorious.events.ui.EventType.OUT, function(event) {
-      var relatedTarget = event.relatedTarget;
-      if (!relatedTarget || !goog.dom.contains(self.element, relatedTarget)) {
-        self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
-        goog.dom.classes.addRemove(self._viewCanvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
-      }
-    });
-  }
-
-  var activeCanvas = (annotorious.events.ui.hasTouch) ? this._editCanvas : this._viewCanvas;
-  this._attachListener(activeCanvas);
-
-  this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_COMPLETED, function(event) {
-    var bounds = event.viewportBounds;
-    self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left + self._image.offsetLeft,
-                                                            bounds.bottom + 4 + self._image.offsetTop));
-        //self.editor.open(false, event);
-  });
-  
-  this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
     if (annotorious.events.ui.hasMouse)
-      goog.style.showElement(self._editCanvas, false);
-    self._currentSelector.stopSelection();
-  });
+        goog.dom.classes.add(this._viewCanvas, 'annotorious-item-unfocus');
+    goog.dom.appendChild(this.element, this._viewCanvas);
+
+    this._editCanvas = goog.soy.renderAsElement(annotorious.templates.image.canvas, {
+        width: img_bounds.width,
+        height: img_bounds.height
+    });
+
+    if (annotorious.events.ui.hasMouse)
+        goog.style.showElement(this._editCanvas, false);
+    goog.dom.appendChild(this.element, this._editCanvas);
+
+    if (opt_popup)
+        this.popup = opt_popup;
+    else
+        this.popup = new annotorious.Popup(this);
+
+    var default_selector = new annotorious.plugins.selection.RectDragSelector();
+    default_selector.init(this, this._editCanvas);
+    this._selectors.push(default_selector);
+    this._currentSelector = default_selector;
+
+    this.editor = new annotorious.Editor(this);
+    this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this);
+    this._hint = new annotorious.Hint(this, this.element);
+
+    var self = this;
+
+    if (annotorious.events.ui.hasMouse) {
+        goog.events.listen(this.element, annotorious.events.ui.EventType.OVER, function(event) {
+            var relatedTarget = event.relatedTarget;
+            if (!relatedTarget || !goog.dom.contains(self.element, relatedTarget)) {
+                self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATABLE_ITEM);
+                goog.dom.classes.addRemove(self._viewCanvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
+            }
+        });
+
+        goog.events.listen(this.element, annotorious.events.ui.EventType.OUT, function(event) {
+            var relatedTarget = event.relatedTarget;
+            if (!relatedTarget || !goog.dom.contains(self.element, relatedTarget)) {
+                self._eventBroker.fireEvent(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM);
+                goog.dom.classes.addRemove(self._viewCanvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+            }
+        });
+    }
+
+    var activeCanvas = (annotorious.events.ui.hasTouch) ? this._editCanvas : this._viewCanvas;
+    this._attachListener(activeCanvas);
+
+    this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_COMPLETED, function(event) {
+        var bounds = event.viewportBounds;
+        self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left + self._image.offsetLeft,
+            bounds.bottom + 4 + self._image.offsetTop));
+        //self.editor.open(false, event);
+    });
+
+    this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
+        if (annotorious.events.ui.hasMouse)
+            goog.style.showElement(self._editCanvas, false);
+        self._currentSelector.stopSelection();
+    });
 }
 goog.inherits(annotorious.mediatypes.image.ImageAnnotator, annotorious.mediatypes.Annotator);
 
@@ -142,49 +149,49 @@ goog.inherits(annotorious.mediatypes.image.ImageAnnotator, annotorious.mediatype
  * @private
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype._transferStyles = function(image, annotationLayer) {
-  var transferMargin = function(direction, value) {
-    goog.style.setStyle(annotationLayer, 'margin-' + direction, value + 'px'); 
-    goog.style.setStyle(image, 'margin-' + direction, 0);
-    goog.style.setStyle(image, 'padding-' + direction, 0);
-  }
+    var transferMargin = function(direction, value) {
+        goog.style.setStyle(annotationLayer, 'margin-' + direction, value + 'px');
+        goog.style.setStyle(image, 'margin-' + direction, 0);
+        goog.style.setStyle(image, 'padding-' + direction, 0);
+    }
 
-  var margin = goog.style.getMarginBox(image);
-  var padding = goog.style.getPaddingBox(image);
-  
-  if (margin.top != 0 || padding.top != 0)
-    transferMargin('top', margin.top + padding.top);
+    var margin = goog.style.getMarginBox(image);
+    var padding = goog.style.getPaddingBox(image);
 
-  if (margin.right != 0 || padding.right != 0)
-    transferMargin('right', margin.right + padding.right);
+    if (margin.top != 0 || padding.top != 0)
+        transferMargin('top', margin.top + padding.top);
 
-  if (margin.bottom != 0 || padding.bottom != 0)
-    transferMargin('bottom', margin.bottom + padding.bottom);
- 
-  if (margin.left != 0 || padding.left != 0)
-    transferMargin('left', margin.left + padding.left);
+    if (margin.right != 0 || padding.right != 0)
+        transferMargin('right', margin.right + padding.right);
+
+    if (margin.bottom != 0 || padding.bottom != 0)
+        transferMargin('bottom', margin.bottom + padding.bottom);
+
+    if (margin.left != 0 || padding.left != 0)
+        transferMargin('left', margin.left + padding.left);
 }
 
 /**
  * NOT NEEDED/SUPPORTED on ImageAnnotator.
  */
-annotorious.mediatypes.image.ImageAnnotator.prototype.activateSelector = function(callback) { }
+annotorious.mediatypes.image.ImageAnnotator.prototype.activateSelector = function(callback) {}
 
 /**
  * Adds a selector
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.addSelector = function(selector) {
-  selector.init(this, this._editCanvas); 
-  this._selectors.push(selector);
+    selector.init(this, this._editCanvas);
+    this._selectors.push(selector);
 }
 
 /**
  * Destroys this annotator instance.
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.destroy = function() {
-  var img = this._image;
-  img.style.margin = this._original_bufferspace.margin;
-  img.style.padding = this._original_bufferspace.padding;
-  goog.dom.replaceNode(img, this.element);
+    var img = this._image;
+    img.style.margin = this._original_bufferspace.margin;
+    img.style.padding = this._original_bufferspace.padding;
+    goog.dom.replaceNode(img, this.element);
 }
 
 /**
@@ -192,36 +199,38 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.destroy = function() {
  * @param {annotorious.Annotation} annotation the annotation
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function(annotation) {
-  // Step 1 - remove from viewer
-  this._viewer.removeAnnotation(annotation);
-  
-  // Step 2 - find a suitable selector for the shape
-  var selector = goog.array.find(this._selectors, function(selector) {
-    return selector.getSupportedShapeType() == annotation.shapes[0].type;
-  });
-  
-  // Step 3 - open annotation in editor
-  if (selector) {
-    goog.style.showElement(this._editCanvas, true);
-    this._viewer.highlightAnnotation(false);
-    
-    // TODO make editable - not just draw (selector implementation required)
-    var g2d = this._editCanvas.getContext('2d');
-    var shape = annotation.shapes[0];
-    
-    var self = this;
-    var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function(xy) { return self.fromItemCoordinates(xy); }) ;
-    selector.drawShape(g2d, viewportShape);
-  }
-  
-  var bounds = annotorious.shape.getBoundingRect(annotation.shapes[0]).geometry;
-  var anchor = (annotation.shapes[0].units == 'pixel') ?
-    new annotorious.shape.geom.Point(bounds.x, bounds.y + bounds.height) :
-    this.fromItemCoordinates(new annotorious.shape.geom.Point(bounds.x, bounds.y + bounds.height));   
-  
-  this.editor.setPosition(new annotorious.shape.geom.Point(anchor.x + this._image.offsetLeft,
-                                                           anchor.y + 4 + this._image.offsetTop));
-  this.editor.open(annotation);  
+    // Step 1 - remove from viewer
+    this._viewer.removeAnnotation(annotation);
+
+    // Step 2 - find a suitable selector for the shape
+    var selector = goog.array.find(this._selectors, function(selector) {
+        return selector.getSupportedShapeType() == annotation.shapes[0].type;
+    });
+
+    // Step 3 - open annotation in editor
+    if (selector) {
+        goog.style.showElement(this._editCanvas, true);
+        this._viewer.highlightAnnotation(false);
+
+        // TODO make editable - not just draw (selector implementation required)
+        var g2d = this._editCanvas.getContext('2d');
+        var shape = annotation.shapes[0];
+
+        var self = this;
+        var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function(xy) {
+            return self.fromItemCoordinates(xy);
+        });
+        selector.drawShape(g2d, viewportShape);
+    }
+
+    var bounds = annotorious.shape.getBoundingRect(annotation.shapes[0]).geometry;
+    var anchor = (annotation.shapes[0].units == 'pixel') ?
+        new annotorious.shape.geom.Point(bounds.x, bounds.y + bounds.height) :
+        this.fromItemCoordinates(new annotorious.shape.geom.Point(bounds.x, bounds.y + bounds.height));
+
+    this.editor.setPosition(new annotorious.shape.geom.Point(anchor.x + this._image.offsetLeft,
+        anchor.y + 4 + this._image.offsetTop));
+    this.editor.open(annotation);
 }
 
 /**
@@ -231,12 +240,20 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function(
  * @returns the corresponding item coordinate
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.fromItemCoordinates = function(xy_wh) {
-  var imgSize = goog.style.getSize(this._image);
-  if (xy_wh.width) {
-    return { x: xy_wh.x * imgSize.width, y: xy_wh.y * imgSize.height, width: xy_wh.width * imgSize.width,  height: xy_wh.height * imgSize.height };
-  } else {
-    return { x: xy_wh.x * imgSize.width, y: xy_wh.y * imgSize.height };
-  }
+    var imgSize = goog.style.getSize(this._image);
+    if (xy_wh.width) {
+        return {
+            x: xy_wh.x * imgSize.width,
+            y: xy_wh.y * imgSize.height,
+            width: xy_wh.width * imgSize.width,
+            height: xy_wh.height * imgSize.height
+        };
+    } else {
+        return {
+            x: xy_wh.x * imgSize.width,
+            y: xy_wh.y * imgSize.height
+        };
+    }
 }
 
 /**
@@ -244,7 +261,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.fromItemCoordinates = func
  * @returns {Object} the currently active selector
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.getActiveSelector = function() {
-  return this._currentSelector;
+    return this._currentSelector;
 }
 
 /**
@@ -252,7 +269,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.getActiveSelector = functi
  * @returns {Array.<annotorious.Annotation>} the annotations
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotations = function() {
-  return this._viewer.getAnnotations();
+    return this._viewer.getAnnotations();
 }
 
 /**
@@ -262,7 +279,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotations = function(
  * @return {Array.<annotorious.Annotation>} the annotations sorted by size, smallest first
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotationsAt = function(cx, cy) {
-  return goog.array.clone(this._viewer.getAnnotationsAt(cx, cy));
+    return goog.array.clone(this._viewer.getAnnotationsAt(cx, cy));
 }
 
 /**
@@ -270,49 +287,52 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotationsAt = functio
  * @returns {Array.<Object>} the list of selectors
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAvailableSelectors = function() {
-  return this._selectors;
+    return this._selectors;
 }
 
 /**
  * Returns the image that this annotator is responsible for.
  * @returns {Object} the image
  */
-annotorious.mediatypes.image.ImageAnnotator.prototype.getItem = function() { 
-  return { src: annotorious.mediatypes.image.ImageAnnotator.getItemURL(this._image), element: this._image };
+annotorious.mediatypes.image.ImageAnnotator.prototype.getItem = function() {
+    return {
+        src: annotorious.mediatypes.image.ImageAnnotator.getItemURL(this._image),
+        element: this._image
+    };
 }
 
 /**
  * Helper function that returns the 'URL' of the image. Normally, this will be the
- * 'src' attribute of the <img> tag. But to provide more flexiblity, it is possible to 
- * override this value using the 'data-original' attribute. Only if this attribute 
+ * 'src' attribute of the <img> tag. But to provide more flexiblity, it is possible to
+ * override this value using the 'data-original' attribute. Only if this attribute
  * does not exist, the real 'src' will be returned.
  * @param {Element} item the image DOM element
  * @return {string} the URL
  */
 annotorious.mediatypes.image.ImageAnnotator.getItemURL = function(item) {
-  var src = item.getAttribute('data-original');
-  if (src)
-    return src;
-  else
-    return item.src;
+    var src = item.getAttribute('data-original');
+    if (src)
+        return src;
+    else
+        return item.src;
 }
 
 /**
  * Hides annotations (and all other Annotorious elements).
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.hideAnnotations = function() {
-  goog.style.showElement(this._viewCanvas, false);
+    goog.style.showElement(this._viewCanvas, false);
 }
 
 /**
  * Hides the selection widget, thus preventing users from creating new annotations.
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.hideSelectionWidget = function() {
-  this._selectionEnabled = false;
-  if (this._hint) {
-    this._hint.destroy();
-    delete this._hint;
-  }
+    this._selectionEnabled = false;
+    if (this._hint) {
+        this._hint.destroy();
+        delete this._hint;
+    }
 }
 
 /**
@@ -320,12 +340,12 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.hideSelectionWidget = func
  * @param {Object} selector the selector object
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.setCurrentSelector = function(selector) {
-  this._currentSelector = goog.array.find(this._selectors, function(sel) {
-    return sel.getName() == selector;
-  });
+    this._currentSelector = goog.array.find(this._selectors, function(sel) {
+        return sel.getName() == selector;
+    });
 
-  if (!this._currentSelector)
-    console.log('WARNING: selector "' + selector + '" not available'); 
+    if (!this._currentSelector)
+        console.log('WARNING: selector "' + selector + '" not available');
 }
 
 /**
@@ -334,26 +354,26 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.setCurrentSelector = funct
  * @param {Object} props the properties object
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.setProperties = function(props) {
-  goog.array.forEach(this._selectors, function(selector) {
-    selector.setProperties(props);
-  });
-  this._viewer.redraw();
+    goog.array.forEach(this._selectors, function(selector) {
+        selector.setProperties(props);
+    });
+    this._viewer.redraw();
 }
 
 /**
  * Shows annotations (and all other Annotorious elements).
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.showAnnotations = function() {
-  goog.style.showElement(this._viewCanvas, true);
+    goog.style.showElement(this._viewCanvas, true);
 }
 
 /**
  * Shows the selection widget, thus enabling users to create new annotations.
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.showSelectionWidget = function() {
-  this._selectionEnabled = true;  
-  if (!this._hint)
-    this._hint = new annotorious.Hint(this, this.element);
+    this._selectionEnabled = true;
+    if (!this._hint)
+        this._hint = new annotorious.Hint(this, this.element);
 }
 
 /**
@@ -361,14 +381,14 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.showSelectionWidget = func
  * @param {annotorious.Annotation=} opt_original_annotation the original annotation being edited (if any)
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection = function(opt_original_annotation) {
-   if (annotorious.events.ui.hasMouse)
-     goog.style.showElement(this._editCanvas, false);
+    if (annotorious.events.ui.hasMouse)
+        goog.style.showElement(this._editCanvas, false);
 
-   this._currentSelector.stopSelection();
-   
-   // If this was an edit of an annotation (rather than creation of a new one) re-add to viewer!
-   if (opt_original_annotation)
-     this._viewer.addAnnotation(opt_original_annotation);
+    this._currentSelector.stopSelection();
+
+    // If this was an edit of an annotation (rather than creation of a new one) re-add to viewer!
+    if (opt_original_annotation)
+        this._viewer.addAnnotation(opt_original_annotation);
 }
 
 /**
@@ -378,20 +398,20 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection = function(o
  * @returns the corresponding viewport coordinate
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates = function(xy_wh) {
-  var imgSize = goog.style.getSize(this._image);  
-  if (xy_wh.width) {
+    var imgSize = goog.style.getSize(this._image);
+    if (xy_wh.width) {
         return {
             x: xy_wh.x / imgSize.width,
             y: xy_wh.y / imgSize.height,
             width: xy_wh.width / imgSize.width,
             height: xy_wh.height / imgSize.height
         };
-  } else {
+    } else {
         return {
             x: xy_wh.x / imgSize.width,
             y: xy_wh.y / imgSize.height
         };
-  }
+    }
 }
 
 /** API exports **/
