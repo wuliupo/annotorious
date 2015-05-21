@@ -267,6 +267,7 @@
 }
 
 .annotorious-ol-hint-secondary {
+  cursor: pointer;
   background-color:#fff000;
 }
 
