@@ -5162,6 +5162,7 @@ annotorious.mediatypes.Module = function() {
 };
 annotorious.mediatypes.Module.prototype._initFields = function(a) {
   this._annotators = new goog.structs.Map;
+  this._annotatorsById = new goog.structs.Map;
   this._eventHandlers = [];
   this._plugins = [];
   this._itemsToLoad = [];
@@ -5177,31 +5178,42 @@ annotorious.mediatypes.Module.prototype._getSettings = function(a) {
   b || (b = {hide_selection_widget:!1, hide_annotations:!1}, this._cachedItemSettings.set(a, b));
   return b
 };
+annotorious.mediatypes.Module.prototype._generateId = function() {
+  return this._annotatorsById.getCount() + 1
+};
 annotorious.mediatypes.Module.prototype._initAnnotator = function(a) {
-  var b = this, c = this.getItemURL(a), d = this.newAnnotator(a), e = [], f = [];
-  goog.array.forEach(this._eventHandlers, function(a) {
-    d.addHandler(a.type, a.handler)
-  });
-  goog.array.forEach(this._plugins, function(a) {
-    b._initPlugin(a, d)
-  });
-  goog.array.forEach(this._bufferedForAdding, function(a) {
-    a.src == c && (d.addAnnotation(a), e.push(a))
-  });
-  goog.array.forEach(this._bufferedForRemoval, function(a) {
-    a.src == c && (d.removeAnnotation(a), f.push(a))
-  });
-  goog.array.forEach(e, function(a) {
-    goog.array.remove(b._bufferedForAdding, a)
-  });
-  goog.array.forEach(f, function(a) {
-    goog.array.remove(b._bufferedForRemoval, a)
-  });
-  var g = this._cachedItemSettings.get(c);
-  g ? (g.hide_selection_widget && d.hideSelectionWidget(), g.hide_annotations && d.hideAnnotations(), this._cachedItemSettings.remove(c)) : (this._cachedGlobalSettings.hide_selection_widget && d.hideSelectionWidget(), this._cachedGlobalSettings.hide_annotations && d.hideAnnotations());
-  this._cachedProperties && d.setProperties(this._cachedProperties);
-  this._annotators.set(c, d);
-  goog.array.remove(this._itemsToLoad, a)
+  var b = this, c = this.getItemURL(a), d = this.getItemID(a);
+  if(!("undefined" !== typeof d && this._annotatorsById.get(d))) {
+    var e = this.newAnnotator(a);
+    if("undefined" === typeof d || "" === d) {
+      d = this._generateId(), this.setItemID(a, d)
+    }
+    this._annotatorsById.set(d, e);
+    console.log(d);
+    var f = [], g = [];
+    goog.array.forEach(this._eventHandlers, function(a) {
+      e.addHandler(a.type, a.handler)
+    });
+    goog.array.forEach(this._plugins, function(a) {
+      b._initPlugin(a, e)
+    });
+    goog.array.forEach(this._bufferedForAdding, function(a) {
+      a.src == c && (e.addAnnotation(a), f.push(a))
+    });
+    goog.array.forEach(this._bufferedForRemoval, function(a) {
+      a.src == c && (e.removeAnnotation(a), g.push(a))
+    });
+    goog.array.forEach(f, function(a) {
+      goog.array.remove(b._bufferedForAdding, a)
+    });
+    goog.array.forEach(g, function(a) {
+      goog.array.remove(b._bufferedForRemoval, a)
+    });
+    (d = this._cachedItemSettings.get(c)) ? (d.hide_selection_widget && e.hideSelectionWidget(), d.hide_annotations && e.hideAnnotations(), this._cachedItemSettings.remove(c)) : (this._cachedGlobalSettings.hide_selection_widget && e.hideSelectionWidget(), this._cachedGlobalSettings.hide_annotations && e.hideAnnotations());
+    this._cachedProperties && e.setProperties(this._cachedProperties);
+    this._annotators.set(c, e);
+    goog.array.remove(this._itemsToLoad, a)
+  }
 };
 annotorious.mediatypes.Module.prototype._initPlugin = function(a, b) {
   if(a.onInitAnnotator) {
@@ -8187,6 +8199,12 @@ annotorious.mediatypes.image.ImageAnnotator.getItemURL = function(a) {
   var b = a.getAttribute("data-original");
   return b ? b : a.src
 };
+annotorious.mediatypes.image.ImageAnnotator.getItemID = function(a) {
+  return a.id
+};
+annotorious.mediatypes.image.ImageAnnotator.setItemID = function(a, b) {
+  a.setAttribute("id", "annotorious_" + b.toString())
+};
 annotorious.mediatypes.image.ImageAnnotator.prototype.hideAnnotations = function() {
   goog.style.showElement(this._viewCanvas, !1)
 };
@@ -8235,6 +8253,12 @@ annotorious.mediatypes.image.ImageModule = function() {
 goog.inherits(annotorious.mediatypes.image.ImageModule, annotorious.mediatypes.Module);
 annotorious.mediatypes.image.ImageModule.prototype.getItemURL = function(a) {
   return annotorious.mediatypes.image.ImageAnnotator.getItemURL(a)
+};
+annotorious.mediatypes.image.ImageModule.prototype.getItemID = function(a) {
+  return annotorious.mediatypes.image.ImageAnnotator.getItemID(a)
+};
+annotorious.mediatypes.image.ImageModule.prototype.setItemID = function(a, b) {
+  return annotorious.mediatypes.image.ImageAnnotator.setItemID(a, b)
 };
 annotorious.mediatypes.image.ImageModule.prototype.newAnnotator = function(a) {
   return new annotorious.mediatypes.image.ImageAnnotator(a)

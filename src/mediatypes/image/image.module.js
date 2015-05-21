@@ -24,6 +24,16 @@ annotorious.mediatypes.image.ImageModule.prototype.getItemURL = function(item) {
 }
 
 /** @inheritDoc **/
+annotorious.mediatypes.image.ImageModule.prototype.getItemID = function(item) {
+  return annotorious.mediatypes.image.ImageAnnotator.getItemID(item);
+}
+
+/** @inheritDoc **/
+annotorious.mediatypes.image.ImageModule.prototype.setItemID = function(item, id) {
+  return annotorious.mediatypes.image.ImageAnnotator.setItemID(item, id);
+}
+
+/** @inheritDoc **/
 annotorious.mediatypes.image.ImageModule.prototype.newAnnotator = function(item) {
   return new annotorious.mediatypes.image.ImageAnnotator(item);
 }

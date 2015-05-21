@@ -30,6 +30,9 @@ annotorious.mediatypes.Module.prototype._initFields = function(opt_preload_fn) {
     this._annotators = new goog.structs.Map();
 
     /** @private **/
+    this._annotatorsById = new goog.structs.Map();
+
+    /** @private **/
     this._eventHandlers = [];
 
     /** @private **/
@@ -79,18 +82,33 @@ annotorious.mediatypes.Module.prototype._getSettings = function(item_url) {
     return settings;
 }
 
+annotorious.mediatypes.Module.prototype._generateId = function() {
+  return this._annotatorsById.getCount() + 1;
+}
+
 /**
  * @private
  */
 annotorious.mediatypes.Module.prototype._initAnnotator = function(item) {
     var self = this,
-        item_src = this.getItemURL(item);
+        item_src = this.getItemURL(item),
+        item_id = this.getItemID(item);
 
-    // Guard condition: don't make items annotatable if they already are  
-    //if (this._annotators.get(item_src))
-    //    return;
+    // Guard condition: don't make items annotatable if they already are
+    if (typeof item_id !== 'undefined' && this._annotatorsById.get(item_id))
+    return;
 
     var annotator = this.newAnnotator(item);
+
+    if (typeof item_id === 'undefined' || item_id === ""){
+        item_id = this._generateId();
+
+        this.setItemID(item, item_id)
+    }
+
+    this._annotatorsById.set(item_id, annotator);
+
+    console.log(item_id);
 
     // Keep track of changes
     var addedAnnotations = [];
@@ -549,6 +567,20 @@ annotorious.mediatypes.Module.prototype.showSelectionWidget = function(opt_item_
  * @return {string} the URL
  */
 annotorious.mediatypes.Module.prototype.getItemURL = goog.abstractMethod;
+
+/**
+ * Returns the identifying ID of the specified item.
+ * @param {Element} item the item.
+ * @return {number} the ID
+ */
+annotorious.mediatypes.Module.prototype.getItemID = goog.abstractMethod;
+
+/**
+ * Set the identifying ID of the specified item.
+ * @param {Element} item the item.
+ * @param {number} ID of the item
+ */
+annotorious.mediatypes.Module.prototype.setItemID = goog.abstractMethod;
 
 /**
  * Returns a new annotator for the specified item.

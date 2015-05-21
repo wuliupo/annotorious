@@ -30,6 +30,9 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
     /** The container DOM element (DIV) for the annotation layer **/
     this.element;
 
+    /** The id for this annotator **/
+    this.id;
+
     /** The editor for this annotator (public for use by plugins) **/
     this.editor;
 
@@ -315,6 +318,26 @@ annotorious.mediatypes.image.ImageAnnotator.getItemURL = function(item) {
         return src;
     else
         return item.src;
+}
+
+/**
+ * Helper function that returns the id associated with the image.
+ * @param {Element} item the image DOM element
+ * @return {number} the ID
+ */
+annotorious.mediatypes.image.ImageAnnotator.getItemID = function(item) {
+    return item.id;
+}
+
+/**
+ * Helper function that sets the id associated with an image.
+ * @param {Element} item the image DOM element
+ * @param {number} id for the image
+ * @return void
+ */
+annotorious.mediatypes.image.ImageAnnotator.setItemID = function(item, id) {
+    item.setAttribute("id", 'annotorious_' + id.toString());
+    return;
 }
 
 /**
