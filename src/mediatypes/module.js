@@ -87,8 +87,8 @@ annotorious.mediatypes.Module.prototype._initAnnotator = function(item) {
         item_src = this.getItemURL(item);
 
     // Guard condition: don't make items annotatable if they already are  
-    if (this._annotators.get(item_src))
-        return;
+    //if (this._annotators.get(item_src))
+    //    return;
 
     var annotator = this.newAnnotator(item);
 
