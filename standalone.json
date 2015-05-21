@@ -22,6 +22,6 @@
   ],
   "mode": "ADVANCED",      // "RAW" or "ADVANCED"
   "level": "DEFAULT",      // "DEFAULT" or "VERBOSE"
-  "pretty-print": false,
+  "pretty-print": true,
   "debug": false
 }
