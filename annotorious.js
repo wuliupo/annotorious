@@ -8016,7 +8016,7 @@ annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(a) {
   goog.array.forEach(this._annotations, function(a) {
     d.push(c._shapes[annotorious.shape.hashCode(a.shapes[0])])
   });
-  c.glow(d, a)
+  0 < d.length && c.glow(d, a)
 };
 annotorious.events.ui = {};
 annotorious.events.ui.hasTouch = "ontouchstart" in window;
