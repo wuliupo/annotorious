@@ -50,7 +50,7 @@ annotorious.mediatypes.image.Viewer = function(canvas, annotator) {
         }
         else {
             if (!self._annotator.selectionEnabled()) {
-                self._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, self._currentAnnotation);
+                self._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, self._annotator);
             }
         }
     });

@@ -7895,7 +7895,7 @@ annotorious.mediatypes.image.Viewer = function(a, c) {
     d._eventsEnabled ? d._onMouseMove(a) : d._cachedMouseEvent = a
   });
   goog.events.listen(this._canvas, annotorious.events.ui.EventType.DOWN, function() {
-    void 0 !== d._currentAnnotation && !1 != d._currentAnnotation ? d._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, d._currentAnnotation) : d._annotator.selectionEnabled() || d._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, d._currentAnnotation)
+    void 0 !== d._currentAnnotation && !1 != d._currentAnnotation ? d._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, d._currentAnnotation) : d._annotator.selectionEnabled() || d._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, d._annotator)
   });
   c.addHandler(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM, function() {
     delete d._currentAnnotation;
@@ -8802,7 +8802,6 @@ annotorious.Annotorious.prototype.activateSelector = function(a, c) {
   }
 };
 annotorious.Annotorious.prototype.addAnnotation = function(a, c) {
-  a.src = annotorious.dom.toAbsoluteURL(a.src);
   var d = this._getModuleForItemSrc(a.src);
   d && d.addAnnotation(a, c)
 };
