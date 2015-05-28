@@ -232,7 +232,7 @@ annotorious.mediatypes.image.Viewer.prototype._onMouseMove = function(event) {
             this._currentAnnotation = topAnnotation;
             this.redraw();
             this._annotator.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATION, {
-                annotation: this._currentAnnotation,
+                'annotation': self._currentAnnotation,
                 mouseEvent: event
             });
         } else if (this._currentAnnotation != topAnnotation) {
