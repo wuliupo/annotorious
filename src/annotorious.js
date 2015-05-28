@@ -378,6 +378,18 @@ annotorious.Annotorious.prototype.setProperties = function(props) {
 }
 
 /**
+ * Set the annotated item to be highlighted
+ * @param {string} item_url the URL of the item on which to set the selector
+ */
+annotorious.Annotorious.prototype.redrawGlow = function(item_url, time) {
+    if (item_url) {
+        var module = this._getModuleForItemSrc(item_url);
+        if (module)
+            module.redrawGlow(item_url, time);
+    } 
+}
+
+/**
  * Enables (or disables) the ability to create new annotations on an annotatable item.
  * @param {boolean} enabled if true, new annotations can be created
  *

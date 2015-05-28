@@ -437,7 +437,14 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates = functi
     }
 }
 
+/**
+ */
+annotorious.mediatypes.image.ImageAnnotator.prototype.redrawGlow = function(time) {
+    this._viewer.redrawGlow(time);
+}
+
 /** API exports **/
+annotorious.mediatypes.image.ImageAnnotator.prototype['redrawGlow'] = annotorious.mediatypes.image.ImageAnnotator.prototype.redrawGlow;
 annotorious.mediatypes.image.ImageAnnotator.prototype['addSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.addSelector;
 annotorious.mediatypes.image.ImageAnnotator.prototype['stopSelection'] = annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection;
 annotorious.mediatypes.image.ImageAnnotator.prototype['fireEvent'] = annotorious.mediatypes.image.ImageAnnotator.prototype.fireEvent;

@@ -281,3 +281,114 @@ annotorious.mediatypes.image.Viewer.prototype.redraw = function() {
         // TODO Orientation check - what if the popup would be outside the viewport?
     }
 }
+
+
+//Helper function for redrawGlow. Takes care of animation.
+
+annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
+    g2d = this._g2d;
+    var self = this;
+
+    var selector = goog.array.find(this._annotator.getAvailableSelectors(), function(selector) {
+        return selector.getSupportedShapeType() == shapes[0].type;
+    });
+
+    var properties = selector.getProperties();
+
+    var blur = 0,
+        opacity = 0,
+        is_blur_inc = true;
+
+    var continueAnimating = true;
+    //set the focus during glow
+    goog.dom.classes.addRemove(self._canvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
+    setTimeout(function() {
+        continueAnimating = false;
+        self.redraw();
+        goog.dom.classes.addRemove(self._canvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+    }, time);
+
+    function convertHex(hex, opacity) {
+        hex = hex.replace('#', '');
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+
+        result = [r, g, b];
+        return result;
+    }
+    //colour that will glow
+    colour_in_rgb = convertHex(properties['hi_stroke']);
+
+    //curently draws three things
+    //1) a black border
+    //2) a white stroke that has opacity = 1
+    //3) a stroke with a colour defined above, that will oscillate in opacity
+    function animate() {
+        if (continueAnimating) {
+            g2d.clearRect(0, 0, self._canvas.width, self._canvas.height);
+
+            for (var i = shapes.length - 1; i >= 0; i--) {
+                geom = shapes[i].geometry;
+
+                g2d.beginPath();
+
+                //Border doesn't change
+                g2d.lineJoin = "round";
+                g2d.lineWidth = properties['outline_width'];
+                g2d.strokeStyle = properties['outline'];
+                g2d.strokeRect(
+                    geom.x + properties['outline_width'] / 2,
+                    geom.y + properties['outline_width'] / 2,
+                    geom.width - properties['outline_width'],
+                    geom.height - properties['outline_width']
+                );
+                //White stroke beneath the animated coloured one
+                g2d.lineJoin = "miter";
+                g2d.lineWidth = properties['stroke_width'];
+                g2d.strokeStyle = 'rgb(255,255,255)';
+                g2d.strokeRect(
+                    geom.x + properties['outline_width'] + properties['stroke_width'] / 2,
+                    geom.y + properties['outline_width'] + properties['stroke_width'] / 2,
+                    geom.width - properties['outline_width'] * 2 - properties['stroke_width'],
+                    geom.height - properties['outline_width'] * 2 - properties['stroke_width']
+                );
+
+                g2d.lineJoin = "miter";
+                g2d.lineWidth = properties['hi_stroke_width'];
+                g2d.strokeStyle = 'rgba(' + colour_in_rgb[0] + ',' + colour_in_rgb[1] + ',' + colour_in_rgb[2] + ',' + opacity + ')';
+                g2d.strokeRect(
+                    geom.x + properties['outline_width'] + properties['hi_stroke_width'] / 2,
+                    geom.y + properties['outline_width'] + properties['hi_stroke_width'] / 2,
+                    geom.width - properties['outline_width'] * 2 - properties['hi_stroke_width'],
+                    geom.height - properties['outline_width'] * 2 - properties['hi_stroke_width']
+                );
+
+                g2d.closePath();
+            };
+            //size of steps to oscillate opacity by
+            opacity = (is_blur_inc) ? (opacity + 0.025) : (opacity - 0.025);
+
+            if (opacity <= 0) is_blur_inc = true;
+            else if (opacity >= 1) is_blur_inc = false;
+
+            requestAnimationFrame(animate);
+        }
+    }
+
+    return requestAnimationFrame(animate);
+}
+
+//Set the annotations to glow for a given time.
+//* @param {number=} milliseconds where annotations will glow
+
+annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(time) {
+    var self = this;
+    var shapes = [];
+    goog.array.forEach(this._annotations, function(annotation) {
+        shapes.push(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])])
+    })
+
+    var glowAnimation = self.glow(shapes, time);
+
+}

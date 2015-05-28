@@ -17,7 +17,7 @@ annotorious.plugins.selection.RectDragSelector = function() { }
  */
 annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotator, canvas) {
   /** @private **/
-  this._OUTLINE = '#000000';
+  this._OUTLINE = '#111111';
 
   /** @private **/
   this._STROKE = '#ffffff';
@@ -26,10 +26,10 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotat
   this._FILL = false;
   
   /** @private **/
-  this._HI_OUTLINE = '#000000';
+  this._HI_OUTLINE = '#111111';
 
   /** @private **/
-  this._HI_STROKE = '#fff000';
+  this._HI_STROKE = '#FFDC00';
   
   /** @private **/
   this._HI_FILL = false;
@@ -157,6 +157,25 @@ annotorious.plugins.selection.RectDragSelector.prototype.getName = function() {
  */
 annotorious.plugins.selection.RectDragSelector.prototype.getSupportedShapeType = function() {
   return annotorious.shape.ShapeType.RECTANGLE;
+}
+
+/**
+ * Gets the properties on this selector.
+ */
+annotorious.plugins.selection.RectDragSelector.prototype.getProperties = function() {
+
+    return {
+        outline: this._OUTLINE,
+        stroke: this._STROKE,
+        fill: this._FILL,
+        hi_outline: this._HI_OUTLINE,
+        hi_stroke: this._HI_STROKE,
+        hi_fill: this._HI_FILL,
+        outline_width: this._OUTLINE_WIDTH,
+        stroke_width: this._STROKE_WIDTH,
+        hi_outline_width: this._HI_OUTLINE_WIDTH,
+        hi_stroke_width: this._HI_STROKE_WIDTH
+    }
 }
 
 /**

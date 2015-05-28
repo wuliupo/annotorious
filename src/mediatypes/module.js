@@ -543,6 +543,19 @@ annotorious.mediatypes.Module.prototype.setProperties = function(props) {
 }
 
 /**
+ * Sets a highlight on a particular item. Useful to make it clear that it is annotable.
+ * @param {string} item_url the URL of the item on which to set the highlight
+ */
+annotorious.mediatypes.Module.prototype.redrawGlow = function(item_url, time) {
+    if (item_url) {
+        var annotator = this._annotators.get(item_url);
+        if (annotator) {
+            annotator.redrawGlow(time);
+        } 
+    }
+}
+
+/**
  * Shows existing annotations on all, or a specific item.
  * @param {string} opt_item_url the URL of the item
  */

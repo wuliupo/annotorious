@@ -19,6 +19,7 @@ annotorious.Annotorious.prototype['setActiveSelector'] = annotorious.Annotorious
 annotorious.Annotorious.prototype['setProperties'] = annotorious.Annotorious.prototype.setProperties;
 annotorious.Annotorious.prototype['showAnnotations'] = annotorious.Annotorious.prototype.showAnnotations;
 annotorious.Annotorious.prototype['showSelectionWidget'] = annotorious.Annotorious.prototype.showSelectionWidget;
+annotorious.Annotorious.prototype['redrawGlow'] = annotorious.Annotorious.prototype.redrawGlow;
 
 /** Sets up the plugin namespace */
 if (!window['annotorious'])
