@@ -389,6 +389,8 @@ annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(time) {
         shapes.push(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])])
     })
 
+    if(shapes.length > 0){
     var glowAnimation = self.glow(shapes, time);
+    }
 
 }
