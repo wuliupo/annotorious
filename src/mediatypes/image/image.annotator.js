@@ -359,6 +359,13 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.hideSelectionWidget = func
 }
 
 /**
+* returns true if selection is enabled. false otherwise
+*/
+annotorious.mediatypes.image.ImageAnnotator.prototype.selectionEnabled = function() {
+    return this._selectionEnabled;
+}
+
+/**
  * Sets the active selector for this item to the specified selector.
  * @param {Object} selector the selector object
  */

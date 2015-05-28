@@ -4484,7 +4484,7 @@ annotorious.events.EventBroker.prototype.fireEvent = function(a, c, d) {
   return e
 };
 annotorious.events.EventType = {MOUSE_OVER_ANNOTATABLE_ITEM:"onMouseOverItem", MOUSE_OUT_OF_ANNOTATABLE_ITEM:"onMouseOutOfItem", MOUSE_OVER_ANNOTATION:"onMouseOverAnnotation", MOUSE_OUT_OF_ANNOTATION:"onMouseOutOfAnnotation", SELECTION_STARTED:"onSelectionStarted", SELECTION_CANCELED:"onSelectionCanceled", SELECTION_COMPLETED:"onSelectionCompleted", SELECTION_CHANGED:"onSelectionChanged", EDITOR_SHOWN:"onEditorShown", POPUP_SHOWN:"onPopupShown", BEFORE_POPUP_HIDE:"beforePopupHide", BEFORE_ANNOTATION_REMOVED:"beforeAnnotationRemoved", 
-ANNOTATION_REMOVED:"onAnnotationRemoved", ANNOTATION_CREATED:"onAnnotationCreated", ANNOTATION_UPDATED:"onAnnotationUpdated", ANNOTATION_CLICKED:"onAnnotationClicked"};
+ANNOTATION_REMOVED:"onAnnotationRemoved", ANNOTATION_CREATED:"onAnnotationCreated", ANNOTATION_UPDATED:"onAnnotationUpdated", ANNOTATION_CLICKED:"onAnnotationClicked", NON_ANNOTATION_NON_EDITABLE_CLICKED:"onNonAnnotationNonEditableClicked"};
 goog.iter = {};
 goog.iter.StopIteration = "StopIteration" in goog.global ? goog.global.StopIteration : Error("StopIteration");
 goog.iter.Iterator = function() {
@@ -7895,7 +7895,7 @@ annotorious.mediatypes.image.Viewer = function(a, c) {
     d._eventsEnabled ? d._onMouseMove(a) : d._cachedMouseEvent = a
   });
   goog.events.listen(this._canvas, annotorious.events.ui.EventType.DOWN, function() {
-    void 0 !== d._currentAnnotation && !1 != d._currentAnnotation && d._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, d._currentAnnotation)
+    void 0 !== d._currentAnnotation && !1 != d._currentAnnotation ? d._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, d._currentAnnotation) : d._annotator.selectionEnabled() || d._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, d._currentAnnotation)
   });
   c.addHandler(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM, function() {
     delete d._currentAnnotation;
@@ -8257,6 +8257,9 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.hideAnnotations = function
 annotorious.mediatypes.image.ImageAnnotator.prototype.hideSelectionWidget = function() {
   this._selectionEnabled = !1;
   this._hint && (this._hint.destroy(), delete this._hint)
+};
+annotorious.mediatypes.image.ImageAnnotator.prototype.selectionEnabled = function() {
+  return this._selectionEnabled
 };
 annotorious.mediatypes.image.ImageAnnotator.prototype.setCurrentSelector = function(a) {
   (this._currentSelector = goog.array.find(this._selectors, function(c) {

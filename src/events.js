@@ -143,6 +143,11 @@ annotorious.events.EventType = {
   /**
    * The annotation was clicked.  Pass the annotation object.
    */
-  ANNOTATION_CLICKED: 'onAnnotationClicked'
+  ANNOTATION_CLICKED: 'onAnnotationClicked',
+
+  /**
+  * A click was registered in a region which is non-editable and not an annotation
+  */
+  NON_ANNOTATION_NON_EDITABLE_CLICKED: 'onNonAnnotationNonEditableClicked'
   
 };

@@ -48,6 +48,11 @@ annotorious.mediatypes.image.Viewer = function(canvas, annotator) {
         if (self._currentAnnotation !== undefined && self._currentAnnotation != false) {
             self._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, self._currentAnnotation);
         }
+        else {
+            if (!self._annotator.selectionEnabled()) {
+                self._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, self._currentAnnotation);
+            }
+        }
     });
 
     annotator.addHandler(annotorious.events.EventType.MOUSE_OUT_OF_ANNOTATABLE_ITEM, function(event) {
@@ -390,7 +395,7 @@ annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(time) {
     })
 
     if(shapes.length > 0){
-    var glowAnimation = self.glow(shapes, time);
+        var glowAnimation = self.glow(shapes, time);
     }
 
 }
