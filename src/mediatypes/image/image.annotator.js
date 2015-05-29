@@ -106,7 +106,14 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
     this._currentSelector = default_selector;
 
     this.editor = new annotorious.Editor(this);
-    this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this);
+    // DANGER DANGER HIGH VOLTAGE
+    // TODO HAVE A LOOK
+
+    //We pass edit canvas to the image.Viewer to capture click events on movile, this might break editing capabilities on mobile
+
+    var activeCanvas = (annotorious.events.ui.hasTouch) ? this._editCanvas : this._viewCanvas;
+
+    this._viewer = new annotorious.mediatypes.image.Viewer(activeCanvas, this);
     this._hint = new annotorious.Hint(this, this.element);
 
     var self = this;
@@ -129,7 +136,6 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
         });
     }
 
-    var activeCanvas = (annotorious.events.ui.hasTouch) ? this._editCanvas : this._viewCanvas;
     this._attachListener(activeCanvas);
 
     this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_COMPLETED, function(event) {

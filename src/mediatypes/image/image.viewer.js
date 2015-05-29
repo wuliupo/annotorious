@@ -44,7 +44,7 @@ annotorious.mediatypes.image.Viewer = function(canvas, annotator) {
         }
     });
 
-    goog.events.listen(this._canvas, annotorious.events.ui.EventType.DOWN, function(event) {
+    goog.events.listen(this._canvas, annotorious.events.ui.EventType.CLICK, function(event) {
         if (self._currentAnnotation !== undefined && self._currentAnnotation != false) {
             self._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, self._currentAnnotation);
         }

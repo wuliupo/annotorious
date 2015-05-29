@@ -104,6 +104,8 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
   });
 
   this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function(event) {
+
+    console.log('annotorious.events.ui.EventType.UP');
     var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
     var shape = self.getShape();
     event = (event.event_) ? event.event_ : event;
@@ -112,7 +114,7 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
     if (shape) {
       self._detachListeners();
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_COMPLETED,
-        { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds(), annotorious: self._annotator }); 
+        { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds(), 'annotorious': self._annotator, 'image': self._annotator._image }); 
     } else {
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
 
