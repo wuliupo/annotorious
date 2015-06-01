@@ -105,7 +105,6 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
 
   this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function(event) {
 
-    console.log('annotorious.events.ui.EventType.UP');
     var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
     var shape = self.getShape();
     event = (event.event_) ? event.event_ : event;

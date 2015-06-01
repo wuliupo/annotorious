@@ -108,8 +108,6 @@ annotorious.mediatypes.Module.prototype._initAnnotator = function(item) {
 
     this._annotatorsById.set(item_id, annotator);
 
-    console.log(item_id);
-
     // Keep track of changes
     var addedAnnotations = [];
     var removedAnnotations = [];

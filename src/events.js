@@ -148,6 +148,12 @@ annotorious.events.EventType = {
   /**
   * A click was registered in a region which is non-editable and not an annotation
   */
-  NON_ANNOTATION_NON_EDITABLE_CLICKED: 'onNonAnnotationNonEditableClicked'
+  NON_ANNOTATION_NON_EDITABLE_CLICKED: 'onNonAnnotationNonEditableClicked',
+
+  /**
+  * A long click on an annotation (can only fired when annotorious.events.ui.hasMouse is false)
+  * used to open annotations with files or links on mobile
+  */
+  ANNOTATION_CLICKED_LONG: 'onAnnotationClickedLong'
   
 };

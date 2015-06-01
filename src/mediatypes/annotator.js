@@ -52,9 +52,18 @@ annotorious.mediatypes.Annotator.prototype.stopSelection = function(original_ann
 
 annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanvas) {
   var self = this;
-  goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function(event) {
 
-    console.log('nnotorious.events.ui.EventType.DOWN');
+  //timer for long click detection on mobile
+  self.clickTimer = null;
+
+  //long click detection (resets when up, stop the timeout)
+  goog.events.listen(activeCanvas, annotorious.events.ui.EventType.UP, function(event) {
+      clearTimeout(this.clickTimer);
+  });
+
+
+
+  goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function(event) {
 
     var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
     self._viewer.highlightAnnotation(false);
@@ -65,8 +74,13 @@ annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanv
       self._currentSelector.startSelection(coords.x, coords.y);
 		} else {
 			var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
-			if (annotations.length > 0)
+			if (annotations.length > 0){
 				self._viewer.highlightAnnotation(annotations[0]);
+      }
+      // fire long click if down for 200 milli secondsw
+      if (!annotorious.events.ui.hasMouse) {
+        this.clickTimer = setTimeout(function(){ self.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, annotations[0]); }, 200 );
+      }
 		}
 	});
 }
