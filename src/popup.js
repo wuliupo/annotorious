@@ -73,7 +73,7 @@ annotorious.Popup = function(annotator) {
     }
   });
 
-  if (annotorious.events.ui.hasMouse) {  
+  if (annotorious.events.ui.hasMouse) {
     goog.events.listen(this.element, goog.events.EventType.MOUSEOVER, function(event) {
       window.clearTimeout(self._buttonHideTimer);
       if (goog.style.getStyle(self._buttons, 'opacity') < 0.9)

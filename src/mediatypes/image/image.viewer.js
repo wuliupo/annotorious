@@ -161,7 +161,6 @@ annotorious.mediatypes.image.Viewer.prototype.highlightAnnotation = function(opt
         this._keepHighlighted = true;
     else
         this._annotator.popup.startHideTimer();
-
     this.redraw();
     this._eventsEnabled = true;
 }

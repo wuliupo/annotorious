@@ -29,9 +29,9 @@
   background-color:rgba(0,0,0,0.5);
   margin:4px;
   padding:8px 15px 8px 30px;
-  font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;
+  font-family: open-sans,Helvetica,Arial,sans-serif;
   line-height: normal;
-  font-size:12px;
+  font-size:14px;
   color:#fff;
   border-radius:4px;
   -moz-border-radius:4px;
@@ -41,20 +41,21 @@
 
 .annotorious-hint-icon {
   position:absolute;
-  top:6px;
+  top:10px;
   left: 5px;
-  background:url('feather_icon.png');
+  background:url('selection_icon.png');
   background-repeat:no-repeat;
-  width:19px;
-  height:22px;
+  width:20px;
+  height:20px;
   margin:2px 4px 0px 6px;
+  background-size: 20px,20px;
 }
 
 /** Popup **/
 
 .annotorious-popup {
   line-height:135%;
-  font-family:Arial, Verdana, Sans;
+  font-family:open-sans,Helvetica,Arial,sans-serif;
   font-size:12px;
   text-align: left;
   color:#000;
@@ -110,7 +111,7 @@
 }
 
 .annotorious-popup-button {
-  font-size:10px;
+  font-size:12px;
   text-decoration:none;
   display:inline-block;
   color:#000;
@@ -163,6 +164,30 @@
   padding-top:2px;
 }
 
+/*Tooltip*/
+
+/*.top-left:after, .annotorious-editor:after {
+  content:url(Indicator.png);
+  pointer-events: none;
+  position:absolute;
+  left:15px;
+  top:-14px;
+  height:18px;
+  width:19px;
+  display:block;
+}
+
+.top-right:after {
+  content:url(Indicator.png);
+  pointer-events: none;
+  position:absolute;
+  right:15px;
+  top:-14px;
+  height:18px;
+  width:19px;
+  display:block;  
+}*/
+
 /** Editor **/
 
 .annotorious-editor {
@@ -190,8 +215,8 @@
   width:240px;
   height:50px;
   outline:none;
-  font-family:Verdana, Arial;
-  font-size:11px;
+  font-family:open-sans,Helvetica,Arial,sans-serif;
+  font-size:14px;
   padding:4px;
   margin:0px;  
   color:#000;
@@ -210,8 +235,8 @@
   display:inline-block;
   text-align:center;
   text-decoration:none;
-  font-family:Verdana, Arial;
-  font-size:10px;	
+  font-family:open-sans,Helvetica,Arial,sans-serif;
+  font-size:12px;	
   border:1px solid #777;
   color:#ddd;
   padding:3px 8px;
@@ -236,7 +261,7 @@
   margin:0px;
   background-color:#fff;
   padding:3px;
-  font-family:Verdana, Arial;
+  font-family:open-sans,Helvetica,Arial,sans-serif;
   font-size:12px;	
 }
 
@@ -255,7 +280,7 @@
 
 .annotorious-ol-hint {
   line-height: normal;
-  font-family:Arial, Verdana, Sans;
+  font-family:open-sans,Helvetica,Arial,sans-serif;
   font-size:16px;
   color:#000;
   background-color:#fff;
