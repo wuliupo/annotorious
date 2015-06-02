@@ -7881,9 +7881,10 @@ annotorious.mediatypes.Annotator.prototype._attachListener = function(a) {
     d = annotorious.events.ui.sanitizeCoordinates(d, a);
     c._viewer.highlightAnnotation(!1);
     var e = c._viewer.getAnnotationsAt(d.x, d.y);
-    c._selectionEnabled && 0 === e.length ? (goog.style.showElement(c._editCanvas, !0), c._currentSelector.startSelection(d.x, d.y)) : (e = c._viewer.getAnnotationsAt(d.x, d.y), 0 < e.length && c._viewer.highlightAnnotation(e[0]), annotorious.events.ui.hasMouse || (this.clickTimer = setTimeout(function() {
-      c.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, e[0])
-    }, 200)))
+    c._selectionEnabled && 0 === e.length ? (goog.style.showElement(c._editCanvas, !0), c._currentSelector.startSelection(d.x, d.y)) : (e = c._viewer.getAnnotationsAt(d.x, d.y), 0 < e.length && c._viewer.highlightAnnotation(e[0]));
+    0 !== e.length && !annotorious.events.ui.hasMouse && (this.clickTimer = setTimeout(function() {
+      c._viewer._annotator._eventBroker.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, e[0])
+    }, 200))
   })
 };
 annotorious.mediatypes.image = {};

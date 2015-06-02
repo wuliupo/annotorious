@@ -61,26 +61,28 @@ annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanv
       clearTimeout(this.clickTimer);
   });
 
-
-
   goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function(event) {
 
     var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
     self._viewer.highlightAnnotation(false);
     var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
 
-		if (self._selectionEnabled && annotations.length === 0) {
-      goog.style.showElement(self._editCanvas, true);      
-      self._currentSelector.startSelection(coords.x, coords.y);
-		} else {
-			var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
-			if (annotations.length > 0){
-				self._viewer.highlightAnnotation(annotations[0]);
-      }
-      // fire long click if down for 200 milli secondsw
-      if (!annotorious.events.ui.hasMouse) {
-        this.clickTimer = setTimeout(function(){ self.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, annotations[0]); }, 200 );
-      }
-		}
+        if (self._selectionEnabled && annotations.length === 0) {
+            goog.style.showElement(self._editCanvas, true);
+            self._currentSelector.startSelection(coords.x, coords.y);
+        } else {
+            var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
+            if (annotations.length > 0) {
+                self._viewer.highlightAnnotation(annotations[0]);
+            }
+        }
+        if (annotations.length !== 0) {
+            // fire long click if down for 200 milli secondsw
+            if (!annotorious.events.ui.hasMouse) {
+                this.clickTimer = setTimeout(function() {
+                    self._viewer._annotator._eventBroker.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, annotations[0]);
+                }, 200);
+            }
+        }
 	});
 }
