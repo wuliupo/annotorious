@@ -7698,7 +7698,7 @@ annotorious.Editor.prototype.addField = annotorious.Editor.prototype.addField;
 annotorious.Editor.prototype.getAnnotation = annotorious.Editor.prototype.getAnnotation;
 annotorious.Hint = function(a, c, d) {
   var e = this;
-  d || (d = "Click and Drag to Annotate");
+  d || (d = "Annotatable");
   this.element = goog.soy.renderAsElement(annotorious.templates.image.hint, {msg:d});
   this._annotator = a;
   this._message = goog.dom.query(".annotorious-hint-msg", this.element)[0];
@@ -7744,12 +7744,6 @@ annotorious.Hint.prototype.hide = function() {
   goog.style.setOpacity(this._message, 0)
 };
 annotorious.Hint.prototype.destroy = function() {
-  this._detachListeners();
-  delete this._mouseOverListener;
-  delete this._mouseOutListener;
-  delete this._overItemHandler;
-  delete this._outOfItemHandler;
-  goog.dom.removeNode(this.element)
 };
 annotorious.Popup = function(a) {
   this.element = goog.soy.renderAsElement(annotorious.templates.popup);
@@ -8025,7 +8019,7 @@ annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(a) {
   0 < d.length && c.glow(d, a)
 };
 annotorious.events.ui = {};
-annotorious.events.ui.hasTouch = "ontouchstart" in window;
+annotorious.events.ui.hasTouch = navigator.userAgent && -1 < navigator.userAgent.indexOf("Win") && -1 < navigator.userAgent.indexOf("Chrome") ? !1 : "ontouchstart" in window;
 annotorious.events.ui.hasMouse = !annotorious.events.ui.hasTouch;
 annotorious.events.ui.EventType = {DOWN:annotorious.events.ui.hasTouch ? goog.events.EventType.TOUCHSTART : goog.events.EventType.MOUSEDOWN, OVER:annotorious.events.ui.hasTouch ? "touchenter" : goog.events.EventType.MOUSEOVER, MOVE:annotorious.events.ui.hasTouch ? goog.events.EventType.TOUCHMOVE : goog.events.EventType.MOUSEMOVE, UP:annotorious.events.ui.hasTouch ? goog.events.EventType.TOUCHEND : goog.events.EventType.MOUSEUP, OUT:annotorious.events.ui.hasTouch ? "touchleave" : goog.events.EventType.MOUSEOUT, 
 CLICK:annotorious.events.ui.hasTouch ? goog.events.EventType.TOUCHEND : goog.events.EventType.CLICK};

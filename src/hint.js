@@ -16,7 +16,7 @@ annotorious.Hint = function(annotator, parent, opt_msg) {
   var self = this;
 
   if (!opt_msg)
-    opt_msg = 'Click and Drag to Annotate';
+    opt_msg = 'Annotatable';
 
   this.element = goog.soy.renderAsElement(annotorious.templates.image.hint, { msg: opt_msg });
 
@@ -111,10 +111,10 @@ annotorious.Hint.prototype.hide = function() {
  * Destroys the hint element, removing it from the DOM.
  */
 annotorious.Hint.prototype.destroy = function() {
-  this._detachListeners();
-  delete this._mouseOverListener;
-  delete this._mouseOutListener;
-  delete this._overItemHandler;
-  delete this._outOfItemHandler;
-  goog.dom.removeNode(this.element);
+  //this._detachListeners();
+  //delete this._mouseOverListener;
+  //delete this._mouseOutListener;
+  //delete this._overItemHandler;
+  //delete this._outOfItemHandler;
+  //goog.dom.removeNode(this.element);
 }

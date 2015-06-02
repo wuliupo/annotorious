@@ -20,19 +20,19 @@
 }
 
 .annotorious-item-unfocus {
-  opacity:0.6;
+  opacity:0;
 }
 
 /** Hint/help popup **/
 
 .annotorious-hint-msg {
-  background-color:rgba(0,0,0,0.5);
-  margin:4px;
-  padding:8px 15px 8px 30px;
+  background-color: #9C9DA1;
+  margin: 5px;
+  padding: 10px 8px 14px 38px;
   font-family: open-sans,Helvetica,Arial,sans-serif;
   line-height: normal;
-  font-size:14px;
-  color:#fff;
+  font-size: 14px;
+  color: #fff;
   border-radius:4px;
   -moz-border-radius:4px;
   -webkit-border-radius:4px;
@@ -40,15 +40,15 @@
 }
 
 .annotorious-hint-icon {
-  position:absolute;
-  top:10px;
-  left: 5px;
-  background:url('selection_icon.png');
-  background-repeat:no-repeat;
-  width:20px;
-  height:20px;
-  margin:2px 4px 0px 6px;
-  background-size: 20px,20px;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+  background: url('selection_icon.png');
+  background-repeat: no-repeat;
+  width: 36px;
+  height: 36px;
+  margin: 2px 4px 0px 6px;
+  background-size: 36px,36px;
 }
 
 /** Popup **/
@@ -118,7 +118,6 @@
   font-weight:bold;
   margin-left:5px;
   opacity:0.4;
-  
   -moz-transition-property: opacity;
   -moz-transition-duration: 0.5s;
   -moz-transition-delay: 0s;
