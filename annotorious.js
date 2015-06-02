@@ -5284,6 +5284,11 @@ annotorious.mediatypes.Module.prototype.annotatesItem = function(a) {
   });
   return goog.isDefAndNotNull(d)
 };
+annotorious.mediatypes.Module.prototype.getItems = function() {
+  goog.array.forEach(this._annotatorsById.getValues(), function(a) {
+    console.log(a)
+  })
+};
 annotorious.mediatypes.Module.prototype.destroy = function(a) {
   if(a) {
     var c = this._annotators.get(a);
@@ -8820,6 +8825,11 @@ annotorious.Annotorious.prototype.addPlugin = function(a, c) {
     console.log("Could not load plugin: " + a)
   }
 };
+annotorious.Annotorious.prototype.getItems = function() {
+  goog.array.forEach(this._modules, function(a) {
+    a.getItems()
+  })
+};
 annotorious.Annotorious.prototype.destroy = function(a) {
   if(a) {
     var c = this._getModuleForItemSrc(a);
@@ -8956,6 +8966,7 @@ annotorious.Annotorious.prototype.activateSelector = annotorious.Annotorious.pro
 annotorious.Annotorious.prototype.addAnnotation = annotorious.Annotorious.prototype.addAnnotation;
 annotorious.Annotorious.prototype.addHandler = annotorious.Annotorious.prototype.addHandler;
 annotorious.Annotorious.prototype.addPlugin = annotorious.Annotorious.prototype.addPlugin;
+annotorious.Annotorious.prototype.getItems = annotorious.Annotorious.prototype.getItems;
 annotorious.Annotorious.prototype.destroy = annotorious.Annotorious.prototype.destroy;
 annotorious.Annotorious.prototype.getActiveSelector = annotorious.Annotorious.prototype.getActiveSelector;
 annotorious.Annotorious.prototype.getAnnotations = annotorious.Annotorious.prototype.getAnnotations;

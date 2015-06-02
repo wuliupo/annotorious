@@ -3,6 +3,7 @@ annotorious.Annotorious.prototype['activateSelector'] = annotorious.Annotorious.
 annotorious.Annotorious.prototype['addAnnotation'] = annotorious.Annotorious.prototype.addAnnotation;
 annotorious.Annotorious.prototype['addHandler'] = annotorious.Annotorious.prototype.addHandler;
 annotorious.Annotorious.prototype['addPlugin'] = annotorious.Annotorious.prototype.addPlugin;
+annotorious.Annotorious.prototype['getItems'] = annotorious.Annotorious.prototype.getItems;
 annotorious.Annotorious.prototype['destroy'] = annotorious.Annotorious.prototype.destroy;
 annotorious.Annotorious.prototype['getActiveSelector'] = annotorious.Annotorious.prototype.getActiveSelector;
 annotorious.Annotorious.prototype['getAnnotations'] = annotorious.Annotorious.prototype.getAnnotations;

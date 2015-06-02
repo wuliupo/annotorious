@@ -354,6 +354,15 @@ annotorious.mediatypes.Module.prototype.annotatesItem = function(item_url) {
 }
 
 /**
+ * Returns all items
+ */
+annotorious.mediatypes.Module.prototype.getItems = function() {
+    goog.array.forEach(this._annotatorsById.getValues(), function(annotator) {
+            console.log(annotator);
+        });
+}
+
+/**
  * Destroys the annotator on the specified item, or all annotators managed by this module.
  * @param {string=} opt_item_url the URL of the item on which to destroy the annotator.
  */

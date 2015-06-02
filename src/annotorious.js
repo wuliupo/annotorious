@@ -156,6 +156,12 @@ annotorious.Annotorious.prototype.addPlugin = function(plugin_name, opt_config_o
     }
 }
 
+annotorious.Annotorious.prototype.getItems = function() {
+    goog.array.forEach(this._modules, function(module) {
+        module.getItems();
+    });
+}
+
 /**
  * Destroys annotation functionality on an item, or all items on the page. Note
  * that this method differs from anno.reset() in so far as class="annotatable"
