@@ -20,7 +20,7 @@
 }
 
 .annotorious-item-unfocus {
-  opacity:0.4;
+  opacity:0.6;
 }
 
 /** Hint/help popup **/
@@ -143,19 +143,24 @@
 
 .annotorious-popup-button-edit {
   background:url(pencil.png);
-  width:16px;
-  height:16px;
-  text-indent:100px;
-  overflow:hidden;
+  width: 18px;
+  height: 18px;
+  text-indent: 100px;
+  overflow: hidden;
+  float: left;
+  background-size: 18px, 18px;
+  background-repeat: no-repeat;
 }
 
 .annotorious-popup-button-delete {
-  background:url(delete.png);
-  width:16px;
-  height:16px;
-  text-indent:100px;
-  overflow:hidden;
-  float:right;
+  background: url(delete.png);
+  width: 18px;
+  height: 18px;
+  text-indent: 100px;
+  overflow: hidden;
+  float: right;
+  background-size: 18px, 18px;
+  background-repeat: no-repeat;
 }
 
 .annotorious-popup-field {
