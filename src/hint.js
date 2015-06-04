@@ -16,7 +16,7 @@ annotorious.Hint = function(annotator, parent, opt_msg) {
   var self = this;
 
   if (!opt_msg)
-    opt_msg = 'Annotatable';
+    opt_msg = 'Interactive';
 
   this.element = goog.soy.renderAsElement(annotorious.templates.image.hint, { msg: opt_msg });
 

@@ -197,11 +197,17 @@ annotorious.Popup.prototype.setAnnotation = function(annotation) {
   else
     this._text.innerHTML = '<span class="annotorious-popup-empty">No comment</span>';
 
-  if (('editable' in annotation) && annotation.editable == false)
+  console.log(annotation);
+  if (('editable' in annotation) && annotation.editable == false){
     goog.style.showElement(this._buttons, false);
-  else
+    if (!annotation.text){
+      goog.style.showElement(this.element, false);
+    }
+  }
+  else{
     goog.style.showElement(this._buttons, true);
-  
+    goog.style.showElement(this.element, true);
+  }
   // Update extra fields (if any)
   goog.array.forEach(this._extraFields, function(field) {
     var f = field.fn(annotation);

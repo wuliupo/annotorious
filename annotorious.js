@@ -7703,7 +7703,7 @@ annotorious.Editor.prototype.addField = annotorious.Editor.prototype.addField;
 annotorious.Editor.prototype.getAnnotation = annotorious.Editor.prototype.getAnnotation;
 annotorious.Hint = function(a, c, d) {
   var e = this;
-  d || (d = "Annotatable");
+  d || (d = "Interactive");
   this.element = goog.soy.renderAsElement(annotorious.templates.image.hint, {msg:d});
   this._annotator = a;
   this._message = goog.dom.query(".annotorious-hint-msg", this.element)[0];
@@ -7834,7 +7834,8 @@ annotorious.Popup.prototype.setPosition = function(a) {
 annotorious.Popup.prototype.setAnnotation = function(a) {
   this._currentAnnotation = a;
   this._text.innerHTML = a.text ? a.text.replace(/\n/g, "<br/>") : '<span class="annotorious-popup-empty">No comment</span>';
-  "editable" in a && !1 == a.editable ? goog.style.showElement(this._buttons, !1) : goog.style.showElement(this._buttons, !0);
+  console.log(a);
+  "editable" in a && !1 == a.editable ? (goog.style.showElement(this._buttons, !1), a.text || goog.style.showElement(this.element, !1)) : (goog.style.showElement(this._buttons, !0), goog.style.showElement(this.element, !0));
   goog.array.forEach(this._extraFields, function(c) {
     var d = c.fn(a);
     goog.isString(d) ? c.el.innerHTML = d : goog.dom.isElement(d) && (goog.dom.removeChildren(c.el), goog.dom.appendChild(c.el, d))
@@ -8133,7 +8134,7 @@ annotorious.templates.image.canvas = function(a) {
   return'<canvas class="annotorious-item annotorious-opacity-fade" style="position:absolute; top:0px; left:0px; width:' + soy.$$escapeHtml(a.width) + "px; height:" + soy.$$escapeHtml(a.height) + 'px; z-index:0" width="' + soy.$$escapeHtml(a.width) + '" height="' + soy.$$escapeHtml(a.height) + '"></canvas>'
 };
 annotorious.templates.image.hint = function(a) {
-  return'<div class="annotorious-hint" style="white-space:nowrap; position:absolute; top:0px; left:0px; pointer-events:none;"><div class="annotorious-hint-msg annotorious-opacity-fade">' + soy.$$escapeHtml(a.msg) + '</div><div class="annotorious-hint-icon" style="pointer-events:auto"></div></div>'
+  return'<div class="annotorious-hint" style="white-space:nowrap; position:absolute; bottom: 4px; left:0; pointer-events:none;"><div class="annotorious-hint-msg annotorious-opacity-fade">' + soy.$$escapeHtml(a.msg) + '</div><div class="annotorious-hint-icon" style="pointer-events:auto"></div></div>'
 };
 annotorious.mediatypes.image.ImageAnnotator = function(a, c) {
   annotorious.mediatypes.Annotator.call();
