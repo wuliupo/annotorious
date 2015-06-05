@@ -219,9 +219,7 @@ annotorious.mediatypes.image.Viewer.prototype.getAnnotationsAt = function(px, py
  */
 annotorious.mediatypes.image.Viewer.prototype._onMouseMove = function(event) {
     var topAnnotation = this.topAnnotationAt(event.offsetX, event.offsetY);
-
     // TODO remove code duplication
-
     var self = this;
     if (topAnnotation) {
         this._keepHighlighted = this._keepHighlighted && (topAnnotation == this._currentAnnotation);
@@ -305,11 +303,14 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
 
     var continueAnimating = true;
     //set the focus during glow
-    goog.dom.classes.addRemove(self._canvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
+    goog.dom.classes.addRemove(self._canvas, 'annotorious-item-unglow', 'annotorious-item-glow');
     setTimeout(function() {
         continueAnimating = false;
         self.redraw();
-        goog.dom.classes.addRemove(self._canvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+        goog.dom.classes.addRemove(self._canvas, 'annotorious-item-glow', 'annotorious-item-unglow');
+        // if(started outside annotatable item){
+        //     goog.dom.classes.addRemove(self._canvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+        // }
     }, time);
 
     function convertHex(hex, opacity) {

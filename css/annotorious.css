@@ -15,12 +15,12 @@
   transition-delay: 0s;
 }
 
-.annotorious-item-focus {
-  opacity:1.0;
+.annotorious-item-unfocus, .annotorious-item-unglow {
+  opacity:0;
 }
 
-.annotorious-item-unfocus {
-  opacity:0;
+.annotorious-item-focus, .annotorious-item-glow {
+  opacity:1.0;
 }
 
 /** Hint/help popup **/

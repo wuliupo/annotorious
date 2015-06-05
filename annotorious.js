@@ -8004,11 +8004,11 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(a, c) {
   var e = this, f = goog.array.find(this._annotator.getAvailableSelectors(), function(c) {
     return c.getSupportedShapeType() == a[0].type
   }).getProperties(), h = 0, i = !0, j = !0;
-  goog.dom.classes.addRemove(e._canvas, "annotorious-item-unfocus", "annotorious-item-focus");
+  goog.dom.classes.addRemove(e._canvas, "annotorious-item-unglow", "annotorious-item-glow");
   setTimeout(function() {
     j = !1;
     e.redraw();
-    goog.dom.classes.addRemove(e._canvas, "annotorious-item-focus", "annotorious-item-unfocus")
+    goog.dom.classes.addRemove(e._canvas, "annotorious-item-glow", "annotorious-item-unglow")
   }, c);
   var k = f.hi_fill, k = k.replace("#", "");
   r = parseInt(k.substring(0, 2), 16);
