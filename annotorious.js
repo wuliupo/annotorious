@@ -7992,11 +7992,11 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(a, c) {
     if(j) {
       g2d.clearRect(0, 0, e._canvas.width, e._canvas.height);
       for(var c = a.length - 1;0 <= c;c--) {
-        geom = a[c].geometry, g2d.beginPath(), g2d.lineJoin = "round", g2d.lineWidth = f.outline_width, g2d.strokeStyle = f.outline, g2d.strokeRect(geom.x + f.outline_width / 2, geom.y + f.outline_width / 2, geom.width - f.outline_width, geom.height - f.outline_width), g2d.lineJoin = "miter", g2d.lineWidth = f.stroke_width, g2d.strokeStyle = "rgb(255,255,255)", g2d.strokeRect(geom.x + f.outline_width + f.stroke_width / 2, geom.y + f.outline_width + f.stroke_width / 2, geom.width - 2 * f.outline_width - 
-        f.stroke_width, geom.height - 2 * f.outline_width - f.stroke_width), g2d.lineJoin = "miter", g2d.lineWidth = f.hi_stroke_width, g2d.strokeStyle = "rgba(" + colour_in_rgb[0] + "," + colour_in_rgb[1] + "," + colour_in_rgb[2] + "," + h + ")", g2d.strokeRect(geom.x + f.outline_width + f.hi_stroke_width / 2, geom.y + f.outline_width + f.hi_stroke_width / 2, geom.width - 2 * f.outline_width - f.hi_stroke_width, geom.height - 2 * f.outline_width - f.hi_stroke_width), g2d.closePath()
+        geom = a[c].geometry, g2d.beginPath(), g2d.lineJoin = "miter", g2d.lineWidth = f.stroke_width, g2d.strokeStyle = "rgb(255,255,255)", g2d.strokeRect(geom.x + f.outline_width + f.stroke_width / 2, geom.y + f.outline_width + f.stroke_width / 2, geom.width - 2 * f.outline_width - f.stroke_width, geom.height - 2 * f.outline_width - f.stroke_width), g2d.fillStyle = "rgba(" + colour_in_rgb[0] + "," + colour_in_rgb[1] + "," + colour_in_rgb[2] + "," + h + ")", g2d.fillRect(geom.x + f.outline_width + 
+        f.hi_stroke_width / 2, geom.y + f.outline_width + f.hi_stroke_width / 2, geom.width - 2 * f.outline_width - f.hi_stroke_width, geom.height - 2 * f.outline_width - f.hi_stroke_width), g2d.closePath()
       }
-      h = i ? h + 0.025 : h - 0.025;
-      0 >= h ? i = !0 : 1 <= h && (i = !1);
+      h = i ? h + 0.005 : h - 0.005;
+      0 >= h ? i = !0 : 0.26 <= h && (i = !1);
       requestAnimationFrame(d)
     }
   }
@@ -8010,7 +8010,7 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(a, c) {
     e.redraw();
     goog.dom.classes.addRemove(e._canvas, "annotorious-item-focus", "annotorious-item-unfocus")
   }, c);
-  var k = f.hi_stroke, k = k.replace("#", "");
+  var k = f.hi_fill, k = k.replace("#", "");
   r = parseInt(k.substring(0, 2), 16);
   g = parseInt(k.substring(2, 4), 16);
   b = parseInt(k.substring(4, 6), 16);
@@ -8044,8 +8044,8 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(a, c) {
   this._STROKE = "#ffffff";
   this._FILL = !1;
   this._HI_OUTLINE = "#111111";
-  this._HI_STROKE = "#FFDC00";
-  this._HI_FILL = !1;
+  this._HI_STROKE = "#ffffff";
+  this._HI_FILL = "#FFDC00";
   this._HI_OUTLINE_WIDTH = this._STROKE_WIDTH = this._OUTLINE_WIDTH = 1;
   this._HI_STROKE_WIDTH = 1.2;
   this._canvas = c;
@@ -8124,10 +8124,11 @@ annotorious.plugins.selection.RectDragSelector.prototype.getViewportBounds = fun
   return{top:d, right:a, bottom:e, left:c}
 };
 annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(a, c, d) {
-  var e, f, h, i;
+  var e, f, h, i, j;
   c.style || (c.style = {});
-  c.type == annotorious.shape.ShapeType.RECTANGLE && (d ? (e = c.style.hi_fill || this._HI_FILL, d = c.style.hi_stroke || this._HI_STROKE, f = c.style.hi_outline || this._HI_OUTLINE, h = c.style.hi_outline_width || this._HI_OUTLINE_WIDTH, i = c.style.hi_stroke_width || this._HI_STROKE_WIDTH) : (e = c.style.fill || this._FILL, d = c.style.stroke || this._STROKE, f = c.style.outline || this._OUTLINE, h = c.style.outline_width || this._OUTLINE_WIDTH, i = c.style.stroke_width || this._STROKE_WIDTH), 
-  c = c.geometry, f && (a.lineJoin = "round", a.lineWidth = h, a.strokeStyle = f, a.strokeRect(c.x + h / 2, c.y + h / 2, c.width - h, c.height - h)), d && (a.lineJoin = "miter", a.lineWidth = i, a.strokeStyle = d, a.strokeRect(c.x + h + i / 2, c.y + h + i / 2, c.width - 2 * h - i, c.height - 2 * h - i)), e && (a.lineJoin = "miter", a.lineWidth = i, a.fillStyle = e, a.fillRect(c.x + h + i / 2, c.y + h + i / 2, c.width - 2 * h - i, c.height - 2 * h - i)))
+  c.type == annotorious.shape.ShapeType.RECTANGLE && (d ? (f = c.style.hi_stroke || this._HI_STROKE, h = c.style.hi_outline || this._HI_OUTLINE, i = c.style.hi_outline_width || this._HI_OUTLINE_WIDTH, j = c.style.hi_stroke_width || this._HI_STROKE_WIDTH) : (f = c.style.stroke || this._STROKE, h = c.style.outline || this._OUTLINE, i = c.style.outline_width || this._OUTLINE_WIDTH, j = c.style.stroke_width || this._STROKE_WIDTH), e = c.geometry, h && (a.lineJoin = "round", a.lineWidth = i, a.strokeStyle = 
+  h), c = c.style.hi_fill || this._HI_FILL, c = c.replace("#", ""), r = parseInt(c.substring(0, 2), 16), g = parseInt(c.substring(2, 4), 16), b = parseInt(c.substring(4, 6), 16), fill_color = result = [r, g, b], f && (a.lineJoin = "miter", a.lineWidth = j, a.strokeStyle = f, a.fillStyle = d ? "rgba(" + fill_color[0] + "," + fill_color[1] + "," + fill_color[2] + ",0.26)" : "rgba(" + fill_color[0] + "," + fill_color[1] + "," + fill_color[2] + ",0.15)", a.strokeRect(e.x + i + j / 2, e.y + i + j / 2, 
+  e.width - 2 * i - j, e.height - 2 * i - j), a.fillRect(e.x + i + j / 2, e.y + i + j / 2, e.width - 2 * i - j, e.height - 2 * i - j)))
 };
 annotorious.templates.image = {};
 annotorious.templates.image.canvas = function(a) {

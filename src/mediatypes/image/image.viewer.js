@@ -322,7 +322,7 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
         return result;
     }
     //colour that will glow
-    colour_in_rgb = convertHex(properties['hi_stroke']);
+    colour_in_rgb = convertHex(properties['hi_fill']);
 
     //curently draws three things
     //1) a black border
@@ -337,17 +337,18 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
 
                 g2d.beginPath();
 
-                //Border doesn't change
-                g2d.lineJoin = "round";
-                g2d.lineWidth = properties['outline_width'];
-                g2d.strokeStyle = properties['outline'];
-                g2d.strokeRect(
-                    geom.x + properties['outline_width'] / 2,
-                    geom.y + properties['outline_width'] / 2,
-                    geom.width - properties['outline_width'],
-                    geom.height - properties['outline_width']
-                );
-                //White stroke beneath the animated coloured one
+                // //Border doesn't change
+                // g2d.lineJoin = "round";
+                // g2d.lineWidth = properties['outline_width'];
+                // g2d.strokeStyle = properties['outline'];
+                // g2d.strokeRect(
+                //     geom.x + properties['outline_width'] / 2,
+                //     geom.y + properties['outline_width'] / 2,
+                //     geom.width - properties['outline_width'],
+                //     geom.height - properties['outline_width']
+                // );
+
+                //White stroke
                 g2d.lineJoin = "miter";
                 g2d.lineWidth = properties['stroke_width'];
                 g2d.strokeStyle = 'rgb(255,255,255)';
@@ -358,10 +359,8 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
                     geom.height - properties['outline_width'] * 2 - properties['stroke_width']
                 );
 
-                g2d.lineJoin = "miter";
-                g2d.lineWidth = properties['hi_stroke_width'];
-                g2d.strokeStyle = 'rgba(' + colour_in_rgb[0] + ',' + colour_in_rgb[1] + ',' + colour_in_rgb[2] + ',' + opacity + ')';
-                g2d.strokeRect(
+                g2d.fillStyle = 'rgba(' + colour_in_rgb[0] + ',' + colour_in_rgb[1] + ',' + colour_in_rgb[2] + ',' + opacity + ')';
+                g2d.fillRect(
                     geom.x + properties['outline_width'] + properties['hi_stroke_width'] / 2,
                     geom.y + properties['outline_width'] + properties['hi_stroke_width'] / 2,
                     geom.width - properties['outline_width'] * 2 - properties['hi_stroke_width'],
@@ -371,10 +370,10 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
                 g2d.closePath();
             };
             //size of steps to oscillate opacity by
-            opacity = (is_blur_inc) ? (opacity + 0.025) : (opacity - 0.025);
+            opacity = (is_blur_inc) ? (opacity + 0.005) : (opacity - 0.005);
 
             if (opacity <= 0) is_blur_inc = true;
-            else if (opacity >= 1) is_blur_inc = false;
+            else if (opacity >= 0.26) is_blur_inc = false;
 
             requestAnimationFrame(animate);
         }

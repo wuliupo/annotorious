@@ -29,10 +29,10 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotat
   this._HI_OUTLINE = '#111111';
 
   /** @private **/
-  this._HI_STROKE = '#FFDC00';
+  this._HI_STROKE = '#ffffff';
   
   /** @private **/
-  this._HI_FILL = false;
+  this._HI_FILL = '#FFDC00';
 
   /** @private **/
   this._OUTLINE_WIDTH = 1;
@@ -335,32 +335,43 @@ annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(g2
         g2d.lineJoin = "round";
         g2d.lineWidth = outline_width;
         g2d.strokeStyle = outline;
-        g2d.strokeRect(
-          geom.x + outline_width/2, 
-          geom.y + outline_width/2, 
-          geom.width - outline_width, 
-          geom.height - outline_width
-        );
+        // g2d.strokeRect(
+        //   geom.x + outline_width/2, 
+        //   geom.y + outline_width/2, 
+        //   geom.width - outline_width, 
+        //   geom.height - outline_width
+        // );
     }
+
+    function convertHex(hex, opacity) {
+        hex = hex.replace('#', '');
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+
+        result = [r, g, b];
+        return result;
+    }
+    //colour that will glow
+    fill_color = convertHex(shape.style.hi_fill || this._HI_FILL);
 
     // Stroke
     if (stroke) {
       g2d.lineJoin = "miter";
       g2d.lineWidth = stroke_width;
       g2d.strokeStyle = stroke;
+      if (highlight) {
+        g2d.fillStyle = 'rgba(' + fill_color[0] + ',' + fill_color[1] + ',' + fill_color[2] + ',' + 0.26 + ')';
+      }
+      else{
+        g2d.fillStyle = 'rgba(' + fill_color[0] + ',' + fill_color[1] + ',' + fill_color[2] + ',' + 0.15 + ')';
+      }
       g2d.strokeRect(
         geom.x + outline_width + stroke_width/2, 
         geom.y + outline_width + stroke_width/2, 
         geom.width - outline_width*2 - stroke_width, 
         geom.height - outline_width*2 - stroke_width
       );
-    }
-
-    // Fill   
-    if (fill) {
-      g2d.lineJoin = "miter";
-      g2d.lineWidth = stroke_width;
-      g2d.fillStyle = fill;
       g2d.fillRect(
         geom.x + outline_width + stroke_width/2, 
         geom.y + outline_width + stroke_width/2, 
@@ -368,5 +379,18 @@ annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(g2
         geom.height - outline_width*2 - stroke_width
       );
     }
+
+    // // Fill   
+    // if (fill) {
+    //   g2d.lineJoin = "miter";
+    //   g2d.lineWidth = stroke_width;
+    //   g2d.fillStyle = fill;
+    //   g2d.fillRect(
+    //     geom.x + outline_width + stroke_width/2, 
+    //     geom.y + outline_width + stroke_width/2, 
+    //     geom.width - outline_width*2 - stroke_width, 
+    //     geom.height - outline_width*2 - stroke_width
+    //   );
+    // }
   }
 }
