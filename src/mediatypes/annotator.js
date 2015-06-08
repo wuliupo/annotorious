@@ -76,6 +76,16 @@ annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanv
                 self._viewer.highlightAnnotation(annotations[0]);
             }
         }
+        if (!annotorious.events.ui.hasMouse) {
+          if (goog.dom.classes.get(self._viewer._canvas).indexOf('annotorious-item-focus') == -1) {
+            goog.dom.classes.addRemove(self._viewer._canvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
+          }
+          else {
+            if (annotations.length == 0) {
+              goog.dom.classes.addRemove(self._viewer._canvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+            }
+          }
+        }
         if (annotations.length !== 0) {
             // fire long click if down for 200 milli secondsw
             if (!annotorious.events.ui.hasMouse) {
