@@ -8165,7 +8165,6 @@ annotorious.mediatypes.image.ImageAnnotator = function(a, c) {
   this._currentSelector = d;
   this.editor = new annotorious.Editor(this);
   this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this);
-  this._hint = new annotorious.Hint(this, this.element);
   var e = this;
   annotorious.events.ui.hasMouse && (goog.events.listen(this.element, annotorious.events.ui.EventType.OVER, function(a) {
     a = a.relatedTarget;

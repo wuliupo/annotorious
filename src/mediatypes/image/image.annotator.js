@@ -107,7 +107,7 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
 
     this.editor = new annotorious.Editor(this);
     this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this);
-    this._hint = new annotorious.Hint(this, this.element);
+    //this._hint = new annotorious.Hint(this, this.element);
 
     var self = this;
 
