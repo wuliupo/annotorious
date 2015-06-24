@@ -7829,7 +7829,8 @@ annotorious.Popup.prototype.show = function(a, c) {
   this._annotator.fireEvent(annotorious.events.EventType.POPUP_SHOWN, this._currentAnnotation)
 };
 annotorious.Popup.prototype.setPosition = function(a) {
-  goog.style.setPosition(this.element, new goog.math.Coordinate(a.x, a.y))
+  var c = this._annotator._viewCanvas.width, c = -(198 - (c - a.x) - Math.floor((window.innerWidth - c) / 2));
+  0 > c ? goog.style.setPosition(this.element, new goog.math.Coordinate(a.x + c, a.y)) : goog.style.setPosition(this.element, new goog.math.Coordinate(a.x, a.y))
 };
 annotorious.Popup.prototype.setAnnotation = function(a) {
   this._currentAnnotation = a;

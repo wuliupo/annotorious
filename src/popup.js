@@ -183,7 +183,20 @@ annotorious.Popup.prototype.show = function(annotation, xy) {
  * @param {annotorious.shape.geom.Point} xy the viewport coordinate
  */
 annotorious.Popup.prototype.setPosition = function(xy) {
-  goog.style.setPosition(this.element, new goog.math.Coordinate(xy.x, xy.y));
+  var canvasWidth = this._annotator._viewCanvas.width;
+  var sizeOfPopup = 180 + 18; //.annotorious-popup in css
+  var sizeOfGapImageScreen = Math.floor((window.innerWidth - canvasWidth)/2);
+
+  //to get a better understanding of this model
+  //view this: https://drive.google.com/file/d/0B34oQzUTqfzESWw5Y3dUVFhKUE0/view?usp=sharing
+  var spaceRightOfPopup = -(sizeOfPopup - (canvasWidth - xy.x) - sizeOfGapImageScreen);
+
+  if (spaceRightOfPopup < 0){
+    goog.style.setPosition(this.element, new goog.math.Coordinate(xy.x + spaceRightOfPopup, xy.y));
+  }
+  else{
+    goog.style.setPosition(this.element, new goog.math.Coordinate(xy.x, xy.y));
+  }
 }
 
 /**
