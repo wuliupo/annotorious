@@ -423,6 +423,29 @@ annotorious.mediatypes.Module.prototype.getAnnotations = function(opt_item_url) 
 }
 
 /**
+ * Returns all annotations as <section class="annotText"> elements on the item 
+ * with the specified URL (if managed by this module) or all annotations 
+ * from this module in case no URL is specified.
+ * @param  {string | undefined} opt_item_url an item URL (optional)
+ * @return {Array.<List of DOM elements>} the annotations as DOM elements.
+ */
+annotorious.mediatypes.Module.prototype.getAnnotationsAsDOM = function(opt_item_url){
+    if (opt_item_url) {
+        var annotator = this._annotators.get(opt_item_url);
+        if (annotator) {
+            return annotator.getAnnotationsAsDOM();
+        }
+    }
+    else {
+        var annotations = [];
+        goog.array.forEach(this._annotators.getValues(), function(annotator) {
+            goog.array.extend(annotations, annotator.getAnnotationsAsDOM());
+        });
+        return annotations;
+    }
+}
+
+/**
  * Returns the list of available shape selectors for a particular item.
  * @param {string} item_url the URL of the item to query for available selectors
  * @returns {Array.<string> | undefined} the list of selector names

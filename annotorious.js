@@ -5318,6 +5318,19 @@ annotorious.mediatypes.Module.prototype.getAnnotations = function(a) {
   goog.array.extend(d, this._bufferedForAdding);
   return d
 };
+annotorious.mediatypes.Module.prototype.getAnnotationsAsDOM = function(a) {
+  if(a) {
+    if(a = this._annotators.get(a)) {
+      return a.getAnnotationsAsDOM()
+    }
+  }else {
+    var c = [];
+    goog.array.forEach(this._annotators.getValues(), function(a) {
+      goog.array.extend(c, a.getAnnotationsAsDOM())
+    });
+    return c
+  }
+};
 annotorious.mediatypes.Module.prototype.getAvailableSelectors = function(a) {
   if(this.annotatesItem(a) && (a = this._annotators.get(a))) {
     return goog.array.map(a.getAvailableSelectors(), function(a) {
@@ -7941,6 +7954,21 @@ annotorious.mediatypes.image.Viewer.prototype.removeAnnotation = function(a) {
 annotorious.mediatypes.image.Viewer.prototype.getAnnotations = function() {
   return goog.array.clone(this._annotations)
 };
+annotorious.mediatypes.image.Viewer.prototype.getAnnotationsAsDOM = function() {
+  var a = [];
+  goog.array.forEach(this._annotations, function(c) {
+    var c = c.shapes[0].geometry, d = document.createElement("section");
+    d.className = "annotText";
+    d.style.borderWidth = "1px";
+    d.style.width = (100 * c.width).toString() + "%";
+    d.style.height = (100 * c.height).toString() + "%";
+    d.style.top = (100 * c.y).toString() + "%";
+    d.style.left = (100 * c.x).toString() + "%";
+    d.style.position = "absolute";
+    goog.array.extend(a, d)
+  });
+  return a
+};
 annotorious.mediatypes.image.Viewer.prototype.highlightAnnotation = function(a) {
   (this._currentAnnotation = a) ? this._keepHighlighted = !0 : this._annotator.popup.startHideTimer();
   this.redraw();
@@ -8056,16 +8084,13 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(a, c) {
   this._g2d.lineWidth = 1;
   this._enabled = !1
 };
+var gridWidth = 10, gridHeight = 10;
 annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function() {
   var a = this, c = this._canvas;
   this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(d) {
-    d = annotorious.events.ui.sanitizeCoordinates(d, c);
-    if(a._enabled) {
-      a._opposite = {x:d.x, y:d.y};
-      a._g2d.clearRect(0, 0, c.width, c.height);
-      var d = a._opposite.x - a._anchor.x, e = a._opposite.y - a._anchor.y;
-      a.drawShape(a._g2d, {type:annotorious.shape.ShapeType.RECTANGLE, geometry:{x:0 < d ? a._anchor.x : a._opposite.x, y:0 < e ? a._anchor.y : a._opposite.y, width:Math.abs(d), height:Math.abs(e)}, style:{}})
-    }
+    var e = annotorious.events.ui.sanitizeCoordinates(d, c), d = Math.round(e.x / gridWidth) * gridWidth, e = Math.round(e.y / gridHeight) * gridHeight;
+    console.log(this._gridWidth, gridWidth, d);
+    a._enabled && (a._opposite = {x:d, y:e}, a._g2d.clearRect(0, 0, c.width, c.height), d = a._opposite.x - a._anchor.x, e = a._opposite.y - a._anchor.y, a.drawShape(a._g2d, {type:annotorious.shape.ShapeType.RECTANGLE, geometry:{x:0 < d ? a._anchor.x : a._opposite.x, y:0 < e ? a._anchor.y : a._opposite.y, width:Math.abs(d), height:Math.abs(e)}, style:{}}))
   });
   this._mouseUpListener = goog.events.listen(c, annotorious.events.ui.EventType.UP, function(d) {
     var e = annotorious.events.ui.sanitizeCoordinates(d, c), f = a.getShape(), d = d.event_ ? d.event_ : d;
@@ -8099,11 +8124,11 @@ annotorious.plugins.selection.RectDragSelector.prototype.setProperties = functio
   a.hasOwnProperty("hi_stroke_width") && (this._HI_STROKE_WIDTH = a.hi_stroke_width)
 };
 annotorious.plugins.selection.RectDragSelector.prototype.startSelection = function(a, c) {
-  var d = {x:a, y:c};
+  var d = Math.round(a / gridWidth) * gridWidth, e = Math.round(c / gridHeight) * gridHeight, f = {x:d, y:e};
   this._enabled = !0;
-  this._attachListeners(d);
-  this._anchor = new annotorious.shape.geom.Point(a, c);
-  this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {offsetX:a, offsetY:c});
+  this._attachListeners(f);
+  this._anchor = new annotorious.shape.geom.Point(d, e);
+  this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {offsetX:d, offsetY:e});
   goog.style.setStyle(document.body, "-webkit-user-select", "none")
 };
 annotorious.plugins.selection.RectDragSelector.prototype.stopSelection = function() {
@@ -8239,6 +8264,9 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.getActiveSelector = functi
 };
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotations = function() {
   return this._viewer.getAnnotations()
+};
+annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotationsAsDOM = function() {
+  return this._viewer.getAnnotationsAsDOM()
 };
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotationsAt = function(a, c) {
   return goog.array.clone(this._viewer.getAnnotationsAt(a, c))
@@ -8860,6 +8888,17 @@ annotorious.Annotorious.prototype.getAnnotations = function(a) {
   });
   return d
 };
+annotorious.Annotorious.prototype.getAnnotationsAsDOM = function(a) {
+  if(a) {
+    var c = this._getModuleForItemSrc(a);
+    return c ? c.getAnnotationsAsDOM(a) : []
+  }
+  var d = [];
+  goog.array.forEach(this._modules, function(a) {
+    goog.array.extend(d, a.getAnnotationsAsDOM())
+  });
+  return d
+};
 annotorious.Annotorious.prototype.getAvailableSelectors = function(a) {
   var c = this._getModuleForItemSrc(a);
   return c ? c.getAvailableSelectors(a) : []
@@ -8973,6 +9012,7 @@ annotorious.Annotorious.prototype.getItems = annotorious.Annotorious.prototype.g
 annotorious.Annotorious.prototype.destroy = annotorious.Annotorious.prototype.destroy;
 annotorious.Annotorious.prototype.getActiveSelector = annotorious.Annotorious.prototype.getActiveSelector;
 annotorious.Annotorious.prototype.getAnnotations = annotorious.Annotorious.prototype.getAnnotations;
+annotorious.Annotorious.prototype.getAnnotationsAsDOM = annotorious.Annotorious.prototype.getAnnotationsAsDOM;
 annotorious.Annotorious.prototype.getAvailableSelectors = annotorious.Annotorious.prototype.getAvailableSelectors;
 annotorious.Annotorious.prototype.hideAnnotations = annotorious.Annotorious.prototype.hideAnnotations;
 annotorious.Annotorious.prototype.hideSelectionWidget = annotorious.Annotorious.prototype.hideSelectionWidget;

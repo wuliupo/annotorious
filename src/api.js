@@ -7,6 +7,7 @@ annotorious.Annotorious.prototype['getItems'] = annotorious.Annotorious.prototyp
 annotorious.Annotorious.prototype['destroy'] = annotorious.Annotorious.prototype.destroy;
 annotorious.Annotorious.prototype['getActiveSelector'] = annotorious.Annotorious.prototype.getActiveSelector;
 annotorious.Annotorious.prototype['getAnnotations'] = annotorious.Annotorious.prototype.getAnnotations;
+annotorious.Annotorious.prototype['getAnnotationsAsDOM'] = annotorious.Annotorious.prototype.getAnnotationsAsDOM;
 annotorious.Annotorious.prototype['getAvailableSelectors'] = annotorious.Annotorious.prototype.getAvailableSelectors;
 annotorious.Annotorious.prototype['hideAnnotations'] = annotorious.Annotorious.prototype.hideAnnotations;
 annotorious.Annotorious.prototype['hideSelectionWidget'] = annotorious.Annotorious.prototype.hideSelectionWidget;

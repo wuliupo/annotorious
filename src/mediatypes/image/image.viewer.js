@@ -47,8 +47,7 @@ annotorious.mediatypes.image.Viewer = function(canvas, annotator) {
     goog.events.listen(this._canvas, annotorious.events.ui.EventType.CLICK, function(event) {
         if (self._currentAnnotation !== undefined && self._currentAnnotation != false) {
             self._annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED, self._currentAnnotation);
-        }
-        else {
+        } else {
             if (!self._annotator.selectionEnabled()) {
                 self._annotator.fireEvent(annotorious.events.EventType.NON_ANNOTATION_NON_EDITABLE_CLICKED, self._annotator);
             }
@@ -147,7 +146,25 @@ annotorious.mediatypes.image.Viewer.prototype.removeAnnotation = function(annota
  * @return {Array.<annotorious.Annotation>} the annotations
  */
 annotorious.mediatypes.image.Viewer.prototype.getAnnotations = function() {
-    return goog.array.clone(this._annotations)
+    return goog.array.clone(this._annotations);
+}
+
+annotorious.mediatypes.image.Viewer.prototype.getAnnotationsAsDOM = function() {
+    var result = [];
+    goog.array.forEach(this._annotations, function(annotation) {
+        var shape = annotation.shapes[0].geometry;
+        var annotationDOM = document.createElement("section");
+        annotationDOM.className = 'annotText';
+        annotationDOM.style.borderWidth = '1px';
+        annotationDOM.style.width = (shape.width * 100).toString() + '%';
+        annotationDOM.style.height = (shape.height * 100).toString() + '%';
+        annotationDOM.style.top = (shape.y * 100).toString() + '%';
+        annotationDOM.style.left = (shape.x * 100).toString() + '%';
+        annotationDOM.style.position = 'absolute';
+        goog.array.extend(result, annotationDOM);
+    });
+    //console.log(result);
+    return result;
 }
 
 /**
@@ -314,15 +331,15 @@ annotorious.mediatypes.image.Viewer.prototype.glow = function(shapes, time) {
     }, time);
 
     function convertHex(hex, opacity) {
-        hex = hex.replace('#', '');
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
+            hex = hex.replace('#', '');
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
 
-        result = [r, g, b];
-        return result;
-    }
-    //colour that will glow
+            result = [r, g, b];
+            return result;
+        }
+        //colour that will glow
     colour_in_rgb = convertHex(properties['hi_fill']);
 
     //curently draws three things
@@ -393,7 +410,7 @@ annotorious.mediatypes.image.Viewer.prototype.redrawGlow = function(time) {
         shapes.push(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])])
     })
 
-    if(shapes.length > 0){
+    if (shapes.length > 0) {
         var glowAnimation = self.glow(shapes, time);
     }
 

@@ -135,7 +135,7 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
         var bounds = event.viewportBounds;
         self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left + self._image.offsetLeft,
             bounds.bottom + 4 + self._image.offsetTop));
-        //self.editor.open(false, event);
+        //self.editor.open(false, event);         //COMMENT THIS OUT BEFORE YOU COMMIT!!! DANGER DANGER
     });
 
     this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
@@ -272,6 +272,14 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.getActiveSelector = functi
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotations = function() {
     return this._viewer.getAnnotations();
+}
+
+/**
+ * Returns all annotations as dom elements on the annotatable media.
+ * @returns {Array.<List of DOM elements>} the annotations as dom elements
+ */
+annotorious.mediatypes.image.ImageAnnotator.prototype.getAnnotationsAsDOM = function() {
+    return this._viewer.getAnnotationsAsDOM();
 }
 
 /**

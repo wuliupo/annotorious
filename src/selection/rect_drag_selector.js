@@ -71,6 +71,9 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotat
   /** @private **/
   this._mouseUpListener;
 }
+  //Size of the grid for snap to grid.
+  var gridWidth = 10;
+  var gridHeight = 10;
 
 /**
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
@@ -82,8 +85,14 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
   
   this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(event) {
     var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
+
+    var adjustedX = Math.round(points.x / gridWidth) * gridWidth;
+    var adjustedY = Math.round(points.y / gridHeight) * gridHeight;
+
+    console.log(this._gridWidth, gridWidth, adjustedX);
+
     if (self._enabled) {
-      self._opposite = { x: points.x, y: points.y };
+      self._opposite = { x: adjustedX, y: adjustedY };
 
       self._g2d.clearRect(0, 0, canvas.width, canvas.height);
       
@@ -220,15 +229,19 @@ annotorious.plugins.selection.RectDragSelector.prototype.setProperties = functio
  * @param {number} y the Y coordinate
  */
 annotorious.plugins.selection.RectDragSelector.prototype.startSelection = function(x, y) {
+
+  var adjustedX = Math.round(x / gridWidth) * gridWidth;
+  var adjustedY = Math.round(y / gridHeight) * gridHeight;
+
   var startPoint = {
-    x: x,
-    y: y
+    x: adjustedX,
+    y: adjustedY
   };
   this._enabled = true;
   this._attachListeners(startPoint);
-  this._anchor = new annotorious.shape.geom.Point(x, y);
+  this._anchor = new annotorious.shape.geom.Point(adjustedX, adjustedY);
   this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
-    offsetX: x, offsetY: y});
+    offsetX: adjustedX, offsetY: adjustedY});
   
   goog.style.setStyle(document.body, '-webkit-user-select', 'none');
 }
