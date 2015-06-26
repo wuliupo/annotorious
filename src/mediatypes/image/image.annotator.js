@@ -409,8 +409,8 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.showAnnotations = function
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.showSelectionWidget = function() {
     this._selectionEnabled = true;
-    if (!this._hint)
-        this._hint = new annotorious.Hint(this, this.element);
+    // if (!this._hint)
+    //     this._hint = new annotorious.Hint(this, this.element);
 }
 
 /**

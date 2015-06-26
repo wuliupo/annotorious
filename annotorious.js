@@ -7651,7 +7651,7 @@ annotorious.templates.popup = function() {
   return'<div class="annotorious-popup top-left" style="position:absolute;z-index:1"><div class="annotorious-popup-buttons"><a class="annotorious-popup-button annotorious-popup-button-edit" title="Edit" href="javascript:void(0);">EDIT</a><a class="annotorious-popup-button annotorious-popup-button-delete" title="Delete" href="javascript:void(0);">DELETE</a></div><span class="annotorious-popup-text"></span></div>'
 };
 annotorious.templates.editform = function() {
-  return'<div class="annotorious-editor" style="position:absolute;z-index:1"><form><textarea class="annotorious-editor-text" placeholder="Add a Comment..." tabindex="1"></textarea><div class="annotorious-editor-button-container"><a class="annotorious-editor-button annotorious-editor-button-cancel" href="javascript:void(0);" tabindex="3">Cancel</a><a class="annotorious-editor-button annotorious-editor-button-save" href="javascript:void(0);" tabindex="2">Save</a></div></form></div>'
+  return'<div class="annotorious-editor" style="position:absolute;z-index:1"><form><textarea class="annotorious-editor-text" placeholder="Add a Comment..." tabindex="1"></textarea><div class="annotorious-editor-button-container"><a class="annotorious-editor-button annotorious-editor-button-save" href="javascript:void(0);" tabindex="2">Save</a><a class="annotorious-editor-button annotorious-editor-button-cancel" href="javascript:void(0);" tabindex="3">Cancel</a></div></form></div>'
 };
 annotorious.Editor = function(a) {
   this.element = goog.soy.renderAsElement(annotorious.templates.editform);
@@ -8312,8 +8312,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.showAnnotations = function
   goog.style.showElement(this._viewCanvas, !0)
 };
 annotorious.mediatypes.image.ImageAnnotator.prototype.showSelectionWidget = function() {
-  this._selectionEnabled = !0;
-  this._hint || (this._hint = new annotorious.Hint(this, this.element))
+  this._selectionEnabled = !0
 };
 annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection = function(a) {
   annotorious.events.ui.hasMouse && goog.style.showElement(this._editCanvas, !1);
