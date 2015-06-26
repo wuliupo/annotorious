@@ -8084,7 +8084,7 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(a, c) {
   this._g2d.lineWidth = 1;
   this._enabled = !1
 };
-var gridWidth = 10, gridHeight = 10;
+var gridWidth = 8, gridHeight = 8;
 annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function() {
   var a = this, c = this._canvas;
   this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(d) {
@@ -8353,7 +8353,7 @@ annotorious.mediatypes.image.ImageModule.prototype.newAnnotator = function(a) {
   return new annotorious.mediatypes.image.ImageAnnotator(a)
 };
 annotorious.mediatypes.image.ImageModule.prototype.supports = function(a) {
-  return goog.dom.isElement(a) ? "IMG" == a.tagName : !1
+  return goog.dom.isElement(a) ? "IMG" == a.tagName || "CANVAS" == a.tagName : !1
 };
 annotorious.templates.openlayers = {};
 annotorious.templates.openlayers.secondaryHint = function(a) {

@@ -41,7 +41,7 @@ annotorious.mediatypes.image.ImageModule.prototype.newAnnotator = function(item)
 /** @inheritDoc **/
 annotorious.mediatypes.image.ImageModule.prototype.supports = function(item) {
   if (goog.dom.isElement(item))
-    return (item.tagName == 'IMG');
+    return (item.tagName == 'IMG' || item.tagName == 'CANVAS');
   else
     return false;
 }
