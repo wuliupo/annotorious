@@ -67,10 +67,7 @@
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -khtml-border-radius: 3px;
-  -moz-box-shadow:0px 5px 15px #111;  
-  -webkit-box-shadow:0px 5px 15px #111;  
-  box-shadow:0px 5px 15px #111;  
+  -khtml-border-radius: 3px; 
 
   -moz-transition-property: opacity;
   -moz-transition-duration: 0.5s;
