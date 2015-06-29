@@ -72,8 +72,8 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotat
   this._mouseUpListener;
 }
   //Size of the grid for snap to grid.
-  var gridWidth = 8;
-  var gridHeight = 8;
+  var gridWidth = 6;
+  var gridHeight = 6;
 
 /**
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.

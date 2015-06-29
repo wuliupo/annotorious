@@ -8084,7 +8084,7 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(a, c) {
   this._g2d.lineWidth = 1;
   this._enabled = !1
 };
-var gridWidth = 8, gridHeight = 8;
+var gridWidth = 6, gridHeight = 6;
 annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function() {
   var a = this, c = this._canvas;
   this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(d) {
