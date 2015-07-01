@@ -59,7 +59,7 @@
   font-size:12px;
   text-align: left;
   color:rgba(255,255,255,0.8);
-  background-color:rgba(0,0,0,0.8);
+  background-color:rgba(0,0,0,0.9);
   border:1px solid #ccc;
   padding:9px 8px;
   word-wrap:break-word;
@@ -249,6 +249,8 @@
 
 .annotorious-editor-button:hover {
   background:#999;
+  text-decoration: none;
+  color:rgba(255,255,255,0.8);
 }
 
 .annotorious-editor-field {

@@ -72,8 +72,8 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotat
   this._mouseUpListener;
 }
   //Size of the grid for snap to grid.
-  var gridWidth = 6;
-  var gridHeight = 6;
+  var gridWidth = 8;
+  var gridHeight = 8;
 
 /**
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
@@ -88,8 +88,6 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
 
     var adjustedX = Math.round(points.x / gridWidth) * gridWidth;
     var adjustedY = Math.round(points.y / gridHeight) * gridHeight;
-
-    console.log(this._gridWidth, gridWidth, adjustedX);
 
     if (self._enabled) {
       self._opposite = { x: adjustedX, y: adjustedY };

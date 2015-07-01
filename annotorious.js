@@ -8084,12 +8084,11 @@ annotorious.plugins.selection.RectDragSelector.prototype.init = function(a, c) {
   this._g2d.lineWidth = 1;
   this._enabled = !1
 };
-var gridWidth = 6, gridHeight = 6;
+var gridWidth = 8, gridHeight = 8;
 annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function() {
   var a = this, c = this._canvas;
   this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(d) {
     var e = annotorious.events.ui.sanitizeCoordinates(d, c), d = Math.round(e.x / gridWidth) * gridWidth, e = Math.round(e.y / gridHeight) * gridHeight;
-    console.log(this._gridWidth, gridWidth, d);
     a._enabled && (a._opposite = {x:d, y:e}, a._g2d.clearRect(0, 0, c.width, c.height), d = a._opposite.x - a._anchor.x, e = a._opposite.y - a._anchor.y, a.drawShape(a._g2d, {type:annotorious.shape.ShapeType.RECTANGLE, geometry:{x:0 < d ? a._anchor.x : a._opposite.x, y:0 < e ? a._anchor.y : a._opposite.y, width:Math.abs(d), height:Math.abs(e)}, style:{}}))
   });
   this._mouseUpListener = goog.events.listen(c, annotorious.events.ui.EventType.UP, function(d) {
