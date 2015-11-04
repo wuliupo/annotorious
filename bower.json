@@ -1,5 +1,5 @@
 {
-  "name": "nv-annotorious",
+  "name": "annotorious",
   "version": "0.6.4",
   "homepage": "null",
   "authors": [
@@ -8,13 +8,14 @@
   "description": "",
   "main": ["./dist/annotorious.min.js", "./css/annotorious.css"],
   "moduleType": [],
-  "license": "NVIDIA",
+  "license": "UNLICENSE",
   "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "templates"
   ]
 }
