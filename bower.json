@@ -1,12 +1,11 @@
 {
   "name": "annotorious",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "homepage": "null",
   "authors": [
     "NVIDIA"
   ],
   "description": "",
-  "main": ["./dist/annotorious.min.js", "./css/annotorious.css"],
   "moduleType": [],
   "license": "UNLICENSE",
   "private": true,
@@ -16,6 +15,7 @@
     "bower_components",
     "test",
     "tests",
-    "templates"
+    "templates",
+    "plovr"
   ]
 }
