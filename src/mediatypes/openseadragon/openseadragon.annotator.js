@@ -105,6 +105,11 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.hideSelect
   // Does not have any effect at the moment
 }
 
+annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.destroy = function () {
+	this._viewer.destroy();
+	delete this._viewer;
+}
+
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.activateSelector = function(callback) {
   goog.style.setStyle(this._editCanvas, 'pointer-events', 'auto');
 
@@ -165,6 +170,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.fromItemCo
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAnnotations = function() {
   return this._viewer.getAnnotations();
 }
+
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAvailableSelectors = function() {
 // TODO sapht

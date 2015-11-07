@@ -175,7 +175,7 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(a
 annotorious.mediatypes.openseadragon.Viewer.prototype.removeAnnotation = function(annotation) {
   var overlay = goog.array.find(this._overlays, function(overlay) {
     return overlay.annotation == annotation;
-  }); 
+  });
 
   if (overlay) {
     goog.array.remove(this._overlays, overlay);
@@ -188,7 +188,10 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.removeAnnotation = functio
  * @return {Array.<annotorious.Annotation>} the annotations
  */
 annotorious.mediatypes.openseadragon.Viewer.prototype.getAnnotations = function() {
-
+  return goog.array.map(this._overlays, function(overlay) {  
+	  console.log(overlay);
+	  return overlay.annotation; 
+  });
 }
 
 /**
@@ -198,4 +201,12 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.getAnnotations = function(
  */
 annotorious.mediatypes.openseadragon.Viewer.prototype.highlightAnnotation = function(opt_annotation) {
 
+}
+
+annotorious.mediatypes.openseadragon.Viewer.prototype.destroy = function () {
+ var that = this;
+ goog.array.forEach(this._overlays, function (overlay) {
+   that._osdViewer.removeOverlay(overlay.outer);
+  });
+  this._overlays = [];
 }
