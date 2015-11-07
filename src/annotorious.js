@@ -113,6 +113,8 @@ annotorious.Annotorious.prototype.addAnnotation = function(annotation, opt_repla
   var module = this._getModuleForItemSrc(annotation.src); 
   if (module)
     module.addAnnotation(annotation, opt_replace);
+  else
+    throw new Error("Cannot addAnnotation on falsy module");
 }
 
 /**
@@ -263,9 +265,11 @@ annotorious.Annotorious.prototype.highlightAnnotation = function(annotation) {
 
     if (module)
       module.highlightAnnotation(annotation);
+    else
+      throw new Error("Cannot highlight annotation on falsy module");
   } else {
     goog.array.forEach(this._modules, function(module) {
-      module.highlightAnnotation();
+      module.highlightAnnotation(); /* TODO this probably needs error checking exactly like the above 4 lines */
     });
   }
 }

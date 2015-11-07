@@ -117,10 +117,15 @@ annotorious.mediatypes.openseadragon.Viewer.prototype._updateHighlight = functio
  * Adds an annotation to the viewer.
  * @param {annotorious.Annotation} annotation the annotation
  */
-annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(annotation) {  
+annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(annotation, opt_replace) {  
   var geometry = annotation.shapes[0].geometry;
   var outer = goog.dom.createDom('div', 'annotorious-ol-boxmarker-outer');
   var inner = goog.dom.createDom('div', 'annotorious-ol-boxmarker-inner');
+
+  if (!opt_replace) {
+    throw new Error("Replacing annotations on OpenSeadragon module is currently not supported");
+  }
+
   goog.style.setSize(inner, '100%', '100%');
   goog.dom.appendChild(outer, inner);
   
@@ -143,6 +148,8 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(a
   
   this._overlays.push(overlay);
   
+  // TODO sapht
+  // TODO why is this sorting necessary/useful?
   goog.array.sort(this._overlays, function(a, b) {
     var shapeA = a.annotation.shapes[0];
     var shapeB = b.annotation.shapes[0];
@@ -155,6 +162,9 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(a
     zIndex++;
   });
   
+  // TODO sapht
+  // TODO is this deprecated? according to OSD docs addOverlay is a
+  // member of Viewer, not Drawer
   this._osdViewer.drawer.addOverlay(outer, rect);
 }
 

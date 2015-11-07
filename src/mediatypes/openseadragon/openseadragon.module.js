@@ -23,6 +23,8 @@ annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.getItemURL = 
 
 /** @inheritDoc **/
 annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator = function(item) {
+  /* NOTE: `item' here is actually an instance of OpenSeadragon.Viewer,
+   * i.e what's produced by x = OpenSeadragon({ ... }) */
   return new annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator(item);
 }
 
@@ -32,8 +34,11 @@ annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = fu
   if (!item.id)
     return false;
     
+  // don't do it this way
+  /*
   if (item.id.indexOf('openseadragon') != 0)
     return false;
+  */
     
   if(!item.hasOwnProperty('drawer'))
     return false;

@@ -163,10 +163,11 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.fromItemCo
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAnnotations = function() {
-// TODO: very loud crickets
+  return this._viewer.getAnnotations();
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getAvailableSelectors = function() {
+// TODO sapht
 // TODO: also crickets
 }
 
@@ -176,6 +177,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.getItem = 
 }
 
 annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator.prototype.setActiveSelector = function(selector) {
+// TODO sapht
 // TODO: why empty?
 }
 
