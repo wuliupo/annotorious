@@ -20,8 +20,8 @@
     //"json.js",
     //"webkit_console.js"
   ],
-  "mode": "ADVANCED",      // "RAW" or "ADVANCED"
-  "level": "VERBOSE",      // "DEFAULT" or "VERBOSE"
-  "pretty-print": false,
+  "mode": "RAW",      // "RAW" or "ADVANCED"
+  "level": "DEFAULT",      // "DEFAULT" or "VERBOSE"
+  "pretty-print": true,
   "debug": false
 }
