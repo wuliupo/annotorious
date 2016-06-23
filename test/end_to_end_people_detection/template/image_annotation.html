@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>Annotorious Hello World Plugin</title>
+    <link rel="stylesheet" href="../../../css/annotorious.css" type="text/css" />
+    <script src="../../../src/jquery-1.11.3.min.js"></script>
+    <!-- <script src="http://localhost:9810/compile?id=annotorious"></script> -->
+    <script src="http://172.16.2.158:9810/compile?id=annotorious"></script>
+    <script>
+      // A Hello World Plugin
+      annotorious.plugin.HelloWorld = function() { }
+
+      annotorious.plugin.HelloWorld.prototype.onInitAnnotator = function(annotator) {
+        annotator.editor.addField('<strong>Hello World</strong>');
+      }
+
+      anno.addPlugin('HelloWorld', {});
+      anno.addHandler('onEditorShown', function(annotation) {
+          document.getElementsByClassName('annotorious-editor-button annotorious-editor-button-save')[0].click();
+      });
+      anno.addHandler('onAnnotationCreated', function(annotation) {
+          annotation.text = annotation.shapes[0].geometry.x*document.getElementById('ptolemy').width + ", "
+                      + annotation.shapes[0].geometry.y*document.getElementById('ptolemy').height + ", " 
+                      + annotation.shapes[0].geometry.width*document.getElementById('ptolemy').width + ", " 
+                      + annotation.shapes[0].geometry.height*document.getElementById('ptolemy').height;
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="image-holder">
+      <img id="ptolemy" src="./images/NULL">
+    </div>
+    <input type="button" value="output" onclick="getAnnotations();" />
+    <script>
+      var origin_src;
+      window.onload = function() {
+          $.post("save2txt.php", {src: document.getElementById('ptolemy').src})
+          .done(function(data) {
+            console.log(data);
+            var res = JSON.parse(data);
+            document.getElementById('ptolemy').src = res.src;
+            anno.makeAnnotatable(document.getElementById('ptolemy'));
+            origin_src = document.getElementById('ptolemy').src;
+          });
+        }
+
+      function getAnnotations() {
+        var annotations = anno.getAnnotations(origin_src);
+
+        $.post("save2txt.php", { filename: 'labels.txt', 
+                                  src: document.getElementById('ptolemy').src, 
+                                  annotations: annotations})
+          .done(function(data) {
+            console.log(data);
+            var res = JSON.parse(data);
+            anno.removeAll();
+            document.getElementById('ptolemy').src = res.src;
+          });
+      }
+
+    </script>
+  </body>
+</html>
