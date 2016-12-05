@@ -104,13 +104,7 @@ annotorious.events.EventType = {
    * The current selection was changed
    */
   SELECTION_CHANGED: 'onSelectionChanged',
-
-    
-  /**
-   * The annotation editor is opening.  Pass the annotation object if it exists.
-   */
-  BEFORE_EDITOR_SHOWN: 'beforeEditorShown',
-
+  
   /**
    * The annotation editor was opened.  Pass the annotation object if it exists.
    */
@@ -149,6 +143,17 @@ annotorious.events.EventType = {
   /**
    * The annotation was clicked.  Pass the annotation object.
    */
-  ANNOTATION_CLICKED: 'onAnnotationClicked'
+  ANNOTATION_CLICKED: 'onAnnotationClicked',
   
+  /**
+   * The annotation was correct.  Pass the annotation object.
+   */
+  ANNOTATION_IS_CORRECT: 'onAnnotationIsCorrect',
+
+
+  /**
+   * The annotation was wrong.  Pass the annotation object.
+   */
+  ANNOTATION_IS_WRONG: 'onAnnotationIsWrong'
+
 };
