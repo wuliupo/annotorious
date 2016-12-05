@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+    <link rel="stylesheet" type="text/css" href="static/css/annotorious.css"/>
+    <script type="text/javascript" src="http://localhost:9810/compile?id=annotorious"></script>
+    <script type="text/javascript" src="static/js/anno-polygon.min.js"></script>
+    <script>
+        anno.addPlugin('PolygonSelector', {activate: true});
+        function init() {
+            var image = document.getElementById('hallstatt');
+            anno.makeAnnotatable(image);
+        }
+        anno.addHandler("onAnnotationCreated", function (annotation) {
+            console.log(annotation.text);
+            if (!annotation.shapes[0].geometry.points) {
+                console.log(annotation.shapes[0].geometry);
+                return;
+            }
+            var points = annotation.shapes[0].geometry.points;
+            console.log(points);
+            for (var i = 0; i < points.length; i++) {
+                console.log(points[i]);
+            }
+        });
+
+        function print_log() {
+            console.log(anno.getAnnotations());
+        }
+
+        function createRectAnno(item_url) {
+            var rectAnno = {
+                /** The URL of the image where the annotation should go **/
+                src: item_url,
+
+                /** The annotation text **/
+                text: 'My annotation',
+
+                /** The annotation shape **/
+                shapes: [{
+                    /** The shape type **/
+                    type: 'rect',
+//                /** 'units' is required unless you want to use relative coordinates! **/
+//                units: 'pixel',
+                    /** The shape geometry (relative coordinates) **/
+                    geometry: {
+                        x: 0.1, y: 0.1, width: 0.4, height: 0.3
+                    }
+                }]
+            };
+            return rectAnno;
+        }
+
+
+        function createPolygonAnno(item_url) {
+            var polygonAnno = {
+                /** The URL of the image where the annotation should go **/
+                src: item_url,
+
+                /** The annotation text **/
+                text: 'Finger Nails',
+
+                /** The annotation shape **/
+                shapes: [{
+                    /** The shape type **/
+                    type: 'polygon',
+//                /** 'units' is required unless you want to use relative coordinates! **/
+//                units: 'pixel',
+                    /** The shape geometry (relative coordinates) **/
+                    geometry: {
+                        points: [
+                            {x: 0.863, y: 0.5506216696269982},
+                            {x: 0.896, y: 0.5506216696269982},
+                            {x: 0.901, y: 0.5843694493783304},
+                            {x: 0.881, y: 0.5932504440497336},
+                        ]
+                    }
+                }]
+            };
+            return polygonAnno;
+        }
+
+        function draw_rectangle(item_url) {
+            anno.addAnnotation(createRectAnno(item_url));
+        }
+
+        function draw_polygon(item_url) {
+            anno.addAnnotation(createPolygonAnno(item_url))
+        }
+
+        function activateRectSelector() {
+            var image_url = document.getElementById("hallstatt").src;
+            anno.setActiveSelector(image_url, "rect_drag");
+            console.log(anno.getActiveSelector(image_url) + " activated");
+        }
+        function show_widget() {
+            var image_url = document.getElementById("hallstatt").src;
+            anno.showSelectionWidget(image_url);
+        }
+
+        function activatePolygonSelector() {
+            var image_url = document.getElementById("hallstatt").src;
+//            anno.hideAnnotations(image_url);
+//            anno.showAnnotations(image_url);
+            anno.setActiveSelector(image_url, "polygon");
+            console.log(anno.getActiveSelector(image_url) + " activated");
+        }
+
+        function showAnno() {
+            anno.showAnnotations();
+        }
+        function hideAnno() {
+            anno.hideAnnotations();
+        }
+
+        function reset() {
+            anno.reset();
+        }
+        window.onload = function () {
+            if (anno) {
+//                draw_polygon();
+            }
+        };
+    </script>
+</head>
+<body>
+<h1>Annotation Test Page</h1>
+<img id="hallstatt" src="static/images/BSXO51OXHOVQ.jpg" class="annotatable" width="650px"/>
+<div>
+    <button onclick="showAnno()">show anno</button>
+    <button onclick="hideAnno()">hide anno</button>
+    <button onclick="activateRectSelector()">rectangle</button>
+    <button onclick="activatePolygonSelector()">polygon</button>
+    <button onclick="reset()">reset</button>
+</div>
+</body>
+</html>

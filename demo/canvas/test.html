@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+</head>
+<body>
+<canvas id="my_canvas" width="800" height="500" style="border:1px solid #0d3349">
+    Your browser does not support the canvas element.
+</canvas>
+<script>
+    var canvas = document.getElementById("my_canvas");
+    var ctx = canvas.getContext("2d");
+
+    function draw_background() {
+//        ctx.fillStyle = "#ddd";
+//        ctx.fillRect(0, 0, 800, 500);
+    }
+
+    function draw_w_line() {
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.moveTo(100, 100);
+        ctx.lineTo(200, 400);
+        ctx.lineTo(400, 250);
+        ctx.lineTo(600, 400);
+        ctx.lineTo(700, 100);
+        ctx.stroke();
+    }
+
+    function draw_circle() {
+        ctx.lineWidth = 15;
+        ctx.beginPath();
+        ctx.arc(400, 250, 200, 0, (1 / 2) * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(400, 250, 200, Math.PI, (3 / 2) * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(400, 250, 150, (3 / 2) * Math.PI, 0);
+        ctx.stroke()
+        ctx.beginPath();
+        ctx.arc(400, 250, 150, (1 / 2) * Math.PI, Math.PI);
+        ctx.stroke()
+    }
+
+    function draw_text() {
+        ctx.font = "75px Arial";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.fillText("WUPOL", canvas.width / 2, canvas.height / 2 - 12);
+//        ctx.strokeText("WUPOL", canvas.width/2, canvas.height/2);
+    }
+
+    function draw_gradient() {
+//        var grd = ctx.createLinearGradient(0, 0, 200, 0)
+        var grd = ctx.createRadialGradient(400, 250, 600, 400, 250, 1);
+        grd.addColorStop(0, "grey");
+        grd.addColorStop(1, "white");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, 800, 500);
+    }
+
+    function circle_clip() {
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 400, 0, 2 * Math.PI);
+        ctx.clip();
+    }
+
+    function draw_oval() {
+        ctx.beginPath();
+        var x = 50, y = 50, radius = 50;
+
+        //save state
+        ctx.save();
+
+        //translate context
+//        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.translate(0, 0);
+
+        // scale context horizontally
+        ctx.scale(1, 3);
+
+        // draw circle witch will be stretched into an oval
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+
+        //restore to original state
+        ctx.restore();
+
+        //apply styling
+        //ctx.fillStyle = "#8ED6FF";
+        //ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+    }
+
+    function drawRectOval(x, y, width, height, lineWidth) {
+        var radius = (width > height ? height : width) / 2;
+        var scaleProportion = width / height;
+        var scaleX = scaleProportion > 1 ? scaleProportion : 1;
+        var scaleY = scaleProportion < 1 ? 1 / scaleProportion : 1;
+        ctx.beginPath();
+        ctx.save();
+//        ctx.translate(canvas.width / 2, canvas.height / 2);
+//        ctx.translate(canvas.width, canvas.height);
+        ctx.scale(scaleX, scaleY);
+        ctx.beginPath();
+        ctx.arc(middleX, middleY, radius, 0, 2 * Math.PI, false);
+        ctx.restore();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+    }
+
+    function drawRectangle(x, y, width, height, lineWidth) {
+        ctx.beginPath();
+        ctx.save();
+        ctx.rect(x, y, width, height);
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.restore();
+    }
+
+
+    //    circle_clip();
+    draw_gradient();
+    draw_background();
+    draw_w_line();
+    draw_circle();
+    draw_text();
+    draw_oval();
+    drawRectOval(0, 0, 100, 200, 1);
+    drawRectangle(0, 0, 100, 400, 1);
+</script>
+</body>
+</html>
