@@ -9,6 +9,8 @@ goog.require('annotorious.mediatypes.image.ImageModule');
 goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
 goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
 
+goog.require('annotorious.Hint');
+
 /**
  * The main entrypoint to the application. The Annotorious class is instantiated exactly once,
  * and added to the global window object as 'window.anno'. It exposes the external JavaScript API
@@ -417,6 +419,10 @@ annotorious.Annotorious.prototype.showSelectionWidget = function (opt_item_url) 
             module.showSelectionWidget();
         });
     }
+}
+
+annotorious.Annotorious.prototype.hideHint = function () {
+    console.log("TODO: Remove default annotation");
 }
 
 window['anno'] = new annotorious.Annotorious();

@@ -120,12 +120,21 @@
         window.onload = function () {
             if (anno) {
 //                draw_polygon();
+                anno.hideHint();
             }
         };
     </script>
 </head>
 <body>
 <h1>Annotation Test Page</h1>
+<p>
+    <strong>NOTE:</strong> make sure the plovr build tool is running! Use
+</p>
+<p>
+    <code>java -jar plovr/plovr.jar serve standalone.json</code>
+</p>
+to start plovr.
+</p>
 <img id="hallstatt" src="static/images/BSXO51OXHOVQ.jpg" class="annotatable" width="650px"/>
 <div>
     <button onclick="showAnno()">show anno</button>
