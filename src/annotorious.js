@@ -6,10 +6,10 @@ goog.require('annotorious.dom');
 goog.require('annotorious.events');
 goog.require('annotorious.mediatypes.Module');
 goog.require('annotorious.mediatypes.image.ImageModule');
-goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
-goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
+// goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
+// goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
 
-goog.require('annotorious.Hint');
+// goog.require('annotorious.Hint');
 
 /**
  * The main entrypoint to the application. The Annotorious class is instantiated exactly once,
@@ -50,8 +50,8 @@ annotorious.Annotorious.prototype._init = function () {
     });
 
     goog.array.forEach(this._plugins, function (plugin) {
-        if (plugin.initPlugin)
-            plugin.initPlugin(self);
+        // if (plugin.initPlugin)
+        //     plugin.initPlugin(self);
 
         goog.array.forEach(self._modules, function (module) {
             module.addPlugin(plugin);
@@ -421,8 +421,8 @@ annotorious.Annotorious.prototype.showSelectionWidget = function (opt_item_url) 
     }
 }
 
-annotorious.Annotorious.prototype.hideHint = function () {
-    console.log("TODO: Remove default annotation");
-}
+// annotorious.Annotorious.prototype.hideHint = function () {
+//     console.log("TODO: Remove default annotation");
+// }
 
 window['anno'] = new annotorious.Annotorious();

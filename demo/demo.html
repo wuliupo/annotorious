@@ -5,9 +5,12 @@
     <title>Demo</title>
     <link rel="stylesheet" type="text/css" href="static/css/annotorious.css"/>
     <script type="text/javascript" src="http://localhost:9810/compile?id=annotorious"></script>
-    <script type="text/javascript" src="static/js/anno-polygon.min.js"></script>
+    <!--<script type="text/javascript" src="static/js/anno-polygon.min.js"></script>-->
+    <script type="text/javascript" src="../src/selection/polygon_selector.js"></script>
+    <!--<script type="text/javascript" src="../src/selection/oval_selector.js"></script>-->
     <script>
         anno.addPlugin('PolygonSelector', {activate: true});
+//        anno.addPlugin('OvalSelector', {activate: true});
         function init() {
             var image = document.getElementById('hallstatt');
             anno.makeAnnotatable(image);
@@ -107,6 +110,12 @@
             console.log(anno.getActiveSelector(image_url) + " activated");
         }
 
+        function activateOvalSelector() {
+            var image_url = document.getElementById("hallstatt").src;
+            anno.setActiveSelector(image_url, "oval");
+            console.log(anno.getActiveSelector(image_url) + " activated");
+        }
+
         function showAnno() {
             anno.showAnnotations();
         }
@@ -120,7 +129,7 @@
         window.onload = function () {
             if (anno) {
 //                draw_polygon();
-                anno.hideHint();
+//                anno.hideHint();
             }
         };
     </script>
@@ -141,6 +150,7 @@ to start plovr.
     <button onclick="hideAnno()">hide anno</button>
     <button onclick="activateRectSelector()">rectangle</button>
     <button onclick="activatePolygonSelector()">polygon</button>
+    <button onclick="activateOvalSelector()">oval</button>
     <button onclick="reset()">reset</button>
 </div>
 </body>

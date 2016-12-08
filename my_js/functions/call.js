@@ -68,6 +68,6 @@ function using_call_to_invoke_a_function_and_specifying_the_context_for_this() {
     };
     greet.call(god);
 }
-// using_call_to_chain_constructors();
+
 // using_call_to_invoke_an_anonymous_function();
 using_call_to_invoke_a_function_and_specifying_the_context_for_this();

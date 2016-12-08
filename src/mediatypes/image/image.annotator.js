@@ -14,6 +14,7 @@ goog.require('annotorious.Popup');
 goog.require('annotorious.mediatypes.Annotator');
 goog.require('annotorious.mediatypes.image.Viewer');
 goog.require('annotorious.plugins.selection.RectDragSelector');
+goog.require('annotorious.plugins.selection.OvalSelector');
 goog.require('annotorious.templates.image');
 
 /**
@@ -24,8 +25,6 @@ goog.require('annotorious.templates.image');
  */
 annotorious.mediatypes.image.ImageAnnotator = function (item, opt_popup) {
     annotorious.mediatypes.Annotator.call();
-
-    var hint;
 
     /** The container DOM element (DIV) for the annotation layer **/
     this.element;
@@ -82,7 +81,7 @@ annotorious.mediatypes.image.ImageAnnotator = function (item, opt_popup) {
         {width: img_bounds.width, height: img_bounds.height});
 
     if (annotorious.events.ui.hasMouse)
-        goog.style.showElement(this._editCanvas, false);
+        goog.style.setElementShown(this._editCanvas, false);
     goog.dom.appendChild(this.element, this._editCanvas);
 
     if (opt_popup)
@@ -90,14 +89,15 @@ annotorious.mediatypes.image.ImageAnnotator = function (item, opt_popup) {
     else
         this.popup = new annotorious.Popup(this);
 
-    var default_selector = new annotorious.plugins.selection.RectDragSelector();
+    // var default_selector = new annotorious.plugins.selection.RectDragSelector();
+    var default_selector = new annotorious.plugins.selection.OvalSelector();
     default_selector.init(this, this._editCanvas);
     this._selectors.push(default_selector);
     this._currentSelector = default_selector;
 
     this.editor = new annotorious.Editor(this);
     this._viewer = new annotorious.mediatypes.image.Viewer(this._viewCanvas, this);
-    this._hint = new annotorious.Hint(this, this.element);
+    // this._hint = new annotorious.Hint(this, this.element);
 
     var self = this;
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>What is this?</title>
+    <script>
+        function test_this() {
+            return this;
+        }
+        var i_wonder_what_this_is = test_this();
+        console.log(i_wonder_what_this_is);
+        //        alert(i_wonder_what_this_is);
+
+        function click_handler() {
+            console.log(this);
+        }
+
+        function BigComputer(answer) {
+            this.the_answer = answer;
+            this.ask_question = function () {
+                console.log(this.the_answer);
+            };
+        }
+
+        function addHandler() {
+            document.getElementById('thebutton').onclick = click_handler;
+
+            var deep_thought = new BigComputer(42),
+                the_button = document.getElementById("ask");
+            the_button.onclick = deep_thought.ask_question;
+
+            var ask_button = document.getElementById("askdt");
+            ask_button.onclick = deep_thought.ask_question.call(deep_thought);//call executes immediately
+
+            var right_button = document.getElementById("asktheone");
+            right_button.onclick = deep_thought.ask_question.bind(deep_thought);
+        }
+
+        window.onload = addHandler;
+    </script>
+</head>
+<body>
+<button id="button" onclick="click_handler()">Click Me!</button>
+<button id="thebutton">The Button</button>
+<button id="ask">Ask Deep Thought</button>
+<button id="askdt">Not working</button>
+<button id="asktheone">Ask The Right One</button>
+</body>
+</html>
