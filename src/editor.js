@@ -135,13 +135,6 @@ annotorious.Editor.prototype.open = function (opt_annotation) {
                 });
                 goog.dom.classes.addRemove(this, 'annotorious-type-selector-normal', 'annotorious-type-selector-focus');
                 self._type = this.name;
-                goog.array.forEach(Symptoms, function (symptom) {
-                    if (symptom['ename'] === self._type) {
-                        self.getAnnotation().shapes[0].style = {
-                            outline: symptom['bcolor']
-                        };
-                    }
-                });
             });
         });
         if (!hasDefault) {

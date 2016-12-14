@@ -165,6 +165,7 @@
 /** Editor **/
 
 .annotorious-editor {
+    max-width: 300px;
     line-height: normal;
     padding: 0px 0px 2px 0px;
     background-color: #f2f2f2;
@@ -186,7 +187,7 @@
     border-color: #ccc;
     line-height: normal;
     background-color: #fff;
-    width: 240px;
+    width: 100%;
     height: 50px;
     outline: none;
     font-family: Verdana, Arial;
@@ -284,4 +285,33 @@ html.hasTouch .annotator-viewer li .annotator-controls {
     opacity: 1;
 }
 
+.annotorious-type-selector-container {
+    padding: 2px 0 0 2px;
+}
 
+.annotorious-type-selector-container .annotorious-type-selector {
+    display: inline-block;
+    width: auto;
+    height: 20px;
+    line-height: 16px;
+    padding: 2px 2px 2px 2px;
+    margin: 2px 2px 0 2px;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: "微软雅黑", arial, sans-serif;
+    border-bottom: 2px solid !important;
+}
+
+.annotorious-type-selector-container .annotorious-type-selector:hover {
+    font-weight: bold;
+}
+
+.annotorious-type-selector-focus {
+    border: 2px solid !important;
+    padding-top: 0px !important;
+}
+
+.annotorious-type-selector-normal {
+    font-weight: normal;
+    color: #545454;
+}

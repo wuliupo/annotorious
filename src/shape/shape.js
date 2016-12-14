@@ -24,6 +24,22 @@ annotorious.shape.Shape = function (type, geometry, units, style) {
 }
 
 /**
+ * Set shape style by symptom's type(ename)
+ * @param ename
+ */
+annotorious.shape.Shape.prototype.setStyleByType = function (type) {
+    if (!Symptoms) return;
+    var self = this;
+    goog.array.forEach(Symptoms, function (symptom) {
+        if (symptom['ename'] === type) {
+            self.style = {
+                outline: symptom['bcolor']
+            };
+        }
+    });
+};
+
+/**
  * Possible shape types
  * @enum {string}
  */
@@ -217,3 +233,5 @@ annotorious.shape.transform = function (shape, transformationFn) {
 annotorious.shape.hashCode = function (shape) {
     return JSON.stringify(shape.geometry);
 }
+
+

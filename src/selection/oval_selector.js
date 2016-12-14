@@ -27,19 +27,10 @@ annotorious.plugins.selection.OvalSelector.prototype.init = function (annotator,
     this._HI_OUTLINE = '#ffffff';
 
     /** @private **/
-    this._STROKE = '#ffffff';
+    this._STROKE_WIDTH = 2;
 
     /** @private **/
-    this._FILL = false;
-
-    /** @private **/
-    this._OUTLINE_WIDTH = 1;
-
-    /** @private **/
-    this._STROKE_WIDTH = 1;
-
-    /** @private **/
-    this._HI_STROKE_WIDTH = 2;
+    this._HI_STROKE_WIDTH = 3;
 
     /** @private **/
     this._canvas = canvas;
@@ -98,9 +89,7 @@ annotorious.plugins.selection.OvalSelector.prototype._attachListener = function 
     this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function (event) {
         var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
         var shape = self.getShape();
-        console.log(shape);
         event = (event.event_) ? event.event_ : event;
-
         self._enabled = false;
 
         if (shape) {
@@ -159,15 +148,8 @@ annotorious.plugins.selection.OvalSelector.prototype.setProperties = function (p
     if (props.hasOwnProperty('stroke'))
         this._STROKE = props['stroke'];
 
-    if (props.hasOwnProperty('fill'))
-        this._FILL = props['fill'];
-
-    if (props.hasOwnProperty('outline_width'))
-        this._OUTLINE_WIDTH = props['outline_width'];
-
     if (props.hasOwnProperty('stroke_width'))
         this._STROKE_WIDTH = props['stroke_width'];
-
 }
 
 /**
@@ -263,7 +245,6 @@ annotorious.plugins.selection.OvalSelector.prototype.drawShape = function (g2d, 
     }
 
     geom = shape.geometry;
-
 
     var x = geom.x;
     var y = geom.y;

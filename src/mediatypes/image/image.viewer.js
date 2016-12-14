@@ -245,7 +245,6 @@ annotorious.mediatypes.image.Viewer.prototype._draw = function (shape, highlight
     var selector = goog.array.find(this._annotator.getAvailableSelectors(), function (selector) {
         return selector.getSupportedShapeType() == shape.type;
     });
-
     if (selector)
         selector.drawShape(this._g2d, shape, highlight);
     else
@@ -257,15 +256,18 @@ annotorious.mediatypes.image.Viewer.prototype._draw = function (shape, highlight
  */
 annotorious.mediatypes.image.Viewer.prototype.redraw = function () {
     this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
-
     var self = this;
     goog.array.forEach(this._annotations, function (annotation) {
-        if (annotation != self._currentAnnotation)
-            self._draw(self._shapes[annotorious.shape.hashCode(annotation.shapes[0])]);
+        if (annotation != self._currentAnnotation) {
+            var shape = self._shapes[annotorious.shape.hashCode(annotation.shapes[0])];
+            shape.setStyleByType(annotation.type);
+            self._draw(shape);
+        }
     });
 
     if (this._currentAnnotation) {
         var shape = this._shapes[annotorious.shape.hashCode(this._currentAnnotation.shapes[0])];
+        shape.setStyleByType(this._currentAnnotation.type);
         this._draw(shape, true);
         var bbox = annotorious.shape.getBoundingRect(shape).geometry;
         this._annotator.popup.show(this._currentAnnotation, new annotorious.shape.geom.Point(bbox.x, bbox.y + bbox.height + 5));

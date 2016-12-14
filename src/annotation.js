@@ -7,7 +7,7 @@ goog.require('annotorious.shape');
  * @param {string} src the source URL of the annotated object
  * @param {string} text the annotation text
  * @param {annotorious.shape.Shape} shape the annotated fragment shape
- * @param {type} type the annotation type(add By Bain)
+ * @param {type} type the annotation symptom type(add By Bain)
  * @constructor
  */
 annotorious.Annotation = function (src, text, shape, type) {
