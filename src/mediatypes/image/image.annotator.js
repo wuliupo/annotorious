@@ -35,6 +35,9 @@ annotorious.mediatypes.image.ImageAnnotator = function (item, opt_popup) {
     /** The popup for this annotator (public for use by plugins) **/
     this.popup;
 
+    /** The type selector **/
+    this.typeSelectors;
+
     /** @private **/
     this._image = item;
 
@@ -131,7 +134,7 @@ annotorious.mediatypes.image.ImageAnnotator = function (item, opt_popup) {
 
     this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function () {
         if (annotorious.events.ui.hasMouse)
-            goog.style.showElement(self._editCanvas, false);
+            goog.style.setElementShown(self._editCanvas, false);
         self._currentSelector.stopSelection();
     });
 }
@@ -179,6 +182,13 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.addSelector = function (se
 }
 
 /**
+ * Add Type Selectors
+ */
+annotorious.mediatypes.image.ImageAnnotator.prototype.setTypeSelectors = function (typeSelectors) {
+    this.typeSelectors = typeSelectors;
+}
+
+/**
  * Destroys this annotator instance.
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.destroy = function () {
@@ -203,7 +213,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function 
 
     // Step 3 - open annotation in editor
     if (selector) {
-        goog.style.showElement(this._editCanvas, true);
+        goog.style.setElementShown(this._editCanvas, true);
         this._viewer.highlightAnnotation(false);
 
         // TODO make editable - not just draw (selector implementation required)
@@ -309,7 +319,7 @@ annotorious.mediatypes.image.ImageAnnotator.getItemURL = function (item) {
  * Hides annotations (and all other Annotorious elements).
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.hideAnnotations = function () {
-    goog.style.showElement(this._viewCanvas, false);
+    goog.style.setElementShown(this._viewCanvas, false);
 }
 
 /**
@@ -352,7 +362,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.setProperties = function (
  * Shows annotations (and all other Annotorious elements).
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.showAnnotations = function () {
-    goog.style.showElement(this._viewCanvas, true);
+    goog.style.setElementShown(this._viewCanvas, true);
 }
 
 /**
@@ -370,7 +380,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.showSelectionWidget = func
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.stopSelection = function (opt_original_annotation) {
     if (annotorious.events.ui.hasMouse)
-        goog.style.showElement(this._editCanvas, false);
+        goog.style.setElementShown(this._editCanvas, false);
 
     this._currentSelector.stopSelection();
 
@@ -401,6 +411,7 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates = functi
 
 /** API exports **/
 annotorious.mediatypes.image.ImageAnnotator.prototype['addSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.addSelector;
+annotorious.mediatypes.image.ImageAnnotator.prototype['setTypeSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.setTypeSelectors;
 annotorious.mediatypes.image.ImageAnnotator.prototype['fireEvent'] = annotorious.mediatypes.image.ImageAnnotator.prototype.fireEvent;
 annotorious.mediatypes.image.ImageAnnotator.prototype['setCurrentSelector'] = annotorious.mediatypes.image.ImageAnnotator.prototype.setCurrentSelector;
 annotorious.mediatypes.image.ImageAnnotator.prototype['toItemCoordinates'] = annotorious.mediatypes.image.ImageAnnotator.prototype.toItemCoordinates;

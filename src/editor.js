@@ -44,6 +44,15 @@ annotorious.Editor = function (annotator) {
     /** @private **/
     this._extraFields = [];
 
+    /** @private **/
+    this._typeSelectorContainer = goog.dom.query('.annotorious-type-selector-container', this.element)[0];
+
+    /** @private **/
+    this._typeSelectors;
+
+    /** @private **/
+    this._type;
+
     var self = this;
     goog.events.listen(this._btnCancel, goog.events.EventType.CLICK, function (event) {
         event.preventDefault();
@@ -97,11 +106,49 @@ annotorious.Editor.prototype.addField = function (field) {
  * @param {annotorious.Annotation=} opt_annotation the annotation to edit (or undefined)
  * @param {Object=} opt_event the event, if any
  */
-annotorious.Editor.prototype.open = function (opt_annotation, opt_event) {
+annotorious.Editor.prototype.open = function (opt_annotation) {
+    /** @private **/
     this._annotator.fireEvent(annotorious.events.EventType.BEFORE_EDITOR_SHOWN, opt_annotation);
 
     this._original_annotation = opt_annotation;
     this._current_annotation = opt_annotation;
+
+    if (this._annotator.typeSelectors) {
+        this._typeSelectors = this._annotator.typeSelectors;
+        var selectors = goog.soy.renderAsFragment(annotorious.templates.typeSelectors, {
+            selectors: this._typeSelectors
+        });
+        goog.dom.removeChildren(this._typeSelectorContainer);
+        goog.dom.appendChild(this._typeSelectorContainer, selectors);
+        var selector_buttons = goog.dom.query('.annotorious-type-selector', this._typeSelectorContainer);
+        var self = this;
+        var hasDefault = false;
+        goog.array.forEach(selector_buttons, function (selector_button) {
+            if (opt_annotation && selector_button.name === opt_annotation.type) {
+                goog.dom.classes.addRemove(selector_button, 'annotorious-type-selector-normal', 'annotorious-type-selector-focus');
+                hasDefault = true;
+            }
+            goog.events.listen(selector_button, goog.events.EventType.CLICK, function (event) {
+                event.preventDefault();
+                goog.array.forEach(selector_buttons, function (button) {
+                    goog.dom.classes.addRemove(button, 'annotorious-type-selector-focus', 'annotorious-type-selector-normal');
+                });
+                goog.dom.classes.addRemove(this, 'annotorious-type-selector-normal', 'annotorious-type-selector-focus');
+                self._type = this.name;
+                goog.array.forEach(Symptoms, function (symptom) {
+                    if (symptom['ename'] === self._type) {
+                        self.getAnnotation().shapes[0].style = {
+                            outline: symptom['bcolor']
+                        };
+                    }
+                });
+            });
+        });
+        if (!hasDefault) {
+            var button = goog.dom.query('.annotorious-type-selector', this._typeSelectorContainer)[0];
+            button.click();
+        }
+    }
 
     if (opt_annotation)
         this._textarea.setValue(opt_annotation.text);
@@ -146,14 +193,13 @@ annotorious.Editor.prototype.getAnnotation = function () {
     var sanitized = goog.string.html.htmlSanitize(this._textarea.getValue(), function (url) {
         return url;
     });
-
     if (this._current_annotation) {
         this._current_annotation.text = sanitized;
+        this._current_annotation.type = this._type;
     } else {
         this._current_annotation =
-            new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());
+            new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape(), this._type);
     }
-
     return this._current_annotation;
 }
 

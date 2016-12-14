@@ -72,34 +72,20 @@ annotorious.shape.intersects = function (shape, px, py) {
     } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
         var points = shape.geometry.points;
         var inside = false;
-
-        var j = points.length - 1;
-        for (var i = 0; i < points.length; i++) {
+        for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
             if ((points[i].y > py) != (points[j].y > py) &&
                 (px < (points[j].x - points[i].x) * (py - points[i].y) / (points[j].y - points[i].y) + points[i].x)) {
                 inside = !inside;
             }
-            j = i;
         }
-
         return inside;
     } else if (shape.type == annotorious.shape.ShapeType.OVAL) {
-        if (px < shape.geometry.x)
-            return false;
-
-        if (py < shape.geometry.y)
-            return false;
-
-        if (px > shape.geometry.x + shape.geometry.width)
-            return false;
-
-        if (py > shape.geometry.y + shape.geometry.height)
-            return false;
-
-        return true;
+        var centerX = shape.geometry.x + shape.geometry.width / 2;
+        var centerY = shape.geometry.y + shape.geometry.height / 2;
+        var radiusX = shape.geometry.width / 2;
+        var radiusY = shape.geometry.height / 2;
+        return Math.pow((px - centerX) / radiusX, 2) + Math.pow((py - centerY) / radiusY, 2) <= 1;
     }
-
-    return false;
 }
 
 /**
@@ -223,7 +209,7 @@ annotorious.shape.transform = function (shape, transformationFn) {
 
 /**
  * Computes a 'hashCode' for the specified shape. Not the nicest (and most performat?)
- * way to do it. But we need a useful .toString kind-of fuctionality to use for hashtable
+ * way to do it. But we need a useful .toString kind-of functionality to use for hash table
  * keys in the viewer!
  * @param {annotorious.shape.Shape} shape the shape
  * @return {string} a 'hashcode' for the shape

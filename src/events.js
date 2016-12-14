@@ -7,9 +7,9 @@ goog.require('goog.events');
  * A central 'event bus' to distribute the annotation lifecycle events.
  * @constructor
  */
-annotorious.events.EventBroker = function() {
-  /** @private **/
-  this._handlers = [];
+annotorious.events.EventBroker = function () {
+    /** @private **/
+    this._handlers = [];
 }
 
 /**
@@ -17,11 +17,11 @@ annotorious.events.EventBroker = function() {
  * @param {annotorious.events.EventType} type the event type
  * @param {Function} handler the handler function to add
  */
-annotorious.events.EventBroker.prototype.addHandler = function(type, handler) {
-  if (!this._handlers[type]) 
-    this._handlers[type] = [];
+annotorious.events.EventBroker.prototype.addHandler = function (type, handler) {
+    if (!this._handlers[type])
+        this._handlers[type] = [];
 
-  this._handlers[type].push(handler);  
+    this._handlers[type].push(handler);
 }
 
 /**
@@ -29,34 +29,34 @@ annotorious.events.EventBroker.prototype.addHandler = function(type, handler) {
  * @param {annotorious.events.EventType} type the event type
  * @param {Function} handler the handler function to remove
  */
-annotorious.events.EventBroker.prototype.removeHandler = function(type, handler) {
-  var handlers = this._handlers[type];
-  if (handlers)
-    goog.array.remove(handlers, handler);  
+annotorious.events.EventBroker.prototype.removeHandler = function (type, handler) {
+    var handlers = this._handlers[type];
+    if (handlers)
+        goog.array.remove(handlers, handler);
 }
 
 /**
  * Fires an event, triggering execution of all registered handlers.
  * Event handlers may optionally return a boolean value to indicate whether
- * further steps following the event should be canceled (e.g. in case of 
+ * further steps following the event should be canceled (e.g. in case of
  * annotation removal). If there is no return value (or the return value is
- * 'true'), no action will be taken by Annotorious. 
+ * 'true'), no action will be taken by Annotorious.
  * @param {annotorious.events.EventType} type the event type
  * @param {Object=} opt_event the event object
  * @return {boolean} the 'cancel event' flag
  */
-annotorious.events.EventBroker.prototype.fireEvent = function(type, opt_event, opt_extra) {
-  var cancelEvent = false;
-  var handlers = this._handlers[type];
-  if (handlers) {
-    goog.array.forEach(handlers, function(handler, idx, array) {
-      var retVal = handler(opt_event, opt_extra);
-      if (goog.isDef(retVal) && !retVal)
-        cancelEvent = true;
-    });
-  }    
+annotorious.events.EventBroker.prototype.fireEvent = function (type, opt_event, opt_extra) {
+    var cancelEvent = false;
+    var handlers = this._handlers[type];
+    if (handlers) {
+        goog.array.forEach(handlers, function (handler, idx, array) {
+            var retVal = handler(opt_event, opt_extra);
+            if (goog.isDef(retVal) && !retVal)
+                cancelEvent = true;
+        });
+    }
 
-  return cancelEvent;
+    return cancelEvent;
 }
 
 /**
@@ -65,90 +65,90 @@ annotorious.events.EventBroker.prototype.fireEvent = function(type, opt_event, o
  */
 annotorious.events.EventType = {
 
-  /**
-   * The mouse entered the annotatable media area
-   */
-  MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
+    /**
+     * The mouse entered the annotatable media area
+     */
+    MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
 
-  /**
-   * The mouse moved out of the annotatable media area
-   */
-  MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
+    /**
+     * The mouse moved out of the annotatable media area
+     */
+    MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
 
-  /** 
-   * The mouse entered an annotation
-   */ 
-  MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
+    /**
+     * The mouse entered an annotation
+     */
+    MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
 
-  /** 
-   * The mouse moved out of an annotation
-   */ 
-  MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
+    /**
+     * The mouse moved out of an annotation
+     */
+    MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
 
-  /**
-   * A new selection was started
-   */
-  SELECTION_STARTED: 'onSelectionStarted',
-  
-  /**
-   * The current selection was canceled
-   */
-  SELECTION_CANCELED: 'onSelectionCanceled',
-  
-  /** 
-   * The current selection was completed
-   */
-  SELECTION_COMPLETED: 'onSelectionCompleted',
-  
-  /** 
-   * The current selection was changed
-   */
-  SELECTION_CHANGED: 'onSelectionChanged',
+    /**
+     * A new selection was started
+     */
+    SELECTION_STARTED: 'onSelectionStarted',
 
-    
-  /**
-   * The annotation editor is opening.  Pass the annotation object if it exists.
-   */
-  BEFORE_EDITOR_SHOWN: 'beforeEditorShown',
+    /**
+     * The current selection was canceled
+     */
+    SELECTION_CANCELED: 'onSelectionCanceled',
 
-  /**
-   * The annotation editor was opened.  Pass the annotation object if it exists.
-   */
-  EDITOR_SHOWN: 'onEditorShown',
-  
-  /**
-   * The annotation popop was opened.  Pass the annotation object.
-   */
-  POPUP_SHOWN: 'onPopupShown',
+    /**
+     * The current selection was completed
+     */
+    SELECTION_COMPLETED: 'onSelectionCompleted',
 
-  /**
-   * The annotation popup widget is about to hide
-   */
-  BEFORE_POPUP_HIDE: 'beforePopupHide',
+    /**
+     * The current selection was changed
+     */
+    SELECTION_CHANGED: 'onSelectionChanged',
 
-  /**
-   * The annotation is about to be removed
-   */
-  BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
 
-  /**
-   * An annotation was removed
-   */
-  ANNOTATION_REMOVED: 'onAnnotationRemoved',
+    /**
+     * The annotation editor is opening.  Pass the annotation object if it exists.
+     */
+    BEFORE_EDITOR_SHOWN: 'beforeEditorShown',
 
-  /**
-   * An annotation was created
-   */
-  ANNOTATION_CREATED: 'onAnnotationCreated',
-  
-  /**
-   * An existing annotation was updated
-   */
-  ANNOTATION_UPDATED: 'onAnnotationUpdated',
+    /**
+     * The annotation editor was opened.  Pass the annotation object if it exists.
+     */
+    EDITOR_SHOWN: 'onEditorShown',
 
-  /**
-   * The annotation was clicked.  Pass the annotation object.
-   */
-  ANNOTATION_CLICKED: 'onAnnotationClicked'
-  
+    /**
+     * The annotation popop was opened.  Pass the annotation object.
+     */
+    POPUP_SHOWN: 'onPopupShown',
+
+    /**
+     * The annotation popup widget is about to hide
+     */
+    BEFORE_POPUP_HIDE: 'beforePopupHide',
+
+    /**
+     * The annotation is about to be removed
+     */
+    BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
+
+    /**
+     * An annotation was removed
+     */
+    ANNOTATION_REMOVED: 'onAnnotationRemoved',
+
+    /**
+     * An annotation was created
+     */
+    ANNOTATION_CREATED: 'onAnnotationCreated',
+
+    /**
+     * An existing annotation was updated
+     */
+    ANNOTATION_UPDATED: 'onAnnotationUpdated',
+
+    /**
+     * The annotation was clicked.  Pass the annotation object.
+     */
+    ANNOTATION_CLICKED: 'onAnnotationClicked'
+
 };

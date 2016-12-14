@@ -26,6 +26,25 @@ annotorious.plugin.PolygonSelector.Selector = function () {
 }
 
 annotorious.plugin.PolygonSelector.Selector.prototype.init = function (annotator, canvas) {
+
+    /** @private **/
+    this._OUTLINE = '#ffffff';
+
+    /** @private **/
+    this._HI_OUTLINE = '#ffffff';
+
+    /** @private **/
+    this._STROKE = '#ffffff';
+
+    /** @private **/
+    this._OUTLINE_WIDTH = 1;
+
+    /** @private **/
+    this._STROKE_WIDTH = 1;
+
+    /** @private **/
+    this._HI_STROKE_WIDTH = 2;
+
     /** @private **/
     this._annotator = annotator;
 
@@ -259,8 +278,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype.getViewportBounds = functi
 
         if (pt.y < top)
             top = pt.y;
-    }
-    ;
+    };
 
     return {top: top, right: right, bottom: bottom, left: left};
 }
@@ -269,30 +287,33 @@ annotorious.plugin.PolygonSelector.Selector.prototype.getViewportBounds = functi
  * TODO not sure if this is really the best way/architecture to handle viewer shape drawing
  */
 annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function (g2d, shape, highlight) {
-    var color;
+
+    var color, stroke_width;
     if (highlight) {
-        color = '#fff000';
+        color = shape.style.outline || this._OUTLINE;
+        stroke_width = this._HI_STROKE_WIDTH;
     } else {
-        color = '#ffffff';
+        color = shape.style.outline || this._OUTLINE;
+        stroke_width = this._STROKE_WIDTH;
     }
 
     // TODO check if it's really a polyogn
 
     // Outer line
-    g2d.lineWidth = 1.3;
-    g2d.strokeStyle = '#000000';
+    // g2d.lineWidth = stroke_width;
+    // g2d.strokeStyle = '#000000';
 
-    var outline = annotorious.geometry.expand(shape, 1.2).geometry.points;
-    g2d.beginPath();
-    g2d.moveTo(outline[0].x, outline[0].y);
-    for (var i = 1; i < outline.length; i++) {
-        g2d.lineTo(outline[i].x, outline[i].y);
-    }
-    g2d.lineTo(outline[0].x, outline[0].y);
-    g2d.stroke();
+    // var outline = annotorious.geometry.expand(shape, 1.2).geometry.points;
+    // g2d.beginPath();
+    // g2d.moveTo(outline[0].x, outline[0].y);
+    // for (var i = 1; i < outline.length; i++) {
+    //     g2d.lineTo(outline[i].x, outline[i].y);
+    // }
+    // g2d.lineTo(outline[0].x, outline[0].y);
+    // g2d.stroke();
 
     // Inner line
-    g2d.lineWidth = 1.2;
+    g2d.lineWidth = stroke_width;
     g2d.strokeStyle = color;
 
     var points = shape.geometry.points;

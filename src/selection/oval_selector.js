@@ -21,7 +21,10 @@ annotorious.plugins.selection.OvalSelector = function () {
  */
 annotorious.plugins.selection.OvalSelector.prototype.init = function (annotator, canvas) {
     /** @private **/
-    this._OUTLINE = '#000000';
+    this._OUTLINE = '#ffffff';
+
+    /** @private **/
+    this._HI_OUTLINE = '#ffffff';
 
     /** @private **/
     this._STROKE = '#ffffff';
@@ -34,6 +37,9 @@ annotorious.plugins.selection.OvalSelector.prototype.init = function (annotator,
 
     /** @private **/
     this._STROKE_WIDTH = 1;
+
+    /** @private **/
+    this._HI_STROKE_WIDTH = 2;
 
     /** @private **/
     this._canvas = canvas;
@@ -66,7 +72,7 @@ annotorious.plugins.selection.OvalSelector.prototype._attachListener = function 
     var self = this;
     var canvas = this._canvas;
 
-    this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function (event) {
+    this._mouseMoveListener = goog.events.listen(canvas, annotorious.events.ui.EventType.MOVE, function (event) {
         var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
         if (self._enabled) {
             self._opposite = {x: points.x, y: points.y};
@@ -92,6 +98,7 @@ annotorious.plugins.selection.OvalSelector.prototype._attachListener = function 
     this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function (event) {
         var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
         var shape = self.getShape();
+        console.log(shape);
         event = (event.event_) ? event.event_ : event;
 
         self._enabled = false;
@@ -199,8 +206,8 @@ annotorious.plugins.selection.OvalSelector.prototype.getShape = function () {
         var oval = this._annotator.toItemCoordinates({
             x: viewportBounds.left,
             y: viewportBounds.top,
-            width: viewportBounds.left - viewportBounds.right,
-            height: viewportBounds.top - viewportBounds.bottom
+            width: viewportBounds.right - viewportBounds.left,
+            height: viewportBounds.bottom - viewportBounds.top
         });
 
         return new annotorious.shape.Shape(annotorious.shape.ShapeType.OVAL, oval);
@@ -241,19 +248,20 @@ annotorious.plugins.selection.OvalSelector.prototype.getViewportBounds = functio
  * @param {boolean=} highlight if true, shape will be drawn highlighted
  */
 annotorious.plugins.selection.OvalSelector.prototype.drawShape = function (g2d, shape, highlight) {
-    var geom, stroke_width, color;
+    var geom, stroke_width, outline;
 
     if (!shape.style) {
         shape.style = {};
     }
 
     if (highlight) {
-        color = "#fff000";
+        outline = shape.style.outline || this._OUTLINE;
+        stroke_width = this._HI_STROKE_WIDTH;
     } else {
-        color = '#ffffff';
+        outline = shape.style.outline || this._OUTLINE;
+        stroke_width = this._STROKE_WIDTH;
     }
 
-    stroke_width = this._STROKE_WIDTH;
     geom = shape.geometry;
 
 
@@ -262,7 +270,7 @@ annotorious.plugins.selection.OvalSelector.prototype.drawShape = function (g2d, 
     var width = geom.width;
     var height = geom.height;
 
-    console.log("x:" + geom.x + " y:" + geom.y + " width:" + geom.width + " height:" + geom.height);
+    // console.log("x:" + geom.x + " y:" + geom.y + " width:" + geom.width + " height:" + geom.height);
 
     var kappa = 0.5,
         ox = (width / 2) * kappa, // control point offset horizontal
@@ -273,7 +281,7 @@ annotorious.plugins.selection.OvalSelector.prototype.drawShape = function (g2d, 
         ym = y + height / 2;       // y-middle
 
     g2d.beginPath();
-    g2d.strokeStyle = color;
+    g2d.strokeStyle = outline;
     g2d.lineWidth = stroke_width;
     g2d.moveTo(x, ym);
     g2d.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
@@ -283,46 +291,5 @@ annotorious.plugins.selection.OvalSelector.prototype.drawShape = function (g2d, 
     g2d.stroke();
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

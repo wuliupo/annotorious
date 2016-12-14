@@ -421,6 +421,17 @@ annotorious.Annotorious.prototype.showSelectionWidget = function (opt_item_url) 
     }
 }
 
+/**
+ *
+ * @param opt_item_url
+ * @param type_selectors
+ */
+annotorious.Annotorious.prototype.setTypeSelectors = function (opt_item_url, type_selectors) {
+    var module = this._getModuleForItemSrc(opt_item_url);
+    if (module)
+        module.setTypeSelectors(opt_item_url, type_selectors);
+}
+
 // annotorious.Annotorious.prototype.hideHint = function () {
 //     console.log("TODO: Remove default annotation");
 // }
