@@ -37,6 +37,9 @@ annotorious.Popup = function (annotator) {
     /** @private **/
     this._extraFields = [];
 
+    /** @private **/
+    this._selected_type = goog.dom.query('.annotorious-pop-selected-type', this.element)[0];
+
     var btnEdit = goog.dom.query('.annotorious-popup-button-edit', this._buttons)[0];
     var btnDelete = goog.dom.query('.annotorious-popup-button-delete', this._buttons)[0];
 
@@ -197,12 +200,24 @@ annotorious.Popup.prototype.setAnnotation = function (annotation) {
     else
         this._text.innerHTML = '<span class="annotorious-popup-empty">No comment</span>';
 
+    if (annotation.type && Symptoms) {
+        var self = this;
+        goog.array.forEach(Symptoms, function (symptom) {
+            if (symptom["ename"] === annotation.type) {
+                self._selected_type.innerHTML = symptom["zname"];
+                return;
+            }
+        });
+    } else {
+        this._selected_type.innerHTML = "";
+    }
+
     if (('editable' in annotation) && annotation.editable == false)
         goog.style.setElementShown(this._buttons, false);
     else
         goog.style.setElementShown(this._buttons, true);
 
-    // Update extra fields (if any)
+// Update extra fields (if any)
     goog.array.forEach(this._extraFields, function (field) {
         var f = field.fn(annotation);
         if (goog.isString(f)) {

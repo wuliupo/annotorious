@@ -315,3 +315,10 @@ html.hasTouch .annotator-viewer li .annotator-controls {
     font-weight: normal;
     color: #545454;
 }
+
+.annotorious-pop-selected-type {
+    display: block;
+    border-top: 1px solid #ddd;
+    margin-top: 2px;
+    color: #1e1e1e;
+}
