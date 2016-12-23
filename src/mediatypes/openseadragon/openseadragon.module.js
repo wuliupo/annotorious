@@ -9,26 +9,27 @@ goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator');
  * @constructor
  * @extends annotorious.mediatypes.Module
  */
-annotorious.mediatypes.openseadragon.OpenSeadragonModule = function() { 
-  annotorious.mediatypes.Module.call();
-  this._initFields();
+annotorious.mediatypes.openseadragon.OpenSeadragonModule = function () {
+    annotorious.mediatypes.Module.call();
+    this._initFields();
 }
 goog.inherits(annotorious.mediatypes.openseadragon.OpenSeadragonModule, annotorious.mediatypes.Module);
 
 /** @inheritDoc **/
-annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.getItemURL = function(item) {
-  // TODO implement something decent!
-  return 'dzi://openseadragon/something';
+annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.getItemURL = function (item) {
+    // TODO implement something decent!
+    return 'dzi://openseadragon/something';
 }
 
 /** @inheritDoc **/
-annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator = function(item) {
-  return new annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator(item);
+annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator = function (item) {
+    return new annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator(item);
 }
 
 /** @inheritDoc **/
-annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = function(item) {
-  return item instanceof OpenSeadragon.Viewer;
+annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = function (item) {
+    console.log(item, OpenSeadragon.Viewer);
+    return item instanceof OpenSeadragon.Viewer;
 } 
 
 

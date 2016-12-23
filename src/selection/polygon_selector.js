@@ -149,7 +149,6 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
                 event.offsetX = event.layerX;
                 event.offsetY = event.layerY;
             }
-
             self._mouse = {x: event.offsetX, y: event.offsetY};
             refresh(self._mouse, isClosable(event.offsetX, event.offsetY));
         }

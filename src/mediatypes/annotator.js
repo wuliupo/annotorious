@@ -55,8 +55,8 @@ annotorious.mediatypes.Annotator.prototype._attachListener = function (activeCan
     var self = this;
     goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function (event) {
         console.log('start selection event');
-        console.log(event);
         var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
+        console.log(coords.x+" "+coords.y);
         self._viewer.highlightAnnotation(false);
         if (self._selectionEnabled) {
             goog.style.showElement(self._editCanvas, true);

@@ -212,7 +212,6 @@ annotorious.mediatypes.image.Viewer.prototype._onMouseMove = function (event) {
     var topAnnotation = this.topAnnotationAt(event.offsetX, event.offsetY);
 
     // TODO remove code duplication
-
     if (topAnnotation) {
         this._keepHighlighted = this._keepHighlighted && (topAnnotation == this._currentAnnotation);
 
@@ -256,22 +255,36 @@ annotorious.mediatypes.image.Viewer.prototype._draw = function (shape, highlight
  */
 annotorious.mediatypes.image.Viewer.prototype.redraw = function () {
     this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
     var self = this;
     goog.array.forEach(this._annotations, function (annotation) {
+        //Edit by Bain  2016-12-23
+        //Step1 Get shape
+        var shape = annotation.shapes[0];
+        shape.setStyleByType(annotation.type);
+
+        //Step2 resize & relocate & save
+        // The viewer always operates in pixel coordinates for efficiency reasons
+        if (shape.units == annotorious.shape.Units.PIXEL) {
+            self._shapes[annotorious.shape.hashCode(annotation.shapes[0])] = shape;
+        } else {
+            shape = annotorious.shape.transform(shape, function (xy) {
+                return self._annotator.fromItemCoordinates(xy);
+            });
+            self._shapes[annotorious.shape.hashCode(annotation.shapes[0])] = shape;
+        }
+
+        //Step3 draw
         if (annotation != self._currentAnnotation) {
-            var shape = self._shapes[annotorious.shape.hashCode(annotation.shapes[0])];
-            shape.setStyleByType(annotation.type);
             self._draw(shape);
+        } else {
+            self._draw(shape, true);
+            var bbox = annotorious.shape.getBoundingRect(shape).geometry;
+            self._annotator.popup.show(self._currentAnnotation,
+                new annotorious.shape.geom.Point(bbox.x + self._annotator._image.offsetLeft,
+                    bbox.y + self._annotator._image.offsetTop + bbox.height + 5));
         }
     });
 
-    if (this._currentAnnotation) {
-        var shape = this._shapes[annotorious.shape.hashCode(this._currentAnnotation.shapes[0])];
-        shape.setStyleByType(this._currentAnnotation.type);
-        this._draw(shape, true);
-        var bbox = annotorious.shape.getBoundingRect(shape).geometry;
-        this._annotator.popup.show(this._currentAnnotation, new annotorious.shape.geom.Point(bbox.x, bbox.y + bbox.height + 5));
-
-        // TODO Orientation check - what if the popup would be outside the viewport?
-    }
+// TODO Orientation check - what if the popup would be outside the viewport?
 }

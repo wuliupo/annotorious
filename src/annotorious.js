@@ -6,8 +6,8 @@ goog.require('annotorious.dom');
 goog.require('annotorious.events');
 goog.require('annotorious.mediatypes.Module');
 goog.require('annotorious.mediatypes.image.ImageModule');
-// goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
-// goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
+goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
+goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
 
 // goog.require('annotorious.Hint');
 

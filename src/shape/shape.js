@@ -29,14 +29,15 @@ annotorious.shape.Shape = function (type, geometry, units, style) {
  */
 annotorious.shape.Shape.prototype.setStyleByType = function (type) {
     if (!Symptoms) return;
-    var self = this;
-    goog.array.forEach(Symptoms, function (symptom) {
+    for (var i = 0; i < Symptoms.length; i++) {
+        var symptom = Symptoms[i];
         if (symptom['ename'] === type) {
-            self.style = {
+            this.style = {
                 outline: symptom['bcolor']
             };
+            break;
         }
-    });
+    }
 };
 
 /**

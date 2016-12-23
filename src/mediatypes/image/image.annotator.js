@@ -199,7 +199,6 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.destroy = function () {
 }
 
 /**
- * Edits the specified existing annotation.
  * @param {annotorious.Annotation} annotation the annotation
  */
 annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function (annotation) {
@@ -222,11 +221,10 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function 
 
         var self = this;
         var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function (xy) {
-            return self.fromItemCoordinates(xy);
-        });
+                return self.fromItemCoordinates(xy);
+            });
         selector.drawShape(g2d, viewportShape);
     }
-
     var bounds = annotorious.shape.getBoundingRect(annotation.shapes[0]).geometry;
     var anchor = (annotation.shapes[0].units == 'pixel') ?
         new annotorious.shape.geom.Point(bounds.x, bounds.y + bounds.height) :
@@ -235,6 +233,37 @@ annotorious.mediatypes.image.ImageAnnotator.prototype.editAnnotation = function 
     this.editor.setPosition(new annotorious.shape.geom.Point(anchor.x + this._image.offsetLeft,
         anchor.y + 4 + this._image.offsetTop));
     this.editor.open(annotation);
+}
+
+/**
+ * Redraw annotation when canvas size changed.
+ * Add by Bain 2016-12-22
+ * @param annotation
+ */
+annotorious.mediatypes.image.ImageAnnotator.prototype.redrawAnnotation = function (annotation) {
+    // Step 1 - remove from viewer
+    // this._viewer.removeAnnotation(annotation);
+
+    // Step 2 - find a suitable selector for the shape
+    var selector = goog.array.find(this._selectors, function (selector) {
+        return selector.getSupportedShapeType() == annotation.shapes[0].type;
+    });
+
+    // Step 3 - open annotation in editor
+    if (selector) {
+        goog.style.setElementShown(this._editCanvas, true);
+        this._viewer.highlightAnnotation(false);
+
+        // TODO make editable - not just draw (selector implementation required)
+        var g2d = this._editCanvas.getContext('2d');
+        var shape = annotation.shapes[0];
+
+        var self = this;
+        var viewportShape = (shape.units == 'pixel') ? shape : annotorious.shape.transform(shape, function (xy) {
+                return self.fromItemCoordinates(xy);
+            });
+        // selector.drawShape(g2d, viewportShape);
+    }
 }
 
 /**
