@@ -55,6 +55,8 @@ annotorious.Popup = function(annotator) {
     annotator.editAnnotation(self._currentAnnotation);
     //--modified --//
     self._currentAnnotation['correct'] = false;
+    self._currentAnnotation['wrong_name'] = self._currentAnnotation.name;
+    self._currentAnnotation['changed'] = false;
     anno.setProperties({
       hi_stroke: 'red',
       hi_fill: 'rgba(255, 0, 0, 0.3)'

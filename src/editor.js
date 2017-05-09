@@ -57,7 +57,7 @@ annotorious.Editor = function(annotator) {
     annotator.addAnnotation(annotation);
     annotator.stopSelection();
     if (self._original_annotation){
-      annotation['correct'] = true; //modified
+      annotation['false'] = true; //modified
       annotator.fireEvent(annotorious.events.EventType.ANNOTATION_UPDATED, annotation, annotator.getItem());
     }
     else
