@@ -16,7 +16,6 @@
   "homepage": "https://github.com/raffel/annotorious#readme",
   "files": [
     "annotorious.min.js",
-    "./css",
-    "./src"
+    "css"
   ]
 }
