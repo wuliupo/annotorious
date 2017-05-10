@@ -1,0 +1,22 @@
+{
+  "name": "annotorious",
+  "version": "0.6.4",
+  "description": "Image Annotation for the Web - Annotorious Core Library",
+  "main": "src/annotorius.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raffel/annotorious.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raffel/annotorious/issues"
+  },
+  "homepage": "https://github.com/raffel/annotorious#readme"
+}
