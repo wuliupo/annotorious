@@ -1,0 +1,11 @@
+#!/usr/local/bin/bash
+
+BUILD_CONFIG="$1"
+CROSS_BUILD="$2" # tbd use to optionalize cross-copy to proteus
+
+echo "-> Building with: $BUILD_CONFIG.json output: builds/anno-$BUILD_CONFIG.js"
+
+/usr/bin/java -jar plovr/plovr4.jar build $BUILD_CONFIG.json > builds/anno-$BUILD_CONFIG.js
+
+echo "-> Copying to /Users/notbrain/src/proteus/client/js/lib"
+/bin/cp -f builds/anno-$BUILD_CONFIG.js /Users/notbrain/src/proteus/client/js/lib/
