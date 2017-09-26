@@ -16,13 +16,13 @@ goog.require('annotorious.templates');
  */
 annotorious.Editor = function(annotator) {
   this.element = goog.soy.renderAsElement(annotorious.templates.editform);
-  
+
   /** @private **/
   this._annotator = annotator;
 
   /** @private **/
   this._item = annotator.getItem();
-  
+
   /** @private **/
   this._original_annotation;
 
@@ -60,10 +60,10 @@ annotorious.Editor = function(annotator) {
     if (self._original_annotation)
       annotator.fireEvent(annotorious.events.EventType.ANNOTATION_UPDATED, annotation, annotator.getItem());
     else
-      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation, annotator.getItem());      
+      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation, annotator.getItem());
     self.close();
   });
- 
+
   goog.style.showElement(this.element, false);
   goog.dom.appendChild(annotator.element, this.element);
   this._textarea.decorate(goog.dom.query('.annotorious-editor-text', this.element)[0]);
@@ -78,7 +78,7 @@ annotorious.Editor = function(annotator) {
  */
 annotorious.Editor.prototype.addField = function(field) {
   var fieldEl = goog.dom.createDom('div', 'annotorious-editor-field');
-  
+
   if (goog.isString(field))  {
     fieldEl.innerHTML = field;
   } else if (goog.isFunction(field)) {
@@ -93,7 +93,7 @@ annotorious.Editor.prototype.addField = function(field) {
 /**
  * Opens the edit form with an annotation.
  * @param {annotorious.Annotation=} opt_annotation the annotation to edit (or undefined)
- * @param {Object=} opt_event the event, if any 
+ * @param {Object=} opt_event the event, if any
  */
 annotorious.Editor.prototype.open = function(opt_annotation, opt_event) {
   this._original_annotation = opt_annotation;
@@ -104,7 +104,7 @@ annotorious.Editor.prototype.open = function(opt_annotation, opt_event) {
 
   goog.style.showElement(this.element, true);
   this._textarea.getElement().focus();
-  
+
   // Update extra fields (if any)
   goog.array.forEach(this._extraFields, function(field) {
     var f = field.fn(opt_annotation);
@@ -146,8 +146,8 @@ annotorious.Editor.prototype.getAnnotation = function() {
   if (this._current_annotation) {
     this._current_annotation.text = sanitized;
   } else {
-    this._current_annotation = 
-      new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());  
+    this._current_annotation =
+      new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());
   }
 
   return this._current_annotation;
