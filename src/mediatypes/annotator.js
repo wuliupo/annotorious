@@ -39,7 +39,7 @@ annotorious.mediatypes.Annotator.prototype.removeHandler = function(type, handle
 }
 
 annotorious.mediatypes.Annotator.prototype.stopSelection = function(original_annotation) {
-  if (annotorious.events.ui.hasMouse)
+  if (annotorious.events.ui.hasMouse || annotorious.events.ui.hasTouch)
     goog.style.showElement(this._editCanvas, false);
     
   if (this._stop_selection_callback) {
