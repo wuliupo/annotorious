@@ -16,14 +16,14 @@ class S3():
 
 
     def upload_bucket_all_img(self, client, bucket):
-        for img in os.listdir('.'):
+        for img in os.listdir('/var/www/html/cropy/'):
             if img.rfind('.jpg') > 0:
-                path = os.getcwd()
+                path = '/var/www/html/cropy/'
                 
                 try:
                     client.upload_file(path + "/" + img, bucket, img)
                 except Exception as e:
-                    print(e)
+                    print("image upload error\n", e)
                     return 0
 
         return 1
@@ -33,11 +33,11 @@ class S3():
             if jsonZip.rfind('.zip') > 0:
 
                 path = os.getcwd()
-                
+                expressedJson = path + "/" + jsonZip 
                 try:
-                    client.upload_file(path + "/" + jsonZip, bucket, jsonZip)
+                    client.upload_file(expressedJson, bucket, jsonZip)
                 except Exception as e:
-                    print(e)
+                    print("expressed json upload error\n", e)
                     return 0
 
         return 1

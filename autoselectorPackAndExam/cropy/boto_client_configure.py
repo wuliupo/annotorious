@@ -3,9 +3,7 @@ import os,sys
 
 class AWSManager():
 
-    app = "S3"
-    
-    def config_s3(self, app):
+    def config(self, app):
         #is hardcoding.
         client = bt.client(
             app,

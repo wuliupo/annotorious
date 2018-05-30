@@ -88,8 +88,7 @@ function changeJson(text, sourceImage, geometry){
 
 
 function addJsonData(toJson, name){
-	var req = new XMLHttpRequest();
-	var url = window.location.href + "/php/formToJson.php";
+	var url = "/php/formToJson.php";
 
 	// why don't use XMLHttpRequests????
 	//

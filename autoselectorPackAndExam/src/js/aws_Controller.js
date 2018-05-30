@@ -16,7 +16,7 @@ function clickDone(){
 	const src = $("#preview")[0].src;
 	let str = String(src).split("\/");
 	var img = String(str[str.length - 1])
-	console.log(WorkerId);
+	console.log(WorkerId, "get Imgae : ", img.split('.')[0]);
 
 	var dynamodb = new AWS.DynamoDB();
 	var parm = {
@@ -49,6 +49,24 @@ function clickDone(){
 		if(err) console.log("DynamoUpdate Error \n", err);
 		else console.log("Done!");
 	})
+
+	// * PHP Call *//
+	startCropImages(img.split('.')[0], "crop")
+}
+
+function startCropImages(item, command) {
+	const url = "/php/execution.php";
+
+	if (item != '') {
+		$.ajax({
+			data: 'item=' + item + '&command=' + command, 
+			url: url,
+			method: 'POST',
+			success: function (msg) {
+				console.log("success done\n", msg)
+			}
+		});
+	}
 }
 
 function loadThumbnail(){ $(getItemFromDDB()) }
