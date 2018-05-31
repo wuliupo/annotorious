@@ -19,31 +19,7 @@ function clickDone(){
 	console.log(WorkerId, "get Imgae : ", img.split('.')[0]);
 
 	var dynamodb = new AWS.DynamoDB();
-	var parm = {
-		Key: {
-			"WorkerId":{
-				S:"1"
-			}
-		},
-		ExpressionAttributeNames:{
-			"#img":img.split(".")[0],
-		},
-		ExpressionAttributeValues: {
-			":img": {
-				M: {
-					"done": {
-						S: "true"
-					},
-					"path": {
-						S: "Images/example_folder/" + img
-					}
-				}
-			}
-		},
-		UpdateExpression:"SET #img = :img",
-		TableName : "simpleImgInfoTable_kookmin",
-		ReturnValues : "UPDATED_OLD"
-	};
+	const parm = anno_done_update(img); // Model.js
 
 	dynamodb.updateItem(parm, function(err, data){
 		if(err) console.log("DynamoUpdate Error \n", err);
@@ -70,20 +46,10 @@ function startCropImages(item, command) {
 }
 
 function loadThumbnail(){ $(getItemFromDDB()) }
-
 function getItemFromDDB(){
 
 	var dynamodb = new AWS.DynamoDB();
-
-	var parm = {
-		Key:{
-			'WorkerId':{
-				S:'1'
-			}
-		},
-		TableName: 'simpleImgInfoTable_kookmin',
-		//AttributesToGet:['image']
-	};
+	const parm = worker_all_imageQuery('1') // Model.js
 
 	dynamodb.getItem(parm, function (err, data) {
 		if (err) console.log("dynamoget Err", err);

@@ -29,7 +29,6 @@ function loadCroppedImages() {
     var opt = isSelection.value;
 
     if (opt != '') {
-        // POST send
         $.ajax({
             data: 'data=' + opt,
             url: url,
