@@ -1,8 +1,6 @@
 //MVC = C
-var imageLocation;
-var nameList = [];
-var isDone = [];
-var WorkerId;
+var nameList = []; // 이곳에 DB에서 받은 목록을 저장
+var WorkerId; // mainPage에서 현재 workerID를 저장
 
 function clientLogin(){
 	var isSelection = document.getElementById("setClient");
