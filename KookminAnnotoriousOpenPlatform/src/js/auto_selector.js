@@ -146,6 +146,9 @@ annotorious.plugin.autoSelector.Selector.prototype._detachListeners = function()
   }
 }
 
+/* 
+* get Shape Type
+*/
 annotorious.plugin.autoSelector.Selector.prototype.getName = function() {
   return 'rect';
 }
@@ -155,33 +158,39 @@ annotorious.plugin.autoSelector.Selector.prototype.getName = function() {
  * become view for area that is selection sample.
  */
 annotorious.plugin.autoSelector.Selector.prototype.drawRect = function (click_x, click_y) {
-  if (this._drawLocking == false) {
-    this._g2d.strokeStyle = "#35E5F1"; // 청색
-    this._g2d.lineWidth = 2;
 
-    var x = click_x - 32;
-    var y = click_y - 32;
-    var w = 64;
-    var h = 64;
+  this._g2d.strokeStyle = "#35E5F1"; // 청색
+  this._g2d.lineWidth = 2;
+  var pointer_x = click_x - 32;
+  var pointer_y = click_y - 32;
 
-    if (x < 0) {
-      x = 0;
-    }
-    if (y < 0) {
-      y = 0;
-    }
-    this._g2d.strokeRect(x, y, w, h);
+  if (pointer_x < 0) {
+    pointer_x = 0;
   }
+  if (pointer_y < 0) {
+    pointer_y = 0;
+  }
+
+  this._g2d.strokeRect(pointer_x, pointer_y, 64, 64);
+
 }
 
 annotorious.plugin.autoSelector.Selector.prototype.clearRect = function(){
   this._g2d.clearRect(0, 0, this._canvas.width, this._canvas.height);
 }
 
+/*
+* Set Shape Type
+*/
 annotorious.plugin.autoSelector.Selector.prototype.getSupportedShapeType = function() {
   return 'rect';
 }
 
+
+/*
+* Start Annotation == main()
+* plugin entry point.
+*/
 annotorious.plugin.autoSelector.Selector.prototype.startSelection = function(x, y) {
   console.log("start autoSelect!!");
   this._enabled = true;
@@ -200,7 +209,7 @@ annotorious.plugin.autoSelector.Selector.prototype.stopSelection = function() {
 }
 
 /*
- * get gemoetry for drawing tagbox
+ * Mark rison 
 */
 annotorious.plugin.autoSelector.Selector.prototype.getShape = function() {
   console.log("get Opposite: ", this._opposite);
@@ -221,7 +230,8 @@ annotorious.plugin.autoSelector.Selector.prototype.getShape = function() {
     y = 1 - (64 / this._canvas.height);
   }
 
-  var autoRect = { x: x, 
+  // 정사각형 그리기
+  var auto_Rect = { x: x, 
                    y: y, 
                    width: 64 / this._canvas.width, 
                    height: 64 / this._canvas.height};
@@ -229,7 +239,6 @@ annotorious.plugin.autoSelector.Selector.prototype.getShape = function() {
   if (this._opposite && this._opposite.x + this._opposite.y > 0 &&
     (Math.abs(this._opposite.x - this._anchor.x) > 3) &&
     (Math.abs(this._opposite.y - this._anchor.y) > 3)) {
-    console.log("changed drag points")
     var viewportBounds = this.getViewportBounds();
     var item_anchor = this._annotator.toItemCoordinates({ x: viewportBounds.left, y: viewportBounds.top });
     var item_opposite = this._annotator.toItemCoordinates({ x: viewportBounds.right - 1, y: viewportBounds.bottom - 1 });
@@ -237,8 +246,9 @@ annotorious.plugin.autoSelector.Selector.prototype.getShape = function() {
     console.log("Drag Event");
     return { type: 'rect', geometry: { x: item_anchor.x, y: item_anchor.y, width: item_opposite.x - item_anchor.x, height: item_opposite.y - item_anchor.y } };
   } else {
-    console.log("Click Event");
-    return { type: 'rect', geometry: { x: autoRect.x, y: autoRect.y, width: autoRect.width, height: autoRect.height } };
+
+    console.log("One Click Bound Event");
+    return { type: 'rect', geometry: { x: auto_Rect.x, y: auto_Rect.y, width: auto_Rect.width, height: auto_Rect.height } };
   }
 
 
@@ -248,8 +258,9 @@ annotorious.plugin.autoSelector.Selector.prototype.getShape = function() {
 annotorious.plugin.autoSelector.Selector.prototype.getViewportBounds = function() {
 
 /** set Veiwport location 
-    1) set Tagging tool
-    2) get tag box size.
+
+box bound on original image.
+
 **/
 
   var right = (this._anchor.x - 32); /// this._canvas.width;
@@ -267,7 +278,7 @@ annotorious.plugin.autoSelector.Selector.prototype.getViewportBounds = function(
   }
 
  
-  var autoRect = { top: top, right: right, bottom: bottom, left: left};
+  var auto_Rect = { top: top, right: right, bottom: bottom, left: left};
   
   /** dragging event **/
   if (this._opposite.x + this._opposite.y > 0) {
@@ -290,7 +301,7 @@ annotorious.plugin.autoSelector.Selector.prototype.getViewportBounds = function(
 
     return { top: top, right: right, bottom: bottom, left: left };
   } else {
-    return autoRect;
+    return auto_Rect;
   }
 }
 

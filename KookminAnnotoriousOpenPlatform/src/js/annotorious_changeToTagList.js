@@ -1,15 +1,13 @@
 //custom hjkim
 //select_box options for selection tag name. hjkim
+//TODO:과제 종료 끝난 후, menu_UI로 합쳐서 관리해야함.
 
-function annotorious_changeToTagList() {
-
+function changeLabelBoxUI() {
 	$('.annotorious-editor-text.goog-textarea')
 	.replaceWith("<select id='selectTagName'>" + $(this).text() + "</select>");
-	
 
-	var tagNames = ["Dots", "RedFlower","GreenFlower", 
-					"WhiteFlower", "Branch", "Bubble"];
-	
+
+	const tagNames = tag_names;
 	tagNames.forEach(tag => {
 		var typeOption = document.createElement('option');
 		var tagOption = document.createTextNode(tag);

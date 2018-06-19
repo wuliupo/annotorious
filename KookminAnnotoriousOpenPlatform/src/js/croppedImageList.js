@@ -2,7 +2,7 @@ function gridView(msg){
     var itemArray = msg.split("\n");
     $("#gridViewBox").empty();
     if(itemArray == ''){
-        return; // foreach 사용하지 않는 것이 좋다.
+        return;
     }
 
     itemArray.forEach(item => {

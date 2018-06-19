@@ -15,47 +15,17 @@
 <script type="text/javascript" src="js/aws_identity.js"></script>
 <script type="text/javascript" src="js/aws_Controller.js"></script>
 <script type="text/javascript" src="js/Models.js"></script>
-<script type="text/javascript" src="js/aws_dynamodb_CAID_models.js"></script>
 
 <!-- font and style -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-    body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
-    hr {
-        display: block;
-        margin: 0.5em;
-        border-width: 5px;
-        border-color: forestgreen;
-    }
-</style>
-<style>
-    div.gallery {
-        margin: 5px;
-        border: 1px solid #ccc;
-        float: left;
-        width: 64px;
-    }
-
-    div.gallery:hover {
-        border: 1px solid #777;
-    }
-        
-    div.gallery img {
-        width: 100%;
-        height: auto;
-    }
-        
-    div.desc {
-        padding: 15px;
-        text-align: center;
-    }
-</style>
+<link rel="stylesheet" type="text/css" href="./css/front_ui_annotation_system_byKookmin.css">
 </head>
 
-<body class="w3-light-grey w3-content" style="max-width:1600px" onload="bodyOnLoaded();">
+<body class="w3-light-grey w3-content" style="max-width:1600px" onload="dynamoConfigure();">
 <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
+
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
 	<div class="w3-container">
@@ -63,7 +33,7 @@
 		<i class="fa fa-remove"></i>
       </a>
       <p style="text-align: center">
-      <img src="KookminUniv.png" style="width:45%;" class="w3-round"><br><br>
+      <img src="./css/KookminUniv.png" style="width:45%;" class="w3-round"><br><br>
       </p>
       <h4><b>★Kookmin University</b></h4>
       <h5><b>Department of Computer Science & Fasion Design</b></h5>
@@ -85,17 +55,17 @@
 <div class="w3-main" style="margin-left:300px">
     <header>
         <h1> Cropped Grid View Page </h1>
+        <!-- TODO:  Pattern List  -->
         <select id="imgSelect" onchange="loadCroppedImages();">
             <option></option>
-            <!-- Javascript Dynamic Append. -->
         </select>
         <hr>
     </header>
 
     <header>
         <div id="gridViewBox"> 
-            <!--<div id="gridViewBox" class="gallery">
-                  <a target="_blank" href="../cropy/img20_check_0.jpg"></a>
+    <!--    <div id="gridViewBox" class="gallery">
+                <a target="_blank" href="../cropy/img20_check_0.jpg"></a>
                 <img src="../cropy/img20_check_0.jpg" alt="check" width="100%" height="100%">
             </div>  -->
         </div>
@@ -105,9 +75,7 @@
 
 <script>
 $(document).ready(function(){
-    $("#croppedImage").click(function(){
-        //location.href = 'croppedPage.html';
-    });
+
     $("#loadAnno").click(function(){
         location.href = 'main.html'
     })
