@@ -1,0 +1,56 @@
+/* 
+* GridView Sytle
+*/
+div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 64px;
+}
+
+div.gallery:hover {
+    border: 1px solid #777;
+}
+    
+div.gallery img {
+    width: 100%;
+    height: auto;
+}
+    
+div.desc {
+    padding: 2px;
+    text-align: center;
+    word-break: break-all;
+}
+
+
+/* Front design */
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+hr {
+    display: block;
+    margin: 0.5em;
+    border-width: 5px;
+    border-color: forestgreen;
+}
+
+
+/* jssor for design */
+/*jssor slider loading skin spin css*/
+.jssorl-009-spin img {
+    animation-name: jssorl-009-spin;
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes jssorl-009-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* overflow management */
+.overflowScroll {
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
