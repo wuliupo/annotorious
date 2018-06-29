@@ -117,9 +117,11 @@ annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = func
       self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
 
       // On cancel, we "relay" the selection event to the annotator
-      var annotations = self._annotator.getAnnotationsAt(points.x, points.y);
-      if (annotations.length > 0)
-        self._annotator.highlightAnnotation(annotations[0]);
+        if(self._annotator.hasOwnProperty("getAnnotationsAt")) {
+            var annotations = self._annotator.getAnnotationsAt(points.x, points.y);
+            if (annotations.length > 0)
+                self._annotator.highlightAnnotation(annotations[0]);
+        }
     }
   });
 }
