@@ -1,6 +1,5 @@
 goog.provide('annotorious.Hint');
 
-goog.require('goog.dom.query');
 goog.require('goog.events');
 goog.require('goog.soy');
 goog.require('goog.style');
@@ -24,10 +23,11 @@ annotorious.Hint = function(annotator, parent, opt_msg) {
   this._annotator = annotator;
 
   /** @private **/
-  this._message = goog.dom.query('.annotorious-hint-msg', this.element)[0];
+  this._message = this.element.querySelector('.annotorious-hint-msg');
+
 
   /** @private **/
-  this._icon = goog.dom.query('.annotorious-hint-icon', this.element)[0];
+  this._icon = this.element.querySelector('.annotorious-hint-icon');
 
   /** @private **/
   this._hideTimer;

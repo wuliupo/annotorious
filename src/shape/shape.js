@@ -1,5 +1,6 @@
 goog.provide('annotorious.shape');
 
+goog.require('annotorious.shape.geom.Point');
 goog.require('annotorious.shape.geom.Polygon');
 goog.require('annotorious.shape.geom.Rectangle');
 

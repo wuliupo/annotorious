@@ -1,0 +1,14 @@
+{
+  "name": "annotorious-es6",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/hermanho/annotorious.git",
+  "author": "herman <hmcherman@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "closure-builder": "^2.2.46"
+  },
+  "scripts": {
+    "build": "node build.js"
+  }
+}

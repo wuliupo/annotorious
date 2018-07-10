@@ -1,5 +1,8 @@
 goog.provide('annotorious.mediatypes.image.Viewer');
 
+goog.require('annotorious.events');
+goog.require('annotorious.shape.geom.Point');
+
 /**
  * The image viewer - the central entity that manages annotations 
  * displayed for one image.

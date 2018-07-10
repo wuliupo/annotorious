@@ -12,6 +12,12 @@ goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.style');
 
+goog.require('annotorious.Hint');
+goog.require('annotorious.mediatypes.image.Viewer');
+goog.require('annotorious.okfn.Popup');
+goog.require('annotorious.events');
+goog.require('annotorious.plugins.selection.RectDragSelector');
+
 /**
  * Implementation of the Yuma image plugin for OKFN Annotator.
  * @param {Element} image the image to be annotated

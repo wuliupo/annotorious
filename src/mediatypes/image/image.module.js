@@ -13,7 +13,7 @@ goog.require('annotorious.mediatypes.image.ImageAnnotator');
 annotorious.mediatypes.image.ImageModule = function() { 
   annotorious.mediatypes.Module.call();
   this._initFields(function() {
-    return goog.dom.query('img.annotatable', document);
+    return document.querySelector('img.annotatable');
   });
 }
 goog.inherits(annotorious.mediatypes.image.ImageModule, annotorious.mediatypes.Module);

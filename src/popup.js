@@ -2,8 +2,8 @@ goog.provide('annotorious.Popup');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.query');
 goog.require('goog.style');
+goog.require('goog.math.Coordinate');
 
 /**
  * A popup bubble widget to show annotation details.
@@ -20,10 +20,10 @@ annotorious.Popup = function(annotator) {
   this._currentAnnotation;
 
   /** @private **/
-  this._text = goog.dom.query('.annotorious-popup-text', this.element)[0];
+  this._text = this.element.querySelector('.annotorious-popup-text');
 
   /** @private **/
-  this._buttons = goog.dom.query('.annotorious-popup-buttons', this.element)[0];
+  this._buttons = this.element.querySelector('.annotorious-popup-buttons');
   
   /** @private **/
   this._popupHideTimer;
@@ -37,8 +37,8 @@ annotorious.Popup = function(annotator) {
   /** @private **/
   this._extraFields = [];
 
-  var btnEdit = goog.dom.query('.annotorious-popup-button-edit', this._buttons)[0];
-  var btnDelete = goog.dom.query('.annotorious-popup-button-delete', this._buttons)[0];
+  var btnEdit = this.element.querySelector('.annotorious-popup-button-edit');
+  var btnDelete = this.element.querySelector('.annotorious-popup-button-delete');
 
   var self = this;  
   goog.events.listen(btnEdit, goog.events.EventType.MOUSEOVER, function(event) {

@@ -2,6 +2,11 @@ goog.provide('annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator');
 
 goog.require('annotorious.mediatypes.Annotator');
 goog.require('annotorious.mediatypes.openseadragon.Viewer');
+goog.require('annotorious.Editor');
+goog.require('annotorious.Popup');
+goog.require('annotorious.plugins.selection.RectDragSelector');
+goog.require('annotorious.events');
+goog.require('annotorious.shape.geom.Point');
 
 /**
  * The OpenSeadragonAnnotator is responsible for handling annotation functionality
