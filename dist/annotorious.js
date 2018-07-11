@@ -1,6 +1,92 @@
 'use strict';
 var $jscomp = $jscomp || {};
 $jscomp.scope = {};
+$jscomp.ASSUME_ES5 = !1;
+$jscomp.ASSUME_NO_NATIVE_MAP = !1;
+$jscomp.ASSUME_NO_NATIVE_SET = !1;
+$jscomp.defineProperty = $jscomp.ASSUME_ES5 || "function" == typeof Object.defineProperties ? Object.defineProperty : function(a, b, c) {
+  a != Array.prototype && a != Object.prototype && (a[b] = c.value);
+};
+$jscomp.getGlobal = function(a) {
+  return "undefined" != typeof window && window === a ? a : "undefined" != typeof global && null != global ? global : a;
+};
+$jscomp.global = $jscomp.getGlobal(this);
+$jscomp.SYMBOL_PREFIX = "jscomp_symbol_";
+$jscomp.initSymbol = function() {
+  $jscomp.initSymbol = function() {
+  };
+  $jscomp.global.Symbol || ($jscomp.global.Symbol = $jscomp.Symbol);
+};
+$jscomp.Symbol = function() {
+  var a = 0;
+  return function(b) {
+    return $jscomp.SYMBOL_PREFIX + (b || "") + a++;
+  };
+}();
+$jscomp.initSymbolIterator = function() {
+  $jscomp.initSymbol();
+  var a = $jscomp.global.Symbol.iterator;
+  a || (a = $jscomp.global.Symbol.iterator = $jscomp.global.Symbol("iterator"));
+  "function" != typeof Array.prototype[a] && $jscomp.defineProperty(Array.prototype, a, {configurable:!0, writable:!0, value:function() {
+    return $jscomp.arrayIterator(this);
+  }});
+  $jscomp.initSymbolIterator = function() {
+  };
+};
+$jscomp.arrayIterator = function(a) {
+  var b = 0;
+  return $jscomp.iteratorPrototype(function() {
+    return b < a.length ? {done:!1, value:a[b++]} : {done:!0};
+  });
+};
+$jscomp.iteratorPrototype = function(a) {
+  $jscomp.initSymbolIterator();
+  a = {next:a};
+  a[$jscomp.global.Symbol.iterator] = function() {
+    return this;
+  };
+  return a;
+};
+$jscomp.iteratorFromArray = function(a, b) {
+  $jscomp.initSymbolIterator();
+  a instanceof String && (a += "");
+  var c = 0, d = {next:function() {
+    if (c < a.length) {
+      var e = c++;
+      return {value:b(e, a[e]), done:!1};
+    }
+    d.next = function() {
+      return {done:!0, value:void 0};
+    };
+    return d.next();
+  }};
+  d[Symbol.iterator] = function() {
+    return d;
+  };
+  return d;
+};
+$jscomp.polyfill = function(a, b, c, d) {
+  if (b) {
+    c = $jscomp.global;
+    a = a.split(".");
+    for (d = 0; d < a.length - 1; d++) {
+      var e = a[d];
+      e in c || (c[e] = {});
+      c = c[e];
+    }
+    a = a[a.length - 1];
+    d = c[a];
+    b = b(d);
+    b != d && null != b && $jscomp.defineProperty(c, a, {configurable:!0, writable:!0, value:b});
+  }
+};
+$jscomp.polyfill("Array.prototype.values", function(a) {
+  return a ? a : function() {
+    return $jscomp.iteratorFromArray(this, function(a, c) {
+      return c;
+    });
+  };
+}, "es8", "es3");
 var COMPILED = !0, goog = goog || {};
 goog.global = this;
 goog.isDef = function(a) {
@@ -30,7 +116,7 @@ goog.define = function(a, b) {
   }
   goog.exportPath_(a, b);
 };
-goog.DEBUG = "true,goog.dom.ASSUME_STANDARDS_MODE=true";
+goog.DEBUG = !0;
 goog.LOCALE = "en";
 goog.TRUSTED_SITE = !0;
 goog.STRICT_MODE_COMPATIBLE = !1;
@@ -3929,7 +4015,7 @@ goog.math.Size.prototype.scaleToFit = function(a) {
   return this.scale(a);
 };
 goog.dom.ASSUME_QUIRKS_MODE = !1;
-goog.dom.ASSUME_STANDARDS_MODE = !1;
+goog.dom.ASSUME_STANDARDS_MODE = !0;
 goog.dom.COMPAT_MODE_KNOWN_ = goog.dom.ASSUME_QUIRKS_MODE || goog.dom.ASSUME_STANDARDS_MODE;
 goog.dom.getDomHelper = function(a) {
   return a ? new goog.dom.DomHelper(goog.dom.getOwnerDocument(a)) : goog.dom.defaultDomHelper_ || (goog.dom.defaultDomHelper_ = new goog.dom.DomHelper);
@@ -7736,6 +7822,14 @@ goog.structs.Map.prototype.__iterator__ = function(a) {
 goog.structs.Map.hasKey_ = function(a, b) {
   return Object.prototype.hasOwnProperty.call(a, b);
 };
+var module$node_modules$nanoid$index_browser = {}, crypto$$module$node_modules$nanoid$index_browser = self.crypto || self.msCrypto, url$$module$node_modules$nanoid$index_browser = "_~getRandomVcryp0123456789bfhijklqsuvwxzABCDEFGHIJKLMNOPQSTUWXYZ";
+module$node_modules$nanoid$index_browser.default = function(a) {
+  a = a || 21;
+  for (var b = "", c = crypto$$module$node_modules$nanoid$index_browser.getRandomValues(new Uint8Array(a)); 0 < a--;) {
+    b += url$$module$node_modules$nanoid$index_browser[c[a] & 63];
+  }
+  return b;
+};
 annotorious.shape = {};
 annotorious.shape.geom = {};
 annotorious.shape.geom.Point = function(a, b) {
@@ -7789,6 +7883,7 @@ annotorious.shape.geom.Rectangle = function(a, b, c, d) {
   0 < c ? (this.x = a, this.width = c) : (this.x = a + c, this.width = -c);
   0 < d ? (this.y = b, this.height = d) : (this.y = b + d, this.height = -d);
 };
+const nanoid = module$node_modules$nanoid$index_browser.default;
 annotorious.shape.Shape = function(a, b, c, d) {
   this.type = a;
   this.geometry = b;
@@ -7849,7 +7944,8 @@ annotorious.shape.transform = function(a, b) {
   }
 };
 annotorious.shape.hashCode = function(a) {
-  return JSON.stringify(a.geometry);
+  a.uuid || (a.uuid = (0,module$node_modules$nanoid$index_browser.default)());
+  return a.uuid;
 };
 annotorious.Annotation = function(a, b, c) {
   this.src = a;

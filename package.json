@@ -10,5 +10,8 @@
   },
   "scripts": {
     "build": "node build.js"
+  },
+  "dependencies": {
+    "nanoid": "^1.0.7"
   }
 }

@@ -13,13 +13,18 @@ closureBuilder.build({
   options: {
     closure: {
       define: ["goog.DEBUG=true", "goog.dom.ASSUME_STANDARDS_MODE=true"],
-      language_out: "ECMASCRIPT5",
       //compilation_level: "ADVANCED",
       formatting: "PRETTY_PRINT",
       //output_wrapper: '(function(){%output%})()\n//# sourceMappingURL=output.js.map'
       output_wrapper: "%output%\n//# sourceMappingURL=annotorious.js.map",
-      source_map_location_mapping: [__dirname.replace(/\\/g, "/") + "/node_modules/|node_modules/", os.tmpdir().replace(/\\/g, "/") + "|temp"],
-      source_map_include_content: true
+      source_map_location_mapping: [
+        __dirname.replace(/\\/g, "/") + "/node_modules/|node_modules/",
+        os.tmpdir().replace(/\\/g, "/") + "|temp"
+      ],
+      source_map_include_content: true,
+      process_common_js_modules: true,
+      module_resolution: "NODE",
+      js: glob(["./node_modules/nanoid/index.browser.js"])
     }
   },
   externs: [

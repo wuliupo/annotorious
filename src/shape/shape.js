@@ -1,3 +1,5 @@
+const nanoid = require('nanoid/index.browser');
+
 goog.provide('annotorious.shape');
 
 goog.require('annotorious.shape.geom.Point');
@@ -203,5 +205,8 @@ annotorious.shape.transform = function(shape, transformationFn) {
  * @return {string} a 'hashcode' for the shape
  */
 annotorious.shape.hashCode = function(shape) {
-  return JSON.stringify(shape.geometry);
+  if (!shape.uuid){
+    shape.uuid = nanoid();
+  }
+  return shape.uuid;
 }
