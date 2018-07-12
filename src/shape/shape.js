@@ -1,4 +1,4 @@
-const nanoid = require('nanoid/index.browser');
+const nanoid = require('nanoid/index.browser.js');
 
 goog.provide('annotorious.shape');
 
