@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+
+{% block toplinks %}
+<a href="{% url 'dataset-detail' person.dataset.slug %}"><span class="glyphicon glyphicon-list"></span> چهره‌های {{ person.dataset.title }}</a>
+{% endblock %}
+
+
+{% block content %}
+<div id="images">
+{% for items in faces %}
+	<div>
+		<img src="{{items.0.url}}" rel="[{% for face in items %}{id: {{face.id}}, box: '{{face.box}}', name: '{{face.person|default_if_none:""}}', probability: {{face.probability|default_if_none:'0'}}},{% endfor %}]">
+	</div>
+{% endfor %}
+</div>
+{% endblock %}
+
+
+{% block script %}
+<link href="/static/select2.min.css" rel="stylesheet" />
+<link href="/static/select2_custom.css" rel="stylesheet" />
+
+<script type="text/javascript">
+var personNames = {{ person.dataset.person_names | safe }};
+</script>
+
+<script src="/static/select2.min.js"></script>
+<script type="text/javascript" src="/static/annotorious.min.js"></script>
+<script type="text/javascript" src="/static/anno_custom.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	var str_to_box = function(line) {
+		parts = line.split(' ');
+		return {x: Number(parts[0]), y: Number(parts[1]), width: Number(parts[2]), height: Number(parts[3])};
+	};
+
+	// annotations
+	$('#images img').one('load', function() {
+		anno.makeAnnotatable(this);
+		anno.hideSelectionWidget(this.src);
+
+		var src = this.src;
+		faces = eval($(this).attr('rel'));
+		$.each(faces, function(i, face) {
+			anno.addAnnotation({
+				src: src,
+				text: face.name +' ('+ Math.round(face.probability * 100) +'%)',
+				name: face.name,
+				face_id: face.id,
+				shapes: [{type: 'rect', units: 'pixel', geometry: str_to_box(face.box)}]
+			});
+		});
+	}).each(function() {
+		if(this.complete) $(this).load();
+	});
+
+	// send reports
+	var sendReport = function(face_id, name, positive) {
+		$.ajax({
+			url: "{% url 'report-face-api' %}",
+			headers: {'Authorization': 'Token {{user.auth_token.key}}'},
+			contentType: 'application/json',
+			dataType: 'json',
+			method: 'POST',
+			data: JSON.stringify({dataset: '{{ person.dataset.slug }}', face_id: face_id, name: name, positive: positive})
+		});
+	};
+
+	anno.addHandler('onEditorShown', function(annotation) {
+		// todo: $('.annotorious-editor-text').val(annotation.name)
+	});
+	anno.addHandler('onAnnotationUpdated', function(annotation) {
+		name = annotation.text;
+                sendReport(annotation.face_id, annotation.wrong_name, false);
+                if ( annotation.changed ){
+			console.log(annotation.name);
+			annotation.name = annotation.text;
+	                sendReport(annotation.face_id, annotation.text, true);
+	}
+	});
+	anno.addHandler('onAnnotationIsCorrect', function(annotation) {
+		name = annotation.name;
+		if (name == '(ناآشنا)')
+			name = '';
+		sendReport(annotation.face_id, name, true);
+	});
+	anno.addHandler('onAnnotationIsWrong', function(annotation) {
+	//	sendReport(annotation.face_id, annotation.name, false);
+	});
+
+	amplitude.getInstance().logEvent('Tag Faces');
+});
+</script>
+{% endblock %}

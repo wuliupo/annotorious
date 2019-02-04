@@ -52,7 +52,17 @@ annotorious.Popup = function(annotator) {
   goog.events.listen(btnEdit, goog.events.EventType.CLICK, function(event) {
     goog.style.setOpacity(self.element, 0);
     goog.style.setStyle(self.element, 'pointer-events', 'none');
-    annotator.editAnnotation(self._currentAnnotation); 
+    annotator.editAnnotation(self._currentAnnotation);
+    //--modified --//
+    self._currentAnnotation['correct'] = false;
+    self._currentAnnotation['wrong_name'] = self._currentAnnotation.name;
+    self._currentAnnotation['changed'] = false;
+    anno.setProperties({
+      hi_stroke: 'red',
+      hi_fill: 'rgba(255, 0, 0, 0.3)'
+    });
+    annotator.fireEvent(annotorious.events.EventType.ANNOTATION_IS_WRONG, self._currentAnnotation);
+    //--modified --//
   });
 
   goog.events.listen(btnDelete, goog.events.EventType.MOUSEOVER, function(event) {
@@ -68,8 +78,15 @@ annotorious.Popup = function(annotator) {
     if (!cancelEvent) {
       goog.style.setOpacity(self.element, 0);
       goog.style.setStyle(self.element, 'pointer-events', 'none');
-      annotator.removeAnnotation(self._currentAnnotation);
-      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_REMOVED, self._currentAnnotation);
+      //--modified --//
+      // annotator.removeAnnotation(self._currentAnnotation);
+      self._currentAnnotation['correct'] = true;
+      anno.setProperties({ //
+        hi_stroke: 'green',
+        hi_fill: 'rgba(0, 255, 0, 0.3)'
+      });
+      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_IS_CORRECT, self._currentAnnotation); 
+      //--modified --//
     }
   });
 

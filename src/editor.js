@@ -56,9 +56,10 @@ annotorious.Editor = function(annotator) {
     var annotation = self.getAnnotation();
     annotator.addAnnotation(annotation);
     annotator.stopSelection();
-
-    if (self._original_annotation)
+    if (self._original_annotation){
+      annotation['false'] = true; //modified
       annotator.fireEvent(annotorious.events.EventType.ANNOTATION_UPDATED, annotation, annotator.getItem());
+    }
     else
       annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation, annotator.getItem());      
     self.close();
@@ -96,8 +97,6 @@ annotorious.Editor.prototype.addField = function(field) {
  * @param {Object=} opt_event the event, if any 
  */
 annotorious.Editor.prototype.open = function(opt_annotation, opt_event) {
-  this._annotator.fireEvent(annotorious.events.EventType.BEFORE_EDITOR_SHOWN, opt_annotation);
-
   this._original_annotation = opt_annotation;
   this._current_annotation = opt_annotation;
 
