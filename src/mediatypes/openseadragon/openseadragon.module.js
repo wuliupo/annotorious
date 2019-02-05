@@ -28,7 +28,7 @@ annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator 
 
 /** @inheritDoc **/
 annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = function(item) {
-  return item instanceof OpenSeadragon.Viewer;
+  return item instanceof OpenSeadragon["Viewer"];
 } 
 
 
