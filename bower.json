@@ -1,0 +1,21 @@
+{
+  "name": "annotorious",
+  "version": "0.6.5",
+  "homepage": "null",
+  "authors": [
+    "NVIDIA"
+  ],
+  "description": "",
+  "moduleType": [],
+  "license": "UNLICENSE",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "templates",
+    "plovr"
+  ]
+}
