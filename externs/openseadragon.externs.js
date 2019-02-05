@@ -27,7 +27,7 @@ var OpenSeadragon = {
   Rect: function() {},
   
   /** The viewport **/
-  viewport: {
+  Viewport: {
 	  
   	/** Function to convert from browser window to OpenSeadragon coordinates **/
     windowToViewportCoordinates: function() {}, 
@@ -37,7 +37,7 @@ var OpenSeadragon = {
     
   },
   
-  viewer: { 
+  Viewer: { 
     
     isFullPage: function() {}
     
