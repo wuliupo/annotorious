@@ -22,7 +22,7 @@ Want to help out? There are many ways you can contribute!
 * Missing a feature? [Learn how to develop your own Annotorious Plugins](https://github.com/annotorious/annotorious/wiki/Developing-Plugins).
 * Want to hack on Annotorious? We welcome contributions no matter how small or big!
 
-## development
+## Development
 
 1. Put images into path\to\annotorious\test\end_to_end_people_detection\template\images
 2. Run path\to\annotorious\run_plovr.bat
