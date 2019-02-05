@@ -428,4 +428,5 @@ annotorious.Annotorious.prototype.showSelectionWidget = function(opt_item_url) {
   }
 }
 
+
 window['anno'] = new annotorious.Annotorious();

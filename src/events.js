@@ -10,7 +10,35 @@ goog.require('goog.events');
 annotorious.events.EventBroker = function() {
   /** @private **/
   this._handlers = [];
-}
+};
+
+annotorious.events.sanitizeCoordinates = function(event, parent) {
+  var points = false;
+  var offset = annotorious.dom.getOffset;
+
+  if (!event.offsetX || !event.offsetY && event.event_.changedTouches) {
+    points = {
+      x: event.event_.changedTouches[0].pageX - offset(parent).left,
+      y: event.event_.changedTouches[0].pageY - offset(parent).top
+    };
+  } else {
+    points = {
+      x: event.offsetX,
+      y: event.offsetY
+    };
+  }
+
+  return points;
+};
+
+annotorious.events.dispatch = function(options) {
+  var event, eventName = options.name;
+  type = options.type || "HTMLEvents";
+  event = document.createEvent("HTMLEvents");
+  event.initEvent(eventName);
+  event.data = options.data || {};
+  options.element.dispatchEvent(event);
+};
 
 /**
  * Adds an event handler.
@@ -18,11 +46,11 @@ annotorious.events.EventBroker = function() {
  * @param {Function} handler the handler function to add
  */
 annotorious.events.EventBroker.prototype.addHandler = function(type, handler) {
-  if (!this._handlers[type]) 
+  if (!this._handlers[type])
     this._handlers[type] = [];
 
-  this._handlers[type].push(handler);  
-}
+  this._handlers[type].push(handler);
+};
 
 /**
  * Removes an event handler.
@@ -32,15 +60,15 @@ annotorious.events.EventBroker.prototype.addHandler = function(type, handler) {
 annotorious.events.EventBroker.prototype.removeHandler = function(type, handler) {
   var handlers = this._handlers[type];
   if (handlers)
-    goog.array.remove(handlers, handler);  
-}
+    goog.array.remove(handlers, handler);
+};
 
 /**
  * Fires an event, triggering execution of all registered handlers.
  * Event handlers may optionally return a boolean value to indicate whether
- * further steps following the event should be canceled (e.g. in case of 
+ * further steps following the event should be canceled (e.g. in case of
  * annotation removal). If there is no return value (or the return value is
- * 'true'), no action will be taken by Annotorious. 
+ * 'true'), no action will be taken by Annotorious.
  * @param {annotorious.events.EventType} type the event type
  * @param {Object=} opt_event the event object
  * @return {boolean} the 'cancel event' flag
@@ -54,10 +82,10 @@ annotorious.events.EventBroker.prototype.fireEvent = function(type, opt_event, o
       if (goog.isDef(retVal) && !retVal)
         cancelEvent = true;
     });
-  }    
+  }
 
   return cancelEvent;
-}
+};
 
 /**
  * Annotation lifecycle events.
@@ -75,41 +103,41 @@ annotorious.events.EventType = {
    */
   MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
 
-  /** 
+  /**
    * The mouse entered an annotation
-   */ 
+   */
   MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
 
-  /** 
+  /**
    * The mouse moved out of an annotation
-   */ 
+   */
   MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
 
   /**
    * A new selection was started
    */
   SELECTION_STARTED: 'onSelectionStarted',
-  
+
   /**
    * The current selection was canceled
    */
   SELECTION_CANCELED: 'onSelectionCanceled',
-  
-  /** 
+
+  /**
    * The current selection was completed
    */
   SELECTION_COMPLETED: 'onSelectionCompleted',
-  
-  /** 
+
+  /**
    * The current selection was changed
    */
   SELECTION_CHANGED: 'onSelectionChanged',
-  
+
   /**
    * The annotation editor was opened.  Pass the annotation object if it exists.
    */
   EDITOR_SHOWN: 'onEditorShown',
-  
+
   /**
    * The annotation popop was opened.  Pass the annotation object.
    */
@@ -134,7 +162,7 @@ annotorious.events.EventType = {
    * An annotation was created
    */
   ANNOTATION_CREATED: 'onAnnotationCreated',
-  
+
   /**
    * An existing annotation was updated
    */
@@ -144,7 +172,7 @@ annotorious.events.EventType = {
    * The annotation was clicked.  Pass the annotation object.
    */
   ANNOTATION_CLICKED: 'onAnnotationClicked',
-  
+
   /**
    * The annotation was correct.  Pass the annotation object.
    */

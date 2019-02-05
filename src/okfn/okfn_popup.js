@@ -1,5 +1,7 @@
 // var humanEvents = annotorious.events.ui.EventType;
 
+var humanEvents = annotorious.humanEvents;
+
 goog.provide('annotorious.okfn.Popup');
 
 goog.require('goog.array');
@@ -14,16 +16,22 @@ goog.require('goog.dom.classes');
  * @param {Object} the base offset of the annotatable DOM element
  * @constructor
  */
-annotorious.okfn.Popup = function(image, okfnAnnotator, eventBroker, baseOffset) {  
+annotorious.okfn.Popup = function(image, okfnAnnotator, eventBroker, baseOffset) {
   /** @private **/
   this._image = image;
 
-  /** @private **/ 
+  /** @private **/
   this._okfnAnnotator = okfnAnnotator;
 
   /** @private **/
   this._eventBroker = eventBroker;
-  
+
+  /** @private **/
+  this._eventBroker = eventBroker;
+
+  /** @private **/
+  this._okfnAnnotator = okfnAnnotator;
+
   /** @private **/
   this._baseOffset = baseOffset;
 
@@ -48,7 +56,8 @@ annotorious.okfn.Popup = function(image, okfnAnnotator, eventBroker, baseOffset)
       });
     }
   });
-  
+
+
   goog.events.listen(this._okfnAnnotator.viewer.element[0], humanEvents.OUT, function(event) {
     if (self.isViewerCurrentlyOwned()) {
       okfnAnnotator.clearViewerHideTimer(); // Switch off Annotator's own fade out
@@ -62,7 +71,7 @@ annotorious.okfn.Popup = function(image, okfnAnnotator, eventBroker, baseOffset)
 
 /**
  * Utility method that tests if the viewer is currently 'owned' by the image that this
- * popup wrapper is responsible for. I.e. whether the (first) current annotation in the 
+ * popup wrapper is responsible for. I.e. whether the (first) current annotation in the
  * viewer is an image annotation, and the annotation 'url' property matches this wrapper's
  * _image.src.
  * @returns {boolean} true if the viewer is currently owned by this wrapper
@@ -70,7 +79,7 @@ annotorious.okfn.Popup = function(image, okfnAnnotator, eventBroker, baseOffset)
 annotorious.okfn.Popup.prototype.isViewerCurrentlyOwned = function() {
   var annotations = this._okfnAnnotator.viewer.annotations;
 
-  if (!annotations) 
+  if (!annotations)
     return false;
 
   if (annotations.length < 1)
@@ -80,22 +89,22 @@ annotorious.okfn.Popup.prototype.isViewerCurrentlyOwned = function() {
 }
 
 /**
- * Adds a mouseover event handler to this popup wrapper. Note that this handler 
+ * Adds a mouseover event handler to this popup wrapper. Note that this handler
  * will _not_ be invoked on all mouseover events that happen on the underlying
  * Annotator popup, but _only_ on events that happen while the Annotator popup
- * is "owned" by this wrapper. (I.e. when the popup contains an annotation that 
- * belongs to the same image as this popup wrapper.) 
+ * is "owned" by this wrapper. (I.e. when the popup contains an annotation that
+ * belongs to the same image as this popup wrapper.)
  */
 annotorious.okfn.Popup.prototype.addMouseOverHandler = function(handler) {
   this._mouseoverHandlers.push(handler);
 }
 
 /**
- * Adds a mouseout event handler to this popup wrapper. Note that this handler 
+ * Adds a mouseout event handler to this popup wrapper. Note that this handler
  * will _not_ be invoked on all mouseout events that happen on the underlying
  * Annotator popup, but _only_ on events that happen while the Annotator popup
- * is "owned" by this wrapper. (I.e. when the popup contains an annotation that 
- * belongs to the same image as this popup wrapper.) 
+ * is "owned" by this wrapper. (I.e. when the popup contains an annotation that
+ * belongs to the same image as this popup wrapper.)
  */
 annotorious.okfn.Popup.prototype.addMouseOutHandler = function(handler) {
   this._mouseoutHandlers.push(handler);
@@ -138,15 +147,34 @@ annotorious.okfn.Popup.prototype.clearHideTimer = function() {
  * @param {annotorious.geom.Point} xy the viewport coordinate (relative to the image)
  */
 annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
-  goog.dom.classes.remove(this._okfnAnnotator.viewer.element[0], 'annotator-hide');
+  var top = 0,
+      viewer = this._okfnAnnotator.viewer.element[0],
+      shapeY = annotation["shapes"][0]["geometry"]["y"],
+      imgOffset = annotorious.dom.getOffset(this._image),
+      windowHeight = window.innerHeight,
+      goRightAboveLogic,
+      goToTopLogic;
 
-  var imgOffset = annotorious.dom.getOffset(this._image); 
+  goog.dom.classes.addRemove(viewer, ['annotator-hide', 'annotator-reverse']);
+  goog.style.setPosition(viewer, 0, window.pageYOffset - this._baseOffset.top);
+  this._okfnAnnotator.viewer.load([annotation]);
 
-  goog.style.setPosition(this._okfnAnnotator.viewer.element[0], 0, window.pageYOffset - this._baseOffset.top);
-  this._okfnAnnotator.viewer.load([annotation]);   
-  goog.style.setPosition(this._okfnAnnotator.viewer.element[0],
-			 imgOffset.left - this._baseOffset.left + xy.x + 16,
-			 imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y);
+  top = imgOffset.top + window.pageYOffset - this._baseOffset.top + xy.y;
+
+  goRightAboveLogic = windowHeight < top+100;
+  goToTopLogic = shapeY < 100;
+
+  if (goRightAboveLogic) {
+    top = shapeY - 65;
+    goog.dom.classes.add(viewer, 'annotator-reverse');
+
+    if (goToTopLogic) {
+      top = 0;
+    }
+  }
+
+  goog.style.setPosition(viewer,
+			 imgOffset.left - this._baseOffset.left + xy.x + 16, top);
   this.clearHideTimer();
 }
 
@@ -156,5 +184,6 @@ annotorious.okfn.Popup.prototype.show = function(annotation, xy) {
  * @param {number} y the viewport Y coordinate (relative to the image)
  */
 annotorious.okfn.Popup.prototype.setPosition = function(x, y) {
-  goog.style.setPosition(this._okfnAnnotator.viewer.element[0], x, y);  
+  goog.style.setPosition(this._okfnAnnotator.viewer.element[0], x, y);
 }
+

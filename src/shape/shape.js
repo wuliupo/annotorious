@@ -53,27 +53,37 @@ annotorious.shape.Units = {
  * @return {boolean} true if the point intersects the shape
  */
 annotorious.shape.intersects = function(shape, px, py) {
-  if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
-    if (px < shape.geometry.x)
-      return false;
+  var geom = shape["geometry"];
+    if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
+      if (px < geom.x)
+        return false;
 
-    if (py < shape.geometry.y)
-      return false;
+      if (py < geom.y)
+        return false;
 
-    if (px > shape.geometry.x + shape.geometry.width)
-      return false;
+      if (px > geom.x + geom.width)
+        return false;
 
-    if (py > shape.geometry.y + shape.geometry.height)
-      return false;
-    
-    return true;
-  } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
-    var points = shape.geometry.points;
-    var inside = false;
+      if (py > geom.y + geom.height)
+        return false;
+
+      return true;
+    } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
+      var points = geom["points"];
+      var inside = false;
+
+      var j = points.length - 1;
+      for (var i=0; i<points.length; i++) {
+        if ((points[i].y > py) != (points[j].y > py) &&
+            (px < (points[j].x - points[i].x) * (py - points[i].y) / (points[j].y-points[i].y) + points[i].x)) {
+          inside = !inside;
+        }
+        j = i;
+      }
 
     var j = points.length - 1;
     for (var i=0; i<points.length; i++) {
-      if ((points[i].y > py) != (points[j].y > py) && 
+      if ((points[i].y > py) != (points[j].y > py) &&
           (px < (points[j].x - points[i].x) * (py - points[i].y) / (points[j].y-points[i].y) + points[i].x)) {
         inside = !inside;
       }
@@ -82,7 +92,7 @@ annotorious.shape.intersects = function(shape, px, py) {
 
     return inside;
   }
-    
+
   return false;
 }
 
@@ -93,9 +103,19 @@ annotorious.shape.intersects = function(shape, px, py) {
  */
 annotorious.shape.getSize = function(shape) {
   if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
-    return shape.geometry.width * shape.geometry.height;
+    return shape["geometry"].width * shape["geometry"].height;
   } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
-    return Math.abs(annotorious.shape.geom.Polygon.computeArea(shape.geometry.points));
+    // return Math.abs(annotorious.shape.geom.Polygon.computeArea(shape.geometry.points));
+    var points = shape["geometry"].points;
+    var area = 0.0;
+
+    var j = points.length - 1;
+    for (var i=0; i<points.length; i++) {
+      area += (points[j].x + points[i].x) * (points[j].y -points[i].y);
+      j = i;
+    }
+
+    return Math.abs(area / 2);
   }
   return 0;
 }
@@ -107,7 +127,7 @@ annotorious.shape.getSize = function(shape) {
  */
 annotorious.shape.getBoundingRect = function(shape) {
   if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
-    return shape;
+    return shape["geometry"];
   } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
     var points = shape.geometry.points;
 
@@ -129,13 +149,13 @@ annotorious.shape.getBoundingRect = function(shape) {
       if (points[i].y < top)
         top = points[i].y;
     }
-    
-    return new annotorious.shape.Shape(annotorious.shape.ShapeType.RECTANGLE, 
+
+    return new annotorious.shape.Shape(annotorious.shape.ShapeType.RECTANGLE,
       new annotorious.shape.geom.Rectangle(left, top, right - left, bottom - top),
       false, shape.style
     );
   }
-  
+
   return undefined;
 }
 
@@ -151,14 +171,14 @@ annotorious.shape.getCentroid = function(shape) {
   } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
     return annotorious.shape.geom.Polygon.computeCentroid( shape.geometry.points);
   }
-  
+
   return undefined;
 }
 
 /**
  * Expands a shape by a specified delta.
  * @param {annotorious.shape.Shape} shape the shape
- * @param {number} delta the delta 
+ * @param {number} delta the delta
  */
 annotorious.shape.expand = function(shape, delta) {
   // TODO for the sake of completeness: implement for RECTANGLE
@@ -169,7 +189,7 @@ annotorious.shape.expand = function(shape, delta) {
 
 /**
  * Transforms a shape from a source coordinate system to a destination coordinate
- * system. The transformation is calculated using the transformationFn parameter, 
+ * system. The transformation is calculated using the transformationFn parameter,
  * which must be a function(xy) that transforms a single XY coordinate.
  * @param {annotorious.shape.Shape} shape the shape to transform
  * @param {Function} transformationFn the transformation function
@@ -180,6 +200,11 @@ annotorious.shape.transform = function(shape, transformationFn) {
     var geom = shape.geometry;
     var transformed = transformationFn(geom);
     return new annotorious.shape.Shape(annotorious.shape.ShapeType.RECTANGLE, transformed, false, shape.style);
+    var geom = shape["geometry"];
+    var anchor = transformationFn({ x: geom.x, y: geom.y });
+    var size = transformationFn({ x: geom.width, y: geom.height });
+    return new annotorious.shape.Shape(annotorious.shape.ShapeType.RECTANGLE,
+      new annotorious.shape.geom.Rectangle(anchor.x, anchor.y, size.x, size.y));
   } else if (shape.type == annotorious.shape.ShapeType.POLYGON) {
     var transformedPoints = [];
     goog.array.forEach(shape.geometry.points, function(pt) {
@@ -202,5 +227,5 @@ annotorious.shape.transform = function(shape, transformationFn) {
  * @return {string} a 'hashcode' for the shape
  */
 annotorious.shape.hashCode = function(shape) {
-  return JSON.stringify(shape.geometry);
+  return JSON.stringify(shape["geometry"]);
 }

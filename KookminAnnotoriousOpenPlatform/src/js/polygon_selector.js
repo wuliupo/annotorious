@@ -1,9 +1,15 @@
+var humanEvents = annotorious.humanEvents;
+
+goog.provide('annotorious.plugins.selection.PolygonSelector');
+
+goog.require('goog.events');
+
 /**
  * Plugin wrapper.
  * @param {Object} config_opts configuration options
  * @constructor
  */
-annotorious.plugin.PolygonSelector = function(config_opts) { 
+annotorious.plugin.PolygonSelector = function(config_opts) {
   if (config_opts)
     this._activate = config_opts.activate;
 }
@@ -24,18 +30,22 @@ annotorious.plugin.PolygonSelector.prototype.onInitAnnotator = function(annotato
 annotorious.plugin.PolygonSelector.Selector = function() { }
 
 annotorious.plugin.PolygonSelector.Selector.prototype.init = function(annotator, canvas) {
+annotorious.plugins.selection.PolygonSelector.prototype.init = function(canvas, annotator) {
+  /** @private **/
+  this._canvas = canvas;
+
   /** @private **/
   this._annotator = annotator;
 
   /** @private **/
-  this._canvas = canvas;  
+  this._canvas = canvas;
 
   /** @private **/
   this._g2d = canvas.getContext('2d');
 
   /** @private **/
   this._anchor;
-  
+
   /** @private **/
   this._points = [];
 
@@ -57,29 +67,29 @@ annotorious.plugin.PolygonSelector.Selector.prototype.init = function(annotator,
  * @private
  */
 annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = function() {
-  var self = this;  
+  var self = this;
 
   var refresh = function(last, highlight_last) {
     self._g2d.clearRect(0, 0, self._canvas.width, self._canvas.height);
 
     // Outer line
     self._g2d.lineWidth = 2.5;
-    self._g2d.strokeStyle = '#000000';    
+    self._g2d.strokeStyle = '#000000';
     self._g2d.beginPath();
     self._g2d.moveTo(self._anchor.x, self._anchor.y);
-    
-    // TODO replace with goog.array.forEach  
-    for (var i=0; i<self._points.length; i++) { 
+
+    // TODO replace with goog.array.forEach
+    for (var i=0; i<self._points.length; i++) {
       self._g2d.lineTo(self._points[i].x, self._points[i].y);
     };
 
     self._g2d.lineTo(last.x, last.y);
     self._g2d.stroke();
-    
+
     /* Outer line
     g2d.lineWidth = 1.4;
     g2d.strokeStyle = '#000000';
-  
+
     var outline = annotorious.shape.expand(shape, 1).points;
     g2d.beginPath();
     g2d.moveTo(outline[0].x, outline[0].y);
@@ -89,7 +99,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
     g2d.lineTo(outline[0].x, outline[0].y);
     g2d.stroke();
     */
-    
+
     // Inner line
     self._g2d.lineWidth = 1.4;
     self._g2d.strokeStyle = '#ffffff';
@@ -121,6 +131,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
   };
 
   this._mouseMoveListener = function(event) {
+  this._mouseMoveListener = goog.events.listen(this._canvas, humanEvents.MOVE, function(event) {
     if (self._enabled) {
       if (event.offsetX == undefined) {
         event.offsetX = event.layerX;
@@ -140,11 +151,12 @@ annotorious.plugin.PolygonSelector.Selector.prototype._attachListeners = functio
       event.offsetY = event.layerY;
     }
 
+  this._mouseUpListener = goog.events.listen(this._canvas, humanEvents.UP, function(event) {
     if (isClosable(event.offsetX, event.offsetY)) {
       self._enabled = false;
       refresh(self._anchor);
       self._annotator.fireEvent('onSelectionCompleted',
-        { mouseEvent: event, shape: self.getShape(), viewportBounds: self.getViewportBounds() }); 
+        { mouseEvent: event, shape: self.getShape(), viewportBounds: self.getViewportBounds() });
     } else {
       self._points.push({ x: event.offsetX, y: event.offsetY });
     }
@@ -198,8 +210,13 @@ annotorious.plugin.PolygonSelector.Selector.prototype.startSelection = function(
   this._attachListeners();
   this._anchor = { x: x, y: y };
   this._annotator.fireEvent('onSelectionStarted', { offsetX: x, offsetY: y });
-  
+
   // goog.style.setStyle(document.body, '-webkit-user-select', 'none');
+  this._anchor = new annotorious.shape.geom.Point(x, y);
+  this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
+    offsetX: x, offsetY: y});
+
+  goog.style.setStyle(document.body, '-webkit-user-select', 'none');
 }
 
 /**
@@ -219,7 +236,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype.stopSelection = function()
 annotorious.plugin.PolygonSelector.Selector.prototype.getShape = function() {
   var points = [];
   points.push(this._annotator.toItemCoordinates(this._anchor));
-  
+
   var self = this;
   // goog.array.forEach(this._points, function(pt) {
   for (var i=0; i<this._points.length; i++) {
@@ -260,10 +277,10 @@ annotorious.plugin.PolygonSelector.Selector.prototype.getViewportBounds = functi
 }
 
 /**
- * TODO not sure if this is really the best way/architecture to handle viewer shape drawing 
+ * TODO not sure if this is really the best way/architecture to handle viewer shape drawing
  */
 
-var i = 100; 
+var i = 100;
 
 annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function(g2d, shape, highlight) {
   var color;
@@ -277,7 +294,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function(g2d, 
   // Outer line
   g2d.lineWidth = 1.3;
   g2d.strokeStyle = '#000000';
- 
+
   g2d.beginPath();
   g2d.moveTo(0 + i, 0 + i);
   g2d.lineTo(500,1500);
@@ -286,7 +303,7 @@ annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function(g2d, 
   // Inner line
   g2d.lineWidth = 1.2;
   g2d.strokeStyle = color;
-  
+
   g2d.beginPath();
   g2d.moveTo(200,300);
   g2d.lineTo(1200, 1200);
@@ -294,4 +311,3 @@ annotorious.plugin.PolygonSelector.Selector.prototype.drawShape = function(g2d, 
 
   i = i + 20;
 }
-

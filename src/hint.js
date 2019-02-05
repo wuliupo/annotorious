@@ -1,15 +1,22 @@
 goog.provide('annotorious.Hint');
+var humanEvents = annotorious.humanEvents;
+
+
+goog.provide('annotorious.hint');
 
 goog.require('goog.dom.query');
 goog.require('goog.events');
 goog.require('goog.soy');
 goog.require('goog.style');
 
-/** 
+/**
  * The 'hint' GUI element.
  * @param {Object} annotator the annotator
  * @param {Element} parent the parent DOM element
  * @param {string=} opt_msg the message to display as hint
+goog.require('goog.dom.query');
+
+/**
  * @constructor
  */
 annotorious.Hint = function(annotator, parent, opt_msg) {
@@ -61,12 +68,12 @@ annotorious.Hint = function(annotator, parent, opt_msg) {
 annotorious.Hint.prototype._attachListeners = function() {
   var self = this;
 
-  this._mouseOverListener = goog.events.listen(this._icon, goog.events.EventType.MOUSEOVER, function(event) {
+  this._mouseOverListener = goog.events.listen(this._icon, humanEvents.OVER, function(event) {
     self.show();
     window.clearTimeout(self._hideTimer);
   });
 
-  this._mouseOutListener = goog.events.listen(this._icon, goog.events.EventType.MOUSEOUT, function(event) {
+  this._mouseOutListener = goog.events.listen(this._icon, humanEvents.OUT, function(event) {
     self.hide();
   });
 
@@ -118,3 +125,4 @@ annotorious.Hint.prototype.destroy = function() {
   delete this._outOfItemHandler;
   goog.dom.removeNode(this.element);
 }
+
