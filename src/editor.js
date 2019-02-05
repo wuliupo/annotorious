@@ -143,7 +143,6 @@ annotorious.Editor.prototype.getAnnotation = function() {
   var sanitized = goog.string.html.htmlSanitize(this._textarea.getValue(), function(url) {
     return url;
   });
-
   if (this._current_annotation) {
     this._current_annotation.text = sanitized;
   } else {
@@ -154,6 +153,18 @@ annotorious.Editor.prototype.getAnnotation = function() {
   return this._current_annotation;
 }
 
+/**
+ * Sets the current annotation.
+ * @return {annotorious.Annotation} the annotation
+ */
+annotorious.Editor.prototype.setCurrentAnnotation = function(annotation) {
+  this._current_annotation = annotation;
+  return this._current_annotation;
+}
+
+
 /** API exports **/
 annotorious.Editor.prototype['addField'] = annotorious.Editor.prototype.addField;
 annotorious.Editor.prototype['getAnnotation'] = annotorious.Editor.prototype.getAnnotation;
+annotorious.Editor.prototype['setCurrentAnnotation'] = annotorious.Editor.prototype.setCurrentAnnotation;
+
