@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .rect {
+            width: 1000px;
+            height: 570px;
+            display: block;
+            overflow: hidden;
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rect img {
+            width: 100%;
+            padding: 1px;
+        }
+    </style>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="js/zoomer.js"></script>
+    <script>
+        window.onload = function () {
+            console.log("Start up...");
+            zoomer.createCanvas($("#img"));
+            console.log("Initiated...")
+        }
+    </script>
+</head>
+<body>
+<div id="rect" class="rect">
+    <img id="img" src="../static/images/Cute-And-Lovely-Cat-HD-Wallpaper.jpg"/>
+</div>
+<button onclick="zoomer.rest()">rest</button>
+<button onclick="zoomer.wake()">wake</button>
+</body>
+</html>

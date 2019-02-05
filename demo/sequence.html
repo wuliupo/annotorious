@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sequence Illustration</title>
+    <script>
+        window.tdiff = [];
+        fred = function (a, b) {
+            return a - b;
+        };
+        window.onload = function (e) {
+            console.log("window.onload", e, Date.now(), window.tdiff, (window.tdiff[0] = Date.now()) && window.tdiff.reduce(fred));
+//            var img = document.getElementById("img");
+//            document.getElementById("img").src = "static/images/139-150422113A4.jpg";
+//            console.log(img.src + " loaded");
+        };
+    </script>
+</head>
+<body>
+<img id="img" src="static/images/BSXO51OXHOVQ.jpg" width="800px"/>
+</body>
+</html>

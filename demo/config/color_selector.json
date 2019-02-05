@@ -1,0 +1,19 @@
+{
+  "symptoms": [
+    {
+      "ename": "huangban",
+      "zname": "黄斑",
+      "color": "FFFF00"
+    },
+    {
+      "ename": "shenchu",
+      "zname": "渗出",
+      "color": "0066CC"
+    },
+    {
+      "ename": "weixueguanlui",
+      "zname": "微血管瘤",
+      "color": "FF0000"
+    }
+  ]
+}

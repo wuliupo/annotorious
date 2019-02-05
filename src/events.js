@@ -7,38 +7,10 @@ goog.require('goog.events');
  * A central 'event bus' to distribute the annotation lifecycle events.
  * @constructor
  */
-annotorious.events.EventBroker = function() {
-  /** @private **/
-  this._handlers = [];
-};
-
-annotorious.events.sanitizeCoordinates = function(event, parent) {
-  var points = false;
-  var offset = annotorious.dom.getOffset;
-
-  if (!event.offsetX || !event.offsetY && event.event_.changedTouches) {
-    points = {
-      x: event.event_.changedTouches[0].pageX - offset(parent).left,
-      y: event.event_.changedTouches[0].pageY - offset(parent).top
-    };
-  } else {
-    points = {
-      x: event.offsetX,
-      y: event.offsetY
-    };
-  }
-
-  return points;
-};
-
-annotorious.events.dispatch = function(options) {
-  var event, eventName = options.name;
-  type = options.type || "HTMLEvents";
-  event = document.createEvent("HTMLEvents");
-  event.initEvent(eventName);
-  event.data = options.data || {};
-  options.element.dispatchEvent(event);
-};
+annotorious.events.EventBroker = function () {
+    /** @private **/
+    this._handlers = [];
+}
 
 /**
  * Adds an event handler.
@@ -73,19 +45,19 @@ annotorious.events.EventBroker.prototype.removeHandler = function(type, handler)
  * @param {Object=} opt_event the event object
  * @return {boolean} the 'cancel event' flag
  */
-annotorious.events.EventBroker.prototype.fireEvent = function(type, opt_event, opt_extra) {
-  var cancelEvent = false;
-  var handlers = this._handlers[type];
-  if (handlers) {
-    goog.array.forEach(handlers, function(handler, idx, array) {
-      var retVal = handler(opt_event, opt_extra);
-      if (goog.isDef(retVal) && !retVal)
-        cancelEvent = true;
-    });
-  }
+annotorious.events.EventBroker.prototype.fireEvent = function (type, opt_event, opt_extra) {
+    var cancelEvent = false;
+    var handlers = this._handlers[type];
+    if (handlers) {
+        goog.array.forEach(handlers, function (handler, idx, array) {
+            var retVal = handler(opt_event, opt_extra);
+            if (goog.isDef(retVal) && !retVal)
+                cancelEvent = true;
+        });
+    }
 
-  return cancelEvent;
-};
+    return cancelEvent;
+}
 
 /**
  * Annotation lifecycle events.
@@ -93,95 +65,90 @@ annotorious.events.EventBroker.prototype.fireEvent = function(type, opt_event, o
  */
 annotorious.events.EventType = {
 
-  /**
-   * The mouse entered the annotatable media area
-   */
-  MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
+    /**
+     * The mouse entered the annotatable media area
+     */
+    MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
 
-  /**
-   * The mouse moved out of the annotatable media area
-   */
-  MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
+    /**
+     * The mouse moved out of the annotatable media area
+     */
+    MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
 
-  /**
-   * The mouse entered an annotation
-   */
-  MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
+    /**
+     * The mouse entered an annotation
+     */
+    MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
 
-  /**
-   * The mouse moved out of an annotation
-   */
-  MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
+    /**
+     * The mouse moved out of an annotation
+     */
+    MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
 
-  /**
-   * A new selection was started
-   */
-  SELECTION_STARTED: 'onSelectionStarted',
+    /**
+     * A new selection was started
+     */
+    SELECTION_STARTED: 'onSelectionStarted',
 
-  /**
-   * The current selection was canceled
-   */
-  SELECTION_CANCELED: 'onSelectionCanceled',
+    /**
+     * The current selection was canceled
+     */
+    SELECTION_CANCELED: 'onSelectionCanceled',
 
-  /**
-   * The current selection was completed
-   */
-  SELECTION_COMPLETED: 'onSelectionCompleted',
+    /**
+     * The current selection was completed
+     */
+    SELECTION_COMPLETED: 'onSelectionCompleted',
 
-  /**
-   * The current selection was changed
-   */
-  SELECTION_CHANGED: 'onSelectionChanged',
-
-  /**
-   * The annotation editor was opened.  Pass the annotation object if it exists.
-   */
-  EDITOR_SHOWN: 'onEditorShown',
-
-  /**
-   * The annotation popop was opened.  Pass the annotation object.
-   */
-  POPUP_SHOWN: 'onPopupShown',
-
-  /**
-   * The annotation popup widget is about to hide
-   */
-  BEFORE_POPUP_HIDE: 'beforePopupHide',
-
-  /**
-   * The annotation is about to be removed
-   */
-  BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
-
-  /**
-   * An annotation was removed
-   */
-  ANNOTATION_REMOVED: 'onAnnotationRemoved',
-
-  /**
-   * An annotation was created
-   */
-  ANNOTATION_CREATED: 'onAnnotationCreated',
-
-  /**
-   * An existing annotation was updated
-   */
-  ANNOTATION_UPDATED: 'onAnnotationUpdated',
-
-  /**
-   * The annotation was clicked.  Pass the annotation object.
-   */
-  ANNOTATION_CLICKED: 'onAnnotationClicked',
-
-  /**
-   * The annotation was correct.  Pass the annotation object.
-   */
-  ANNOTATION_IS_CORRECT: 'onAnnotationIsCorrect',
+    /**
+     * The current selection was changed
+     */
+    SELECTION_CHANGED: 'onSelectionChanged',
 
 
-  /**
-   * The annotation was wrong.  Pass the annotation object.
-   */
-  ANNOTATION_IS_WRONG: 'onAnnotationIsWrong'
+    /**
+     * The annotation editor is opening.  Pass the annotation object if it exists.
+     */
+    BEFORE_EDITOR_SHOWN: 'beforeEditorShown',
+
+    /**
+     * The annotation editor was opened.  Pass the annotation object if it exists.
+     */
+    EDITOR_SHOWN: 'onEditorShown',
+
+    /**
+     * The annotation popop was opened.  Pass the annotation object.
+     */
+    POPUP_SHOWN: 'onPopupShown',
+
+    /**
+     * The annotation popup widget is about to hide
+     */
+    BEFORE_POPUP_HIDE: 'beforePopupHide',
+
+    /**
+     * The annotation is about to be removed
+     */
+    BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
+
+    /**
+     * An annotation was removed
+     */
+    ANNOTATION_REMOVED: 'onAnnotationRemoved',
+
+    /**
+     * An annotation was created
+     */
+    ANNOTATION_CREATED: 'onAnnotationCreated',
+
+    /**
+     * An existing annotation was updated
+     */
+    ANNOTATION_UPDATED: 'onAnnotationUpdated',
+
+    /**
+     * The annotation was clicked.  Pass the annotation object.
+     */
+    ANNOTATION_CLICKED: 'onAnnotationClicked'
 
 };

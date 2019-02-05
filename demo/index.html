@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+    <link rel="stylesheet" type="text/css" href="static/css/annotorious.css"/>
+    <script type="text/javascript" src="static/js/compress.js"></script>
+    <script>
+        function init() {
+            var image = document.getElementById('hallstatt');
+            anno.makeAnnotatable(image);
+        }
+
+        function showAnno() {
+            anno.showAnnotations();
+        }
+
+        function hideAnno() {
+            anno.hideAnnotations();
+        }
+
+        function reset() {
+            anno.reset();
+        }
+    </script>
+</head>
+<body>
+<h1>Annotation Demo</h1>
+<img id="hallstatt" src="static/images/Cute-And-Lovely-Cat-HD-Wallpaper.jpg" class="annotatable" width="800px"/>
+<div>
+    <button onclick="showAnno()">show anno</button>
+    <button onclick="hideAnno()">hide anno</button>
+    <button onclick="reset()">reset</button>
+</div>
+</body>
+</html>
+

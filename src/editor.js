@@ -20,66 +20,71 @@ goog.require('annotorious.templates');
  * @param {Object} annotator reference to the annotator
  * @constructor
  */
-annotorious.Editor = function(annotator) {
-  this.element = goog.soy.renderAsElement(annotorious.templates.editform);
+annotorious.Editor = function (annotator) {
+    this.element = goog.soy.renderAsElement(annotorious.templates.editform);
 
-  /** @private **/
-  this._annotator = annotator;
+    /** @private **/
+    this._annotator = annotator;
 
-  /** @private **/
-  this._item = annotator.getItem();
+    /** @private **/
+    this._item = annotator.getItem();
 
-  /** @private **/
-  this._original_annotation;
+    /** @private **/
+    this._original_annotation;
 
-  /** @private **/
-  this._current_annotation;
+    /** @private **/
+    this._current_annotation;
 
-  /** @private **/
-  this._textarea = new goog.ui.Textarea('');
+    /** @private **/
+    this._textarea = new goog.ui.Textarea('');
 
-  /** @private **/
-  this._btnCancel = this.element.querySelector('.annotorious-editor-button-cancel');
+    /** @private **/
+    this._btnCancel = goog.dom.query('.annotorious-editor-button-cancel', this.element)[0];
 
-  /** @private **/
-  this._btnSave = this.element.querySelector('.annotorious-editor-button-save');
+    /** @private **/
+    this._btnSave = goog.dom.query('.annotorious-editor-button-save', this.element)[0];
 
-  /** @private **/
-  this._btnContainer = goog.dom.getParentElement(this._btnSave);
+    /** @private **/
+    this._btnContainer = goog.dom.getParentElement(this._btnSave);
 
-  /** @private **/
-  this._extraFields = [];
+    /** @private **/
+    this._extraFields = [];
 
-  /** @private **/
-  this.htmlSanitizer = new goog.html.sanitizer.HtmlSanitizer.Builder()
-  .withCustomNetworkRequestUrlPolicy(goog.html.SafeUrl.sanitize)
-  .build();
+    /** @private **/
+    this._typeSelectorContainer = goog.dom.query('.annotorious-type-selector-container', this.element)[0];
 
-  var self = this;
-  goog.events.listen(this._btnCancel, humanEvents.CLICK, function(event) {
-    event.preventDefault();
-    annotator.stopSelection(self._original_annotation);
-    self.close();
-  });
+    /** @private **/
+    this._typeSelectors;
 
-  goog.events.listen(this._btnSave, humanEvents.CLICK, function(event) {
-    event.preventDefault();
-    var annotation = self.getAnnotation();
-    annotator.addAnnotation(annotation);
-    annotator.stopSelection();
-    if (self._original_annotation){
-      annotation['false'] = true; //modified
-      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_UPDATED, annotation, annotator.getItem());
-    }
-    else
-      annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation, annotator.getItem());
-    self.close();
-  });
+    /** @private **/
+    this._type;
 
-  goog.style.showElement(this.element, false);
-  goog.dom.appendChild(annotator.element, this.element);
-  this._textarea.decorate(this.element.querySelector('.annotorious-editor-text'));
-  annotorious.dom.makeHResizable(this.element, function() { self._textarea.resize(); });
+    var self = this;
+    goog.events.listen(this._btnCancel, goog.events.EventType.CLICK, function (event) {
+        event.preventDefault();
+        annotator.stopSelection(self._original_annotation);
+        self.close();
+    });
+
+    goog.events.listen(this._btnSave, goog.events.EventType.CLICK, function (event) {
+        event.preventDefault();
+        var annotation = self.getAnnotation();
+        annotator.addAnnotation(annotation);
+        annotator.stopSelection();
+
+        if (self._original_annotation)
+            annotator.fireEvent(annotorious.events.EventType.ANNOTATION_UPDATED, annotation, annotator.getItem());
+        else
+            annotator.fireEvent(annotorious.events.EventType.ANNOTATION_CREATED, annotation, annotator.getItem());
+        self.close();
+    });
+
+    goog.style.setElementShown(this.element, false);
+    goog.dom.appendChild(annotator.element, this.element);
+    this._textarea.decorate(goog.dom.query('.annotorious-editor-text', this.element)[0]);
+    annotorious.dom.makeHResizable(this.element, function () {
+        self._textarea.resize();
+    });
 }
 
 /**
@@ -88,18 +93,18 @@ annotorious.Editor = function(annotator) {
  * a DOM element.
  * @param {string | Function} field the field
  */
-annotorious.Editor.prototype.addField = function(field) {
-  var fieldEl = goog.dom.createDom('div', 'annotorious-editor-field');
+annotorious.Editor.prototype.addField = function (field) {
+    var fieldEl = goog.dom.createDom('div', 'annotorious-editor-field');
 
-  if (goog.isString(field))  {
-    fieldEl.innerHTML = field;
-  } else if (goog.isFunction(field)) {
-    this._extraFields.push({el: fieldEl, fn: field});
-  } else if (goog.dom.isElement(field)) {
-    goog.dom.appendChild(fieldEl, field);
-  }
+    if (goog.isString(field)) {
+        fieldEl.innerHTML = field;
+    } else if (goog.isFunction(field)) {
+        this._extraFields.push({el: fieldEl, fn: field});
+    } else if (goog.dom.isElement(field)) {
+        goog.dom.appendChild(fieldEl, field);
+    }
 
-  goog.dom.insertSiblingBefore(fieldEl, this._btnContainer);
+    goog.dom.insertSiblingBefore(fieldEl, this._btnContainer);
 }
 
 /**
@@ -107,63 +112,95 @@ annotorious.Editor.prototype.addField = function(field) {
  * @param {annotorious.Annotation=} opt_annotation the annotation to edit (or undefined)
  * @param {Object=} opt_event the event, if any
  */
-annotorious.Editor.prototype.open = function(opt_annotation, opt_event) {
-  this._original_annotation = opt_annotation;
-  this._current_annotation = opt_annotation;
+annotorious.Editor.prototype.open = function (opt_annotation) {
+    console.log("Editor openning...");
+    /** @private **/
+    this._annotator.fireEvent(annotorious.events.EventType.BEFORE_EDITOR_SHOWN, opt_annotation);
 
-  if (opt_annotation)
-    this._textarea.setValue(opt_annotation.text);
+    this._original_annotation = opt_annotation;
+    this._current_annotation = opt_annotation;
 
-  goog.style.showElement(this.element, true);
-  this._textarea.getElement().focus();
-
-  // Update extra fields (if any)
-  goog.array.forEach(this._extraFields, function(field) {
-    var f = field.fn(opt_annotation);
-    if (goog.isString(f))  {
-      field.el.innerHTML = f;
-    } else if (goog.dom.isElement(f)) {
-      goog.dom.removeChildren(field.el);
-      goog.dom.appendChild(field.el, f);
+    if (this._annotator.typeSelectors) {
+        this._typeSelectors = this._annotator.typeSelectors;
+        var selectors = goog.soy.renderAsFragment(annotorious.templates.typeSelectors, {
+            selectors: this._typeSelectors
+        });
+        goog.dom.removeChildren(this._typeSelectorContainer);
+        goog.dom.appendChild(this._typeSelectorContainer, selectors);
+        var selector_buttons = goog.dom.query('.annotorious-type-selector', this._typeSelectorContainer);
+        var self = this;
+        var hasDefault = false;
+        goog.array.forEach(selector_buttons, function (selector_button) {
+            if (opt_annotation && selector_button.name === opt_annotation.type) {
+                goog.dom.classes.addRemove(selector_button, 'annotorious-type-selector-normal', 'annotorious-type-selector-focus');
+                hasDefault = true;
+            }
+            goog.events.listen(selector_button, goog.events.EventType.CLICK, function (event) {
+                event.preventDefault();
+                goog.array.forEach(selector_buttons, function (button) {
+                    goog.dom.classes.addRemove(button, 'annotorious-type-selector-focus', 'annotorious-type-selector-normal');
+                });
+                goog.dom.classes.addRemove(this, 'annotorious-type-selector-normal', 'annotorious-type-selector-focus');
+                self._type = this.name;
+            });
+        });
+        if (!hasDefault) {
+            var button = goog.dom.query('.annotorious-type-selector', this._typeSelectorContainer)[0];
+            button.click();
+        }
     }
-  });
-  this._annotator.fireEvent(annotorious.events.EventType.EDITOR_SHOWN, opt_annotation);
+
+    if (opt_annotation)
+        this._textarea.setValue(opt_annotation.text);
+
+    goog.style.setElementShown(this.element, true);
+    this._textarea.getElement().focus();
+
+    // Update extra fields (if any)
+    goog.array.forEach(this._extraFields, function (field) {
+        var f = field.fn(opt_annotation);
+        if (goog.isString(f)) {
+            field.el.innerHTML = f;
+        } else if (goog.dom.isElement(f)) {
+            goog.dom.removeChildren(field.el);
+            goog.dom.appendChild(field.el, f);
+        }
+    });
+    this._annotator.fireEvent(annotorious.events.EventType.EDITOR_SHOWN, opt_annotation);
 }
 
 /**
  * Closes the editor.
  */
-annotorious.Editor.prototype.close = function() {
-  goog.style.showElement(this.element, false);
-  this._textarea.setValue('');
+annotorious.Editor.prototype.close = function () {
+    goog.style.setElementShown(this.element, false);
+    this._textarea.setValue('');
 }
 
 /**
  * Sets the position (i.e. CSS left/top value) of the editor element.
  * @param {annotorious.shape.geom.Point} xy the viewport coordinate
  */
-annotorious.Editor.prototype.setPosition = function(xy) {
-  goog.style.setPosition(this.element, xy.x, xy.y);
+annotorious.Editor.prototype.setPosition = function (xy) {
+    goog.style.setPosition(this.element, xy.x, xy.y);
 }
 
 /**
  * Returns the annotation that is the current state of the editor.
  * @return {annotorious.Annotation} the annotation
  */
-annotorious.Editor.prototype.getAnnotation = function() {
-  var sanitized = goog.string.html.htmlSanitize(this._textarea.getValue(), function(url) {
-    return url;
-  });
-  var sanitized = this.htmlSanitizer.sanitize(this._textarea.getValue()).getTypedStringValue();
-
-  if (this._current_annotation) {
-    this._current_annotation.text = sanitized;
-  } else {
-    this._current_annotation =
-      new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape());
-  }
-
-  return this._current_annotation;
+annotorious.Editor.prototype.getAnnotation = function () {
+    var sanitized = goog.string.html.htmlSanitize(this._textarea.getValue(), function (url) {
+        return url;
+    });
+    if (this._current_annotation) {
+        this._current_annotation.text = sanitized;
+        this._current_annotation.type = this._type;
+    } else {
+        this._current_annotation =
+            new annotorious.Annotation(this._item.src, sanitized, this._annotator.getActiveSelector().getShape(), this._type);
+    }
+    return this._current_annotation;
 }
 
 /**

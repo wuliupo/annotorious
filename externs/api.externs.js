@@ -3,68 +3,68 @@
 /**
  * Annotorious annotation interface.
  */
-var Annotation = {  
+var Annotation = {
 
-  /** @type {string} source URL of the annotated object (e.g. image) **/
-  src : {},
-  
-  /** @type {string} source URL of the HTML document containing the annotated object **/
-  context : {},
-  
-  /** @type {string} annotation text **/
-  text  : {},
+    /** @type {string} source URL of the annotated object (e.g. image) **/
+    src: {},
 
-  /** @type {boolean} flag indicating whether the anntotation is edit-/deletable **/
-  editable : {},
-  
-  /** @type {Object} the annotation shape **/
-  shapes : [{
-  
-    /** @type {string} the annotation shape type (e.g. rect, point, polygon) **/
-    type     : {},
+    /** @type {string} source URL of the HTML document containing the annotated object **/
+    context: {},
 
-    /** @type {string} measurement units used for the geometry (e.g. 'pixel', 'fraction') **/
-    units    : {},
-    
-    /** @type {Object} the shape geometry **/
-    geometry : {},
-    
-    /** @type {Object} the shape style **/
-    style: {
-      
-      /** @type {string} outline color **/
-      outline: {},
+    /** @type {string} annotation text **/
+    text: {},
 
-      /** @type {number} outline width **/
-      outline_width: {},
-      
-      /** @type {string} outline color when highlighted **/
-      hi_outline: {},
+    /** @type {boolean} flag indicating whether the anntotation is edit-/deletable **/
+    editable: {},
 
-      /** @type {number} outline width when hightlighted **/
-      hi_outline_width: {},
-      
-      /** @type {string} stroke color **/
-      stroke: {},
+    /** @type {Object} the annotation shape **/
+    shapes: [{
 
-      /** @type {number} stroke width **/
-      stroke_width: {},      
+        /** @type {string} the annotation shape type (e.g. rect, point, polygon) **/
+        type: {},
 
-      /** @type {string} stroke color when highlighted **/
-      hi_stroke: {},
+        /** @type {string} measurement units used for the geometry (e.g. 'pixel', 'fraction') **/
+        units: {},
 
-      /** @type {number} stroke width when highlighted **/
-      hi_stroke_width: {},      
-      
-      /** @type {string} fill color **/
-      fill: {},
-      
-      /** @type {string} fill color when highlighted **/
-      hi_fill: {}
-      
-    }
-    
-  }]
+        /** @type {Object} the shape geometry **/
+        geometry: {},
+
+        /** @type {Object} the shape style **/
+        style: {
+
+            /** @type {string} outline color **/
+            outline: {},
+
+            /** @type {number} outline width **/
+            outline_width: {},
+
+            /** @type {string} outline color when highlighted **/
+            hi_outline: {},
+
+            /** @type {number} outline width when hightlighted **/
+            hi_outline_width: {},
+
+            /** @type {string} stroke color **/
+            stroke: {},
+
+            /** @type {number} stroke width **/
+            stroke_width: {},
+
+            /** @type {string} stroke color when highlighted **/
+            hi_stroke: {},
+
+            /** @type {number} stroke width when highlighted **/
+            hi_stroke_width: {},
+
+            /** @type {string} fill color **/
+            fill: {},
+
+            /** @type {string} fill color when highlighted **/
+            hi_fill: {}
+
+        }
+
+    }]
 
 };
 
@@ -73,13 +73,13 @@ var Annotation = {
  */
 var Rectangle = {
 
-  x : {},
+    x: {},
 
-  y : {},
+    y: {},
 
-  width : {},
+    width: {},
 
-  height : {}
+    height: {}
 
 }
 
@@ -88,7 +88,7 @@ var Rectangle = {
  */
 var Polygon = {
 
-  points : {}
+    points: {}
 
 }
 
@@ -97,12 +97,14 @@ var Polygon = {
  */
 var AnnotoriousPlugin = {
 
-  /** @type {Function} called on plugin initialization **/
-  initPlugin : function(anno) {},
+    /** @type {Function} called on plugin initialization **/
+    initPlugin: function (anno) {
+    },
 
-  /** @type {Function} called on initialization of a Popup element **/
-  onInitAnnotator : function(annotator) {}
-  
+    /** @type {Function} called on initialization of a Popup element **/
+    onInitAnnotator: function (annotator) {
+    }
+
 };
 
 /**
@@ -110,14 +112,14 @@ var AnnotoriousPlugin = {
  */
 var Annotator = {
 
-  /** @type {Element} the annotator DOM element **/
-  element : {},
+    /** @type {Element} the annotator DOM element **/
+    element: {},
 
-  /** @type {Object} the popup used by this annotator **/
-  popup : {},
+    /** @type {Object} the popup used by this annotator **/
+    popup: {},
 
-  /** @type {Object} the editor used by this annotator **/
-  editor : {}
+    /** @type {Object} the editor used by this annotator **/
+    editor: {}
 
 };
 
@@ -126,21 +128,29 @@ var Annotator = {
  */
 var Selector = {
 
-  init : function() {},
+    init: function () {
+    },
 
-  getName : function() {},
+    getName: function () {
+    },
 
-  getSupportedShapeType : function() {},
+    getSupportedShapeType: function () {
+    },
 
-  startSelection : function() {},
+    startSelection: function () {
+    },
 
-  stopSelection : function() {},
+    stopSelection: function () {
+    },
 
-  getShape : function() {},
+    getShape: function () {
+    },
 
-  getViewportBounds : function() {},
+    getViewportBounds: function () {
+    },
 
-  drawShape : function() {}
+    drawShape: function () {
+    }
 
 }
 
@@ -149,11 +159,11 @@ var Selector = {
  */
 var SelectionEvent = {
 
-  mouseEvent : {},
+    mouseEvent: {},
 
-  shape : {},
+    shape: {},
 
-  viewportBounds : {}
+    viewportBounds: {}
 
 }
 
@@ -162,14 +172,19 @@ var SelectionEvent = {
  */
 var Popup = {
 
-  startHideTimer : function() {},
+    startHideTimer: function () {
+    },
 
-  clearHideTimer : function() {},
+    clearHideTimer: function () {
+    },
 
-  show : function() {},
+    show: function () {
+    },
 
-  setPosition : function() {},
+    setPosition: function () {
+    },
 
-  setAnnotation : function() {}
- 
+    setAnnotation: function () {
+    }
+
 }
