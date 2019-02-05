@@ -22,14 +22,28 @@ annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.getItemURL = 
 }
 
 /** @inheritDoc **/
-annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator = function (item) {
-    return new annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator(item);
+annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.newAnnotator = function(item) {
+  /* NOTE: `item' here is actually an instance of OpenSeadragon.Viewer,
+   * i.e what's produced by x = OpenSeadragon({ ... }) */
+  return new annotorious.mediatypes.openseadragon.OpenSeadragonAnnotator(item);
 }
 
 /** @inheritDoc **/
-annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = function (item) {
-    console.log(item, OpenSeadragon.Viewer);
-    return item instanceof OpenSeadragon.Viewer;
+annotorious.mediatypes.openseadragon.OpenSeadragonModule.prototype.supports = function(item) {
+  // A hack to identify whether we're dealing with an OpenSeadragon viewer - any better ideas?
+  if (!item.id)
+    return false;
+
+  // don't do it this way
+  /*
+  if (item.id.indexOf('openseadragon') != 0)
+    return false;
+  */
+
+  if(!item.hasOwnProperty('drawer'))
+    return false;
+
+  return true;
 }
 
 

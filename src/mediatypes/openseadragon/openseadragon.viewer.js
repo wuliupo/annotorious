@@ -14,14 +14,14 @@ annotorious.mediatypes.openseadragon.Viewer = function(osdViewer, annotator) {
 
   /** @private **/
   this._annotator = annotator;
-  
-  /** @private **/  
+
+  /** @private **/
   this._map_bounds = goog.style.getBounds(osdViewer.element);
-  
+
   /** @private **/
   this._popup = annotator.popup;
   goog.style.setStyle(this._popup.element, 'z-index', 99000);
-  
+
   /** @private **/
   this._overlays = [];
 
@@ -30,7 +30,7 @@ annotorious.mediatypes.openseadragon.Viewer = function(osdViewer, annotator) {
 
   /** @private **/
   this._lastHoveredOverlay;
-  
+
   var self = this;
 
   this._osdViewer.addHandler('animation', function() {
@@ -43,7 +43,7 @@ annotorious.mediatypes.openseadragon.Viewer = function(osdViewer, annotator) {
       self._annotator.fireEvent(annotorious.events.EventType.MOUSE_OVER_ANNOTATION, self._currentlyHighlightedOverlay.annotation);
     }
   });
-    
+
   annotator.addHandler(annotorious.events.EventType.BEFORE_POPUP_HIDE, function() {
     if (self._lastHoveredOverlay == self._currentlyHighlightedOverlay) {
       self._popup.clearHideTimer();
@@ -59,14 +59,14 @@ annotorious.mediatypes.openseadragon.Viewer = function(osdViewer, annotator) {
  */
 annotorious.mediatypes.openseadragon.Viewer.prototype._place_popup = function() {
   var viewportEl = this._osdViewer['element'];
-  
+
   // Compute correct annotation bounds, relative to map
   var annotation_div = this._currentlyHighlightedOverlay.outer;
   var annotation_dim = goog.style.getBounds(annotation_div);
   var annotation_pos = goog.style.getRelativePosition(annotation_div, viewportEl);
-  var annotation_bounds = { top: annotation_pos.y, 
-                            left: annotation_pos.x, 
-                            width: annotation_dim.width, 
+  var annotation_bounds = { top: annotation_pos.y,
+                            left: annotation_pos.x,
+                            width: annotation_dim.width,
                             height: annotation_dim.height };
 
   // Popup width & height
@@ -74,13 +74,13 @@ annotorious.mediatypes.openseadragon.Viewer.prototype._place_popup = function() 
   var popup_pos = { x: annotation_bounds.left, y: annotation_bounds.top + annotation_bounds.height + 12 };
   goog.dom.classes.addRemove(this._popup.element, 'top-right', 'top-left');
 
-  // Don't fix position in full-page mode    
+  // Don't fix position in full-page mode
   if (!this._osdViewer.isFullPage()) {
     if (annotation_bounds.left + popup_bounds.width > this._map_bounds.width) {
       goog.dom.classes.addRemove(this._popup.element, 'top-left', 'top-right');
       popup_pos.x = (annotation_bounds.left + annotation_bounds.width) - popup_bounds.width;
     } else {
-      
+
     }
 
     if (popup_pos.x < 0)
@@ -88,12 +88,12 @@ annotorious.mediatypes.openseadragon.Viewer.prototype._place_popup = function() 
 
     if (popup_pos.x + popup_bounds.width > this._map_bounds.width)
       popup_pos.x = this._map_bounds.width - popup_bounds.width;
-     
+
     if (popup_pos.y + popup_bounds.height > this._map_bounds.height)
       popup_pos.y = this._map_bounds.height - popup_bounds.height;
   }
-  
-  this._popup.setPosition(popup_pos);    
+
+  this._popup.setPosition(popup_pos);
 }
 
 /**
@@ -128,17 +128,22 @@ annotorious.mediatypes.openseadragon.Viewer.prototype._updateHighlight = functio
  * Adds an annotation to the viewer.
  * @param {annotorious.Annotation} annotation the annotation
  */
-annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(annotation) {
+annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(annotation, opt_replace) {
   var geometry = annotation.shapes[0].geometry;
   var outer = goog.dom.createDom('div', 'annotorious-ol-boxmarker-outer');
   var inner = goog.dom.createDom('div', 'annotorious-ol-boxmarker-inner');
+
+  if (!opt_replace) {
+    throw new Error("Replacing annotations on OpenSeadragon module is currently not supported");
+  }
+
   goog.style.setSize(inner, '100%', '100%');
   goog.dom.appendChild(outer, inner);
-  
+
   var rect = new OpenSeadragon.Rect(geometry.x, geometry.y, geometry.width, geometry.height);
-  
+
   var overlay = {annotation: annotation, outer: outer, inner: inner};
-  
+
   var self = this;
   goog.events.listen(inner, goog.events.EventType.MOUSEOVER, function(event) {
     if (!self._currentlyHighlightedOverlay)
@@ -146,27 +151,32 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.addAnnotation = function(a
 
     self._lastHoveredOverlay = overlay;
   });
-  
+
   goog.events.listen(inner, goog.events.EventType.MOUSEOUT, function(event) {
     delete self._lastHoveredOverlay;
     self._popup.startHideTimer();
   });
-  
+
   this._overlays.push(overlay);
-  
+
+  // TODO sapht
+  // TODO why is this sorting necessary/useful?
   goog.array.sort(this._overlays, function(a, b) {
     var shapeA = a.annotation.shapes[0];
     var shapeB = b.annotation.shapes[0];
     return annotorious.shape.getSize(shapeB) - annotorious.shape.getSize(shapeA);
   });
- 
+
   var zIndex = 1;
   goog.array.forEach(this._overlays, function(overlay) {
     goog.style.setStyle(overlay.outer, 'z-index', zIndex);
     zIndex++;
   });
 
-  this._osdViewer.addOverlay(outer, rect);
+  // TODO sapht
+  // TODO is this deprecated? according to OSD docs addOverlay is a
+  // member of Viewer, not Drawer
+  this._osdViewer.drawer.addOverlay(outer, rect);
 }
 
 /**
@@ -189,9 +199,9 @@ annotorious.mediatypes.openseadragon.Viewer.prototype.removeAnnotation = functio
  * @return {Array.<annotorious.Annotation>} the annotations
  */
 annotorious.mediatypes.openseadragon.Viewer.prototype.getAnnotations = function() {
-  return goog.array.map(this._overlays, function(overlay) {  
+  return goog.array.map(this._overlays, function(overlay) {
 	  console.log(overlay);
-	  return overlay.annotation; 
+	  return overlay.annotation;
   });
 }
 
