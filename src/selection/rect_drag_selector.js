@@ -18,93 +18,114 @@ annotorious.plugins.selection.RectDragSelector = function () {
  * @param {Element} canvas the canvas to draw on
  * @param {Object} annotator reference to the annotator
  */
-annotorious.plugins.selection.RectDragSelector.prototype.init = function (annotator, canvas) {
-    /** @private **/
-    this._OUTLINE = '#000000';
+annotorious.plugins.selection.RectDragSelector.prototype.init = function(annotator, canvas) {
+  /** @private **/
+  this._OUTLINE = '#111111';
 
-    /** @private **/
-    this._STROKE = '#ffffff';
+  /** @private **/
+  this._STROKE = '#ffffff';
 
-    /** @private **/
-    this._FILL = false;
+  /** @private **/
+  this._FILL = false;
 
-    /** @private **/
-    this._HI_OUTLINE = '#000000';
+  /** @private **/
+  this._HI_OUTLINE = '#111111';
 
-    /** @private **/
-    this._HI_STROKE = '#fff000';
+  /** @private **/
+  this._HI_STROKE = '#ffffff';
 
-    /** @private **/
-    this._HI_FILL = false;
+  /** @private **/
+  this._HI_FILL = '#FFDC00';
 
-    /** @private **/
-    this._OUTLINE_WIDTH = 1;
+  /** @private **/
+  this._OUTLINE_WIDTH = 1;
 
-    /** @private **/
-    this._STROKE_WIDTH = 1;
+  /** @private **/
+  this._STROKE_WIDTH = 1;
 
-    /** @private **/
-    this._HI_OUTLINE_WIDTH = 1;
+  /** @private **/
+  this._HI_OUTLINE_WIDTH = 1;
 
-    /** @private **/
-    this._HI_STROKE_WIDTH = 1.2;
+  /** @private **/
+  this._HI_STROKE_WIDTH = 1.2;
 
-    /** @private **/
-    this._canvas = canvas;
+  /** @private **/
+  this._canvas = canvas;
 
-    /** @private **/
-    this._annotator = annotator;
+  /** @private **/
+  this._annotator = annotator;
 
-    /** @private **/
-    this._g2d = canvas.getContext('2d');
-    this._g2d.lineWidth = 1;
+  /** @private **/
+  this._g2d = canvas.getContext('2d');
+  this._g2d.lineWidth = 1;
 
-    /** @private **/
-    this._anchor;
+  /** @private **/
+  this._anchor;
 
-    /** @private **/
-    this._opposite;
+  /** @private **/
+  this._opposite;
 
-    /** @private **/
-    this._enabled = false;
+  /** @private **/
+  this._enabled = false;
 
-    /** @private **/
-    this._mouseMoveListener;
+  /** @private **/
+  this._mouseMoveListener;
 
-    /** @private **/
-    this._mouseUpListener;
+  /** @private **/
+  this._mouseUpListener;
 }
+  //Size of the grid for snap to grid.
+  var gridWidth = 8;
+  var gridHeight = 8;
 
 /**
  * Attaches MOUSEUP and MOUSEMOVE listeners to the editing canvas.
  * @private
  */
-annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function () {
-    var self = this;
-    var canvas = this._canvas;
+annotorious.plugins.selection.RectDragSelector.prototype._attachListeners = function(startPoint) {
+  var self = this;
+  var canvas = this._canvas;
 
-    this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function (event) {
-        var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
-        if (self._enabled) {
-            self._opposite = {x: points.x, y: points.y};
+  this._mouseMoveListener = goog.events.listen(this._canvas, annotorious.events.ui.EventType.MOVE, function(event) {
+    var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
 
-            self._g2d.clearRect(0, 0, canvas.width, canvas.height);
+    var adjustedX = Math.round(points.x / gridWidth) * gridWidth;
+    var adjustedY = Math.round(points.y / gridHeight) * gridHeight;
 
-            var width = self._opposite.x - self._anchor.x;
-            var height = self._opposite.y - self._anchor.y;
+    if (self._enabled) {
+      self._opposite = { x: adjustedX, y: adjustedY };
 
-            self.drawShape(self._g2d, {
-                type: annotorious.shape.ShapeType.RECTANGLE,
-                geometry: {
-                    x: width > 0 ? self._anchor.x : self._opposite.x,
-                    y: height > 0 ? self._anchor.y : self._opposite.y,
-                    width: Math.abs(width),
-                    height: Math.abs(height)
-                },
-                style: {}
-            });
-        }
-    });
+      self._g2d.clearRect(0, 0, canvas.width, canvas.height);
+
+      var width = self._opposite.x - self._anchor.x;
+      var height = self._opposite.y - self._anchor.y;
+
+      self.drawShape(self._g2d, {
+        type: annotorious.shape.ShapeType.RECTANGLE,
+        geometry: {
+          x: width > 0 ? self._anchor.x : self._opposite.x,
+          y: height > 0 ? self._anchor.y : self._opposite.y,
+          width: Math.abs(width),
+          height: Math.abs(height)
+        },
+        style: {}
+      });
+    }
+  });
+
+  this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function(event) {
+
+    var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
+    var shape = self.getShape();
+    event = (event.event_) ? event.event_ : event;
+
+    self._enabled = false;
+    if (shape) {
+      self._detachListeners();
+      self._annotator.fireEvent(annotorious.events.EventType.SELECTION_COMPLETED,
+        { mouseEvent: event, shape: shape, viewportBounds: self.getViewportBounds(), 'annotorious': self._annotator, 'image': self._annotator._image });
+    } else {
+      self._annotator.fireEvent(annotorious.events.EventType.SELECTION_CANCELED);
 
     this._mouseUpListener = goog.events.listen(canvas, annotorious.events.ui.EventType.UP, function (event) {
         var points = annotorious.events.ui.sanitizeCoordinates(event, canvas);
@@ -163,6 +184,25 @@ annotorious.plugins.selection.RectDragSelector.prototype.getSupportedShapeType =
 }
 
 /**
+ * Gets the properties on this selector.
+ */
+annotorious.plugins.selection.RectDragSelector.prototype.getProperties = function() {
+
+    return {
+        outline: this._OUTLINE,
+        stroke: this._STROKE,
+        fill: this._FILL,
+        hi_outline: this._HI_OUTLINE,
+        hi_stroke: this._HI_STROKE,
+        hi_fill: this._HI_FILL,
+        outline_width: this._OUTLINE_WIDTH,
+        stroke_width: this._STROKE_WIDTH,
+        hi_outline_width: this._HI_OUTLINE_WIDTH,
+        hi_stroke_width: this._HI_STROKE_WIDTH
+    }
+}
+
+/**
  * Sets the properties on this selector.
  */
 annotorious.plugins.selection.RectDragSelector.prototype.setProperties = function (props) {
@@ -202,20 +242,22 @@ annotorious.plugins.selection.RectDragSelector.prototype.setProperties = functio
  * @param {number} x the X coordinate
  * @param {number} y the Y coordinate
  */
-annotorious.plugins.selection.RectDragSelector.prototype.startSelection = function (x, y) {
-    //TODO: Comment the useless codes by Bain 2016-12-07
-    // var startPoint = {
-    //   x: x,
-    //   y: y
-    // };
-    this._enabled = true;
-    // this._attachListeners(startPoint);
-    this._attachListeners();
-    this._anchor = new annotorious.shape.geom.Point(x, y);
-    // this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
-    //   offsetX: x, offsetY: y});
+annotorious.plugins.selection.RectDragSelector.prototype.startSelection = function(x, y) {
 
-    goog.style.setStyle(document.body, '-webkit-user-select', 'none');
+  var adjustedX = Math.round(x / gridWidth) * gridWidth;
+  var adjustedY = Math.round(y / gridHeight) * gridHeight;
+
+  var startPoint = {
+    x: adjustedX,
+    y: adjustedY
+  };
+  this._enabled = true;
+  this._attachListeners(startPoint);
+  this._anchor = new annotorious.shape.geom.Point(adjustedX, adjustedY);
+  this._annotator.fireEvent(annotorious.events.EventType.SELECTION_STARTED, {
+    offsetX: adjustedX, offsetY: adjustedY});
+
+  goog.style.setStyle(document.body, '-webkit-user-select', 'none');
 }
 
 /**
@@ -293,65 +335,89 @@ annotorious.plugins.selection.RectDragSelector.prototype.getViewportBounds = fun
  * @param {annotorious.shape.Shape} shape the shape to draw
  * @param {boolean=} highlight if true, shape will be drawn highlighted
  */
-annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function (g2d, shape, highlight) {
-    var geom, stroke, fill, outline, outline_width, stroke_width;
+annotorious.plugins.selection.RectDragSelector.prototype.drawShape = function(g2d, shape, highlight) {
+  var geom, stroke, fill, outline, outline_width, stroke_width;
 
-    if (!shape.style) shape.style = {};
+  if (!shape.style) shape.style = {};
 
-    if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
-        if (highlight) {
-            fill = shape.style.hi_fill || this._HI_FILL;
-            stroke = shape.style.hi_stroke || this._HI_STROKE;
-            outline = shape.style.hi_outline || this._HI_OUTLINE;
-            outline_width = shape.style.hi_outline_width || this._HI_OUTLINE_WIDTH;
-            stroke_width = shape.style.hi_stroke_width || this._HI_STROKE_WIDTH;
-        } else {
-            fill = shape.style.fill || this._FILL;
-            stroke = shape.style.stroke || this._STROKE;
-            outline = shape.style.outline || this._OUTLINE;
-            outline_width = shape.style.outline_width || this._OUTLINE_WIDTH;
-            stroke_width = shape.style.stroke_width || this._STROKE_WIDTH;
-        }
-
-        geom = shape.geometry;
-
-        // Outline
-        if (outline) {
-            g2d.lineJoin = "round";
-            g2d.lineWidth = outline_width;
-            g2d.strokeStyle = outline;
-            g2d.strokeRect(
-                geom.x + outline_width / 2,
-                geom.y + outline_width / 2,
-                geom.width - outline_width,
-                geom.height - outline_width
-            );
-        }
-
-        // Stroke
-        if (stroke) {
-            g2d.lineJoin = "miter";
-            g2d.lineWidth = stroke_width;
-            g2d.strokeStyle = stroke;
-            g2d.strokeRect(
-                geom.x + outline_width + stroke_width / 2,
-                geom.y + outline_width + stroke_width / 2,
-                geom.width - outline_width * 2 - stroke_width,
-                geom.height - outline_width * 2 - stroke_width
-            );
-        }
-
-        // Fill
-        if (fill) {
-            g2d.lineJoin = "miter";
-            g2d.lineWidth = stroke_width;
-            g2d.fillStyle = fill;
-            g2d.fillRect(
-                geom.x + outline_width + stroke_width / 2,
-                geom.y + outline_width + stroke_width / 2,
-                geom.width - outline_width * 2 - stroke_width,
-                geom.height - outline_width * 2 - stroke_width
-            );
-        }
+  if (shape.type == annotorious.shape.ShapeType.RECTANGLE) {
+    if (highlight) {
+      fill = shape.style.hi_fill || this._HI_FILL;
+      stroke = shape.style.hi_stroke || this._HI_STROKE;
+      outline = shape.style.hi_outline || this._HI_OUTLINE;
+      outline_width = shape.style.hi_outline_width || this._HI_OUTLINE_WIDTH;
+      stroke_width = shape.style.hi_stroke_width || this._HI_STROKE_WIDTH;
+    } else {
+      fill = shape.style.fill || this._FILL;
+      stroke = shape.style.stroke || this._STROKE;
+      outline = shape.style.outline || this._OUTLINE;
+      outline_width = shape.style.outline_width || this._OUTLINE_WIDTH;
+      stroke_width = shape.style.stroke_width || this._STROKE_WIDTH;
     }
+
+    geom = shape.geometry;
+
+    // Outline
+    if (outline) {
+        g2d.lineJoin = "round";
+        g2d.lineWidth = outline_width;
+        g2d.strokeStyle = outline;
+        // g2d.strokeRect(
+        //   geom.x + outline_width/2,
+        //   geom.y + outline_width/2,
+        //   geom.width - outline_width,
+        //   geom.height - outline_width
+        // );
+    }
+
+    function convertHex(hex, opacity) {
+        hex = hex.replace('#', '');
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+
+        result = [r, g, b];
+        return result;
+    }
+    //colour that will glow
+    fill_color = convertHex(shape.style.hi_fill || this._HI_FILL);
+
+    // Stroke
+    if (stroke) {
+      g2d.lineJoin = "miter";
+      g2d.lineWidth = stroke_width;
+      g2d.strokeStyle = stroke;
+      if (highlight) {
+        g2d.fillStyle = 'rgba(' + fill_color[0] + ',' + fill_color[1] + ',' + fill_color[2] + ',' + 0.26 + ')';
+      }
+      else{
+        g2d.fillStyle = 'rgba(' + fill_color[0] + ',' + fill_color[1] + ',' + fill_color[2] + ',' + 0.15 + ')';
+      }
+      g2d.strokeRect(
+        geom.x + outline_width + stroke_width/2,
+        geom.y + outline_width + stroke_width/2,
+        geom.width - outline_width*2 - stroke_width,
+        geom.height - outline_width*2 - stroke_width
+      );
+      g2d.fillRect(
+        geom.x + outline_width + stroke_width/2,
+        geom.y + outline_width + stroke_width/2,
+        geom.width - outline_width*2 - stroke_width,
+        geom.height - outline_width*2 - stroke_width
+      );
+    }
+
+    // // Fill
+    // if (fill) {
+    //   g2d.lineJoin = "miter";
+    //   g2d.lineWidth = stroke_width;
+    //   g2d.fillStyle = fill;
+    //   g2d.fillRect(
+    //     geom.x + outline_width + stroke_width/2,
+    //     geom.y + outline_width + stroke_width/2,
+    //     geom.width - outline_width*2 - stroke_width,
+    //     geom.height - outline_width*2 - stroke_width
+    //   );
+    // }
+  }
 }

@@ -4,7 +4,11 @@ goog.require('goog.dom');
 goog.require('goog.dom.classes');
 goog.require('goog.events.EventType');
 
-annotorious.events.ui.hasTouch = false;
+if (navigator.userAgent && navigator.userAgent.indexOf('Win') > -1 && navigator.userAgent.indexOf('Chrome') > -1) {
+    annotorious.events.ui.hasTouch = false; //windows 8 chrome bug when screen has a touchscreen (https://github.com/annotorious/annotorious/issues/124)
+} else {
+    annotorious.events.ui.hasTouch = 'ontouchstart' in window;
+}
 
 annotorious.events.ui.hasMouse = !annotorious.events.ui.hasTouch; // Just for readability
 

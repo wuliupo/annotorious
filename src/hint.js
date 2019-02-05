@@ -21,8 +21,8 @@ goog.require('goog.dom.query');
 annotorious.Hint = function (annotator, parent, opt_msg) {
     var self = this;
 
-    if (!opt_msg)
-        opt_msg = 'Click and Drag to Annotate';
+  if (!opt_msg)
+    opt_msg = 'Interactive';
 
     this.element = goog.soy.renderAsElement(annotorious.templates.image.hint, {msg: opt_msg});
 

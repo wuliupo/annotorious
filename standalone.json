@@ -16,7 +16,7 @@
     "externs/api.externs.js",
     "externs/jquery.externs.js"
   ],
-  "mode": "ADVANCED",           // "RAW" or "ADVANCED"
+  "mode": "ADVANCED",      // "RAW" or "ADVANCED" or "SIMPLE"
   "level": "DEFAULT",      // "DEFAULT" or "VERBOSE"
   "pretty-print": true,
   "debug": false

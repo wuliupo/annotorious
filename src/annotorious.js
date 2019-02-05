@@ -8,8 +8,7 @@ goog.require('annotorious.mediatypes.image.ImageModule');
 goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
 goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
 
-goog.provide('annotorious.Annotorious');
-// goog.require('annotorious.Hint');
+goog.require('annotorious.mediatypes.image.Viewer');
 
 /**
  * The main entrypoint to the application. The Annotorious class is instantiated exactly once,
@@ -18,7 +17,7 @@ goog.provide('annotorious.Annotorious');
  * type - image, OpenLayers, etc.)
  * @constructor
  */
-annotorious.Annotorious = function () {
+annotorious.Annotorious = function() {
     /** @private **/
     this._isInitialized = false;
 
@@ -35,25 +34,25 @@ annotorious.Annotorious = function () {
     this._plugins = [];
 
     var self = this;
-    annotorious.dom.addOnLoadHandler(function () {
+    annotorious.dom.addOnLoadHandler(function() {
         self._init();
     });
 }
 
-annotorious.Annotorious.prototype._init = function () {
+annotorious.Annotorious.prototype._init = function() {
     if (this._isInitialized)
         return;
 
     var self = this;
-    goog.array.forEach(this._modules, function (module) {
+    goog.array.forEach(this._modules, function(module) {
         module.init();
     });
 
-    goog.array.forEach(this._plugins, function (plugin) {
-        // if (plugin.initPlugin)
-        //     plugin.initPlugin(self);
+    goog.array.forEach(this._plugins, function(plugin) {
+        if (plugin.initPlugin)
+            plugin.initPlugin(self);
 
-        goog.array.forEach(self._modules, function (module) {
+        goog.array.forEach(self._modules, function(module) {
             module.addPlugin(plugin);
         });
     });
@@ -68,8 +67,8 @@ annotorious.Annotorious.prototype._init = function () {
  * @return {Object | null}
  * @private
  */
-annotorious.Annotorious.prototype._getModuleForItemSrc = function (item_src) {
-    return goog.array.find(this._modules, function (module) {
+annotorious.Annotorious.prototype._getModuleForItemSrc = function(item_src) {
+    return goog.array.find(this._modules, function(module) {
         return module.annotatesItem(item_src);
     });
 }
@@ -85,7 +84,7 @@ annotorious.Annotorious.prototype._getModuleForItemSrc = function (item_src) {
  * @param {string | Function} opt_item_url_or_callback the URL of the item, or a callback function
  * @param {Function} opt_callback a callback function (if the first parameter was a URL)
  */
-annotorious.Annotorious.prototype.activateSelector = function (opt_item_url_or_callback, opt_callback) {
+annotorious.Annotorious.prototype.activateSelector = function(opt_item_url_or_callback, opt_callback) {
     var item_url = undefined,
         callback = undefined;
 
@@ -101,7 +100,7 @@ annotorious.Annotorious.prototype.activateSelector = function (opt_item_url_or_c
         if (module)
             module.activateSelector(item_url, callback);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.activateSelector(callback);
         });
     }
@@ -113,12 +112,10 @@ annotorious.Annotorious.prototype.activateSelector = function (opt_item_url_or_c
  * @param {annotorious.Annotation} opt_replace optionally, an existing annotation to replace
  */
 annotorious.Annotorious.prototype.addAnnotation = function(annotation, opt_replace) {
-  annotation.src = annotorious.dom.toAbsoluteURL(annotation.src);
-  var module = this._getModuleForItemSrc(annotation.src);
-  if (module)
-    module.addAnnotation(annotation, opt_replace);
-  else
-    throw new Error("Cannot addAnnotation on falsy module");
+    //annotation.src = annotorious.dom.toAbsoluteURL(annotation.src);
+    var module = this._getModuleForItemSrc(annotation.src);
+    if (module)
+        module.addAnnotation(annotation, opt_replace);
 }
 
 /**
@@ -126,21 +123,10 @@ annotorious.Annotorious.prototype.addAnnotation = function(annotation, opt_repla
  * @param {annotorious.events.EventType} type the event type
  * @param {Function} handler the handler function
  */
-annotorious.Annotorious.prototype.addHandler = function (type, handler) {
-    goog.array.forEach(this._modules, function (module) {
+annotorious.Annotorious.prototype.addHandler = function(type, handler) {
+    goog.array.forEach(this._modules, function(module) {
         module.addHandler(type, handler);
     });
-}
-
-/**
- * Removes an event handler to Annotorious.
- * @param {annotorious.events.EventType} type the event type
- * @param {Function} handler the handler function
- */
-annotorious.Annotorious.prototype.removeHandler = function(type, handler) {
-  goog.array.forEach(this._modules, function(module) {
-    module.removeHandler(type, handler);
-  });
 }
 
 /**
@@ -148,7 +134,7 @@ annotorious.Annotorious.prototype.removeHandler = function(type, handler) {
  * @param {string} plugin_name the plugin name
  * @param {Object} opt_config_options an optional object literal with plugin config options
  */
-annotorious.Annotorious.prototype.addPlugin = function (plugin_name, opt_config_options) {
+annotorious.Annotorious.prototype.addPlugin = function(plugin_name, opt_config_options) {
     try {
         var plugin = new window['annotorious']['plugin'][plugin_name](opt_config_options);
 
@@ -157,7 +143,7 @@ annotorious.Annotorious.prototype.addPlugin = function (plugin_name, opt_config_
             if (plugin.initPlugin)
                 plugin.initPlugin(this);
 
-            goog.array.forEach(this._modules, function (module) {
+            goog.array.forEach(this._modules, function(module) {
                 module.addPlugin(plugin);
             });
         } else {
@@ -169,6 +155,12 @@ annotorious.Annotorious.prototype.addPlugin = function (plugin_name, opt_config_
     }
 }
 
+annotorious.Annotorious.prototype.getItems = function() {
+    goog.array.forEach(this._modules, function(module) {
+        module.getItems();
+    });
+}
+
 /**
  * Destroys annotation functionality on an item, or all items on the page. Note
  * that this method differs from anno.reset() in so far as class="annotatable"
@@ -176,13 +168,13 @@ annotorious.Annotorious.prototype.addPlugin = function (plugin_name, opt_config_
  * made annotatable again via anno.makeAnnotatable().
  * @param {string=} opt_item_url the URL of the item on which to destroy annotation functionality
  */
-annotorious.Annotorious.prototype.destroy = function (opt_item_url) {
+annotorious.Annotorious.prototype.destroy = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
             module.destroy(opt_item_url);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.destroy();
         });
     }
@@ -193,7 +185,7 @@ annotorious.Annotorious.prototype.destroy = function (opt_item_url) {
  * particular item.
  * @param {string} item_url the URL of the item to query for the active selector
  */
-annotorious.Annotorious.prototype.getActiveSelector = function (item_url) {
+annotorious.Annotorious.prototype.getActiveSelector = function(item_url) {
     var module = this._getModuleForItemSrc(item_url);
     if (module)
         return module.getActiveSelector(item_url);
@@ -207,7 +199,7 @@ annotorious.Annotorious.prototype.getActiveSelector = function (item_url) {
  * @param {string | undefined} opt_item_url an item URL (optional)
  * @return {Array.<annotorious.Annotation>} the annotations
  */
-annotorious.Annotorious.prototype.getAnnotations = function (opt_item_url) {
+annotorious.Annotorious.prototype.getAnnotations = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
@@ -216,8 +208,30 @@ annotorious.Annotorious.prototype.getAnnotations = function (opt_item_url) {
             return [];
     } else {
         var annotations = [];
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             goog.array.extend(annotations, module.getAnnotations());
+        });
+        return annotations;
+    }
+}
+
+/**
+ * Returns all annotations as dom elements on the annotatable item with the specified URL, or
+ * all annotations on the page in case no URL is specified.
+ * @param {string | undefined} opt_item_url an item URL (optional)
+ * @return {Array.<dom elements>} the annotations
+ */
+annotorious.Annotorious.prototype.getAnnotationsAsDOM = function(opt_item_url) {
+    if (opt_item_url) {
+        var module = this._getModuleForItemSrc(opt_item_url);
+        if (module)
+            return module.getAnnotationsAsDOM(opt_item_url);
+        else
+            return [];
+    } else {
+        var annotations = [];
+        goog.array.forEach(this._modules, function(module) {
+            goog.array.extend(annotations, module.getAnnotationsAsDOM());
         });
         return annotations;
     }
@@ -228,7 +242,7 @@ annotorious.Annotorious.prototype.getAnnotations = function (opt_item_url) {
  * @param {string} item_url the URL of the item to query for available selectors
  * @returns {Array.<string>} the list of selector names
  */
-annotorious.Annotorious.prototype.getAvailableSelectors = function (item_url) {
+annotorious.Annotorious.prototype.getAvailableSelectors = function(item_url) {
     var module = this._getModuleForItemSrc(item_url);
     if (module)
         return module.getAvailableSelectors(item_url);
@@ -240,13 +254,13 @@ annotorious.Annotorious.prototype.getAvailableSelectors = function (item_url) {
  * Hides existing annotations on all, or a specific item.
  * @param {string} opt_item_url the URL of the item
  */
-annotorious.Annotorious.prototype.hideAnnotations = function (opt_item_url) {
+annotorious.Annotorious.prototype.hideAnnotations = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
             module.hideAnnotations(opt_item_url);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.hideAnnotations();
         });
     }
@@ -258,13 +272,13 @@ annotorious.Annotorious.prototype.hideAnnotations = function (opt_item_url) {
  * items on the page.
  * @param {string | undefined} opt_item_url the URL of the item on which to hide the selection widget
  */
-annotorious.Annotorious.prototype.hideSelectionWidget = function (opt_item_url) {
+annotorious.Annotorious.prototype.hideSelectionWidget = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
             module.hideSelectionWidget(opt_item_url);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.hideSelectionWidget();
         });
     }
@@ -287,37 +301,35 @@ annotorious.Annotorious.prototype.stopSelection = function (opt_item_url) {
  * Highlights the specified annotation.
  * @param {annotorious.Annotation} annotation the annotation
  */
-annotorious.Annotorious.prototype.highlightAnnotation = function (annotation) {
+annotorious.Annotorious.prototype.highlightAnnotation = function(annotation) {
     if (annotation) {
         var module = this._getModuleForItemSrc(annotation.src);
 
-    if (module)
-      module.highlightAnnotation(annotation);
-    else
-      throw new Error("Cannot highlight annotation on falsy module");
-  } else {
-    goog.array.forEach(this._modules, function(module) {
-      module.highlightAnnotation(); /* TODO this probably needs error checking exactly like the above 4 lines */
-    });
-  }
+        if (module)
+            module.highlightAnnotation(annotation);
+    } else {
+        goog.array.forEach(this._modules, function(module) {
+            module.highlightAnnotation();
+        });
+    }
 }
 
 /**
  * Makes an item annotatable, if there is a module that supports the item type.
  * @param {Object} item the annotatable item
  */
-annotorious.Annotorious.prototype.makeAnnotatable = function (item) {
+annotorious.Annotorious.prototype.makeAnnotatable = function(item) {
     // Be sure to init if the load handler hasn't already taken care of it
     this._init();
 
-    var module = goog.array.find(this._modules, function (module) {
+    var module = goog.array.find(this._modules, function(module) {
         return module.supports(item);
     });
 
     if (module)
         module.makeAnnotatable(item);
     else
-        throw('Error: Annotorious does not support this media type in the current version or build configuration.');
+        throw ('Error: Annotorious does not support this media type in the current version or build configuration.');
 }
 
 /**
@@ -326,11 +338,11 @@ annotorious.Annotorious.prototype.makeAnnotatable = function (item) {
  * annotations on all items on the page will be removed.
  * @param {string} opt_item_url the src URL of the item
  */
-annotorious.Annotorious.prototype.removeAll = function (opt_item_url) {
+annotorious.Annotorious.prototype.removeAll = function(opt_item_url) {
     // TODO this could be optimized a lot by adding a .removeAll method
     // to modules and annotators!
     var self = this;
-    goog.array.forEach(this.getAnnotations(opt_item_url), function (annotation) {
+    goog.array.forEach(this.getAnnotations(opt_item_url), function(annotation) {
         self.removeAnnotation(annotation);
     });
 }
@@ -339,10 +351,28 @@ annotorious.Annotorious.prototype.removeAll = function (opt_item_url) {
  * Removes an annotation from an item on the page.
  * @param {annotorious.Annotation} annotation the annotation to remove
  */
-annotorious.Annotorious.prototype.removeAnnotation = function (annotation) {
+annotorious.Annotorious.prototype.removeAnnotation = function(annotation) {
     var module = this._getModuleForItemSrc(annotation.src);
     if (module)
         module.removeAnnotation(annotation);
+}
+
+/**
+ * Removes an annotation from an item on the page.
+ * @param {annotorious.Annotation} annotation the annotation to remove
+ */
+annotorious.Annotorious.prototype.removeCurrentSelection = function(opt_item_url_or_callback) {
+    var item_url = undefined;
+    if (goog.isString(opt_item_url_or_callback)) {
+        item_url = opt_item_url_or_callback;
+    }
+
+    if (item_url) {
+        var module = this._getModuleForItemSrc(item_url);
+        if (module)
+            module.removeCurrentSelection(opt_item_url_or_callback);
+        //(item_url, callback)
+    }
 }
 
 /**
@@ -351,8 +381,8 @@ annotorious.Annotorious.prototype.removeAnnotation = function (annotation) {
  * CSS class will have been re-initialized (i.e. they will be annotatable, with
  * a fresh annotator).
  */
-annotorious.Annotorious.prototype.reset = function (annotation) {
-    goog.array.forEach(this._modules, function (module) {
+annotorious.Annotorious.prototype.reset = function(annotation) {
+    goog.array.forEach(this._modules, function(module) {
         module.destroy();
         module.init();
     });
@@ -363,7 +393,7 @@ annotorious.Annotorious.prototype.reset = function (annotation) {
  * @param {string} item_url the URL of the item on which to set the selector
  * @param {string} selector the name of the selector to set on the item
  */
-annotorious.Annotorious.prototype.setActiveSelector = function (item_url, selector) {
+annotorious.Annotorious.prototype.setActiveSelector = function(item_url, selector) {
     var module = this._getModuleForItemSrc(item_url);
     if (module)
         module.setActiveSelector(item_url, selector);
@@ -381,10 +411,22 @@ annotorious.Annotorious.prototype.setActiveSelector = function (item_url, select
  *
  * @param {Object} props the properties object
  */
-annotorious.Annotorious.prototype.setProperties = function (props) {
-    goog.array.forEach(this._modules, function (module) {
+annotorious.Annotorious.prototype.setProperties = function(props) {
+    goog.array.forEach(this._modules, function(module) {
         module.setProperties(props);
     });
+}
+
+/**
+ * Set the annotated item to be highlighted
+ * @param {string} item_url the URL of the item on which to set the selector
+ */
+annotorious.Annotorious.prototype.redrawGlow = function(item_url, time) {
+    if (item_url) {
+        var module = this._getModuleForItemSrc(item_url);
+        if (module)
+            module.redrawGlow(item_url, time);
+    }
 }
 
 /**
@@ -395,7 +437,7 @@ annotorious.Annotorious.prototype.setProperties = function (props) {
  * @deprecated will be removed in v1.0!
  * !!!!
  */
-annotorious.Annotorious.prototype.setSelectionEnabled = function (enabled) {
+annotorious.Annotorious.prototype.setSelectionEnabled = function(enabled) {
     if (enabled)
         this.showSelectionWidget(undefined);
     else
@@ -406,13 +448,13 @@ annotorious.Annotorious.prototype.setSelectionEnabled = function (enabled) {
  * Shows existing annotations on all, or a specific item.
  * @param {string} opt_item_url the URL of the item
  */
-annotorious.Annotorious.prototype.showAnnotations = function (opt_item_url) {
+annotorious.Annotorious.prototype.showAnnotations = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
             module.showAnnotations(opt_item_url);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.showAnnotations();
         });
     }
@@ -424,31 +466,16 @@ annotorious.Annotorious.prototype.showAnnotations = function (opt_item_url) {
  * annotatable items on the page.
  * @param {string | undefined} opt_item_url the URL of the item on which to show the selection widget
  */
-annotorious.Annotorious.prototype.showSelectionWidget = function (opt_item_url) {
+annotorious.Annotorious.prototype.showSelectionWidget = function(opt_item_url) {
     if (opt_item_url) {
         var module = this._getModuleForItemSrc(opt_item_url);
         if (module)
             module.showSelectionWidget(opt_item_url);
     } else {
-        goog.array.forEach(this._modules, function (module) {
+        goog.array.forEach(this._modules, function(module) {
             module.showSelectionWidget();
         });
     }
 }
-
-/**
- *
- * @param opt_item_url
- * @param type_selectors
- */
-annotorious.Annotorious.prototype.setTypeSelectors = function (opt_item_url, type_selectors) {
-    var module = this._getModuleForItemSrc(opt_item_url);
-    if (module)
-        module.setTypeSelectors(opt_item_url, type_selectors);
-}
-
-// annotorious.Annotorious.prototype.hideHint = function () {
-//     console.log("TODO: Remove default annotation");
-// }
 
 window['anno'] = new annotorious.Annotorious();

@@ -51,20 +51,49 @@ annotorious.mediatypes.Annotator.prototype.stopSelection = function (original_an
         this._viewer.addAnnotation(original_annotation);
 }
 
-annotorious.mediatypes.Annotator.prototype._attachListener = function (activeCanvas) {
-    var self = this;
-    goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function (event) {
-        console.log('start selection event');
-        var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
-        console.log(coords.x+" "+coords.y);
-        self._viewer.highlightAnnotation(false);
-        if (self._selectionEnabled) {
+annotorious.mediatypes.Annotator.prototype._attachListener = function(activeCanvas) {
+  var self = this;
+
+  //timer for long click detection on mobile
+  self.clickTimer = null;
+
+  //long click detection (resets when up, stop the timeout)
+  goog.events.listen(activeCanvas, annotorious.events.ui.EventType.UP, function(event) {
+      clearTimeout(this.clickTimer);
+  });
+
+  goog.events.listen(activeCanvas, annotorious.events.ui.EventType.DOWN, function(event) {
+
+    var coords = annotorious.events.ui.sanitizeCoordinates(event, activeCanvas);
+    self._viewer.highlightAnnotation(false);
+    var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
+
+        if (self._selectionEnabled && annotations.length === 0) {
             goog.style.showElement(self._editCanvas, true);
             self._currentSelector.startSelection(coords.x, coords.y);
         } else {
             var annotations = self._viewer.getAnnotationsAt(coords.x, coords.y);
-            if (annotations.length > 0)
+            if (annotations.length > 0) {
                 self._viewer.highlightAnnotation(annotations[0]);
+            }
         }
-    });
+        if (!annotorious.events.ui.hasMouse) {
+          if (goog.dom.classes.get(self._viewer._canvas).indexOf('annotorious-item-focus') == -1) {
+            goog.dom.classes.addRemove(self._viewer._canvas, 'annotorious-item-unfocus', 'annotorious-item-focus');
+          }
+          else {
+            if (annotations.length == 0) {
+              goog.dom.classes.addRemove(self._viewer._canvas, 'annotorious-item-focus', 'annotorious-item-unfocus');
+            }
+          }
+        }
+        if (annotations.length !== 0) {
+            // fire long click if down for 200 milli secondsw
+            if (!annotorious.events.ui.hasMouse) {
+                this.clickTimer = setTimeout(function() {
+                    self._viewer._annotator._eventBroker.fireEvent(annotorious.events.EventType.ANNOTATION_CLICKED_LONG, annotations[0]);
+                }, 200);
+            }
+        }
+	});
 }

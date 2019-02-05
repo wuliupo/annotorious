@@ -65,90 +65,95 @@ annotorious.events.EventBroker.prototype.fireEvent = function (type, opt_event, 
  */
 annotorious.events.EventType = {
 
-    /**
-     * The mouse entered the annotatable media area
-     */
-    MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
+  /**
+   * The mouse entered the annotatable media area
+   */
+  MOUSE_OVER_ANNOTATABLE_ITEM: 'onMouseOverItem',
 
-    /**
-     * The mouse moved out of the annotatable media area
-     */
-    MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
+  /**
+   * The mouse moved out of the annotatable media area
+   */
+  MOUSE_OUT_OF_ANNOTATABLE_ITEM: 'onMouseOutOfItem',
 
-    /**
-     * The mouse entered an annotation
-     */
-    MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
+  /**
+   * The mouse entered an annotation
+   */
+  MOUSE_OVER_ANNOTATION: 'onMouseOverAnnotation',
 
-    /**
-     * The mouse moved out of an annotation
-     */
-    MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
+  /**
+   * The mouse moved out of an annotation
+   */
+  MOUSE_OUT_OF_ANNOTATION: 'onMouseOutOfAnnotation',
 
-    /**
-     * A new selection was started
-     */
-    SELECTION_STARTED: 'onSelectionStarted',
+  /**
+   * A new selection was started
+   */
+  SELECTION_STARTED: 'onSelectionStarted',
 
-    /**
-     * The current selection was canceled
-     */
-    SELECTION_CANCELED: 'onSelectionCanceled',
+  /**
+   * The current selection was canceled
+   */
+  SELECTION_CANCELED: 'onSelectionCanceled',
 
-    /**
-     * The current selection was completed
-     */
-    SELECTION_COMPLETED: 'onSelectionCompleted',
+  /**
+   * The current selection was completed
+   */
+  SELECTION_COMPLETED: 'onSelectionCompleted',
 
-    /**
-     * The current selection was changed
-     */
-    SELECTION_CHANGED: 'onSelectionChanged',
+  /**
+   * The current selection was changed
+   */
+  SELECTION_CHANGED: 'onSelectionChanged',
 
+  /**
+   * The annotation editor was opened.  Pass the annotation object if it exists.
+   */
+  EDITOR_SHOWN: 'onEditorShown',
 
-    /**
-     * The annotation editor is opening.  Pass the annotation object if it exists.
-     */
-    BEFORE_EDITOR_SHOWN: 'beforeEditorShown',
+  /**
+   * The annotation popop was opened.  Pass the annotation object.
+   */
+  POPUP_SHOWN: 'onPopupShown',
 
-    /**
-     * The annotation editor was opened.  Pass the annotation object if it exists.
-     */
-    EDITOR_SHOWN: 'onEditorShown',
+  /**
+   * The annotation popup widget is about to hide
+   */
+  BEFORE_POPUP_HIDE: 'beforePopupHide',
 
-    /**
-     * The annotation popop was opened.  Pass the annotation object.
-     */
-    POPUP_SHOWN: 'onPopupShown',
+  /**
+   * The annotation is about to be removed
+   */
+  BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
 
-    /**
-     * The annotation popup widget is about to hide
-     */
-    BEFORE_POPUP_HIDE: 'beforePopupHide',
+  /**
+   * An annotation was removed
+   */
+  ANNOTATION_REMOVED: 'onAnnotationRemoved',
 
-    /**
-     * The annotation is about to be removed
-     */
-    BEFORE_ANNOTATION_REMOVED: 'beforeAnnotationRemoved',
+  /**
+   * An annotation was created
+   */
+  ANNOTATION_CREATED: 'onAnnotationCreated',
 
-    /**
-     * An annotation was removed
-     */
-    ANNOTATION_REMOVED: 'onAnnotationRemoved',
+  /**
+   * An existing annotation was updated
+   */
+  ANNOTATION_UPDATED: 'onAnnotationUpdated',
 
-    /**
-     * An annotation was created
-     */
-    ANNOTATION_CREATED: 'onAnnotationCreated',
+  /**
+   * The annotation was clicked.  Pass the annotation object.
+   */
+  ANNOTATION_CLICKED: 'onAnnotationClicked',
 
-    /**
-     * An existing annotation was updated
-     */
-    ANNOTATION_UPDATED: 'onAnnotationUpdated',
+  /**
+  * A click was registered in a region which is non-editable and not an annotation
+  */
+  NON_ANNOTATION_NON_EDITABLE_CLICKED: 'onNonAnnotationNonEditableClicked',
 
-    /**
-     * The annotation was clicked.  Pass the annotation object.
-     */
-    ANNOTATION_CLICKED: 'onAnnotationClicked'
+  /**
+  * A long click on an annotation (can only fired when annotorious.events.ui.hasMouse is false)
+  * used to open annotations with files or links on mobile
+  */
+  ANNOTATION_CLICKED_LONG: 'onAnnotationClickedLong'
 
 };

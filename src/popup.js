@@ -271,8 +271,21 @@ annotorious.Popup.prototype.show = function (annotation, xy) {
  * Set the position of the popup.
  * @param {annotorious.shape.geom.Point} xy the viewport coordinate
  */
-annotorious.Popup.prototype.setPosition = function (xy) {
+annotorious.Popup.prototype.setPosition = function(xy) {
+  var canvasWidth = this._annotator._viewCanvas.width;
+  var sizeOfPopup = 180 + 18; //.annotorious-popup in css
+  var sizeOfGapImageScreen = Math.floor((window.innerWidth - canvasWidth)/2);
+
+  //to get a better understanding of this model
+  //view this: https://drive.google.com/file/d/0B34oQzUTqfzESWw5Y3dUVFhKUE0/view?usp=sharing
+  var spaceRightOfPopup = -(sizeOfPopup - (canvasWidth - xy.x) - sizeOfGapImageScreen);
+
+  if (spaceRightOfPopup < 0){
+    goog.style.setPosition(this.element, new goog.math.Coordinate(xy.x + spaceRightOfPopup, xy.y));
+  }
+  else{
     goog.style.setPosition(this.element, new goog.math.Coordinate(xy.x, xy.y));
+  }
 }
 
 /**
@@ -286,11 +299,17 @@ annotorious.Popup.prototype.setAnnotation = function(annotation) {
   else
     this._text.innerHTML = '<span class="annotorious-popup-empty">No comment</span>';
 
-  if (('editable' in annotation) && annotation.editable == false)
+  console.log(annotation);
+  if (('editable' in annotation) && annotation.editable == false){
     goog.style.showElement(this._buttons, false);
-  else
+    if (!annotation.text){
+      goog.style.showElement(this.element, false);
+    }
+  }
+  else{
     goog.style.showElement(this._buttons, true);
-
+    goog.style.showElement(this.element, true);
+  }
   // Update extra fields (if any)
   goog.array.forEach(this._extraFields, function(field) {
     var f = field.fn(annotation);

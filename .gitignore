@@ -2,3 +2,5 @@ node_modules/**
 yarn-error.log
 builds/
 haven.json
+Annotorious.sublime-project
+Annotorious.sublime-workspace

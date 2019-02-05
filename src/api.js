@@ -3,9 +3,11 @@ annotorious.Annotorious.prototype['activateSelector'] = annotorious.Annotorious.
 annotorious.Annotorious.prototype['addAnnotation'] = annotorious.Annotorious.prototype.addAnnotation;
 annotorious.Annotorious.prototype['addHandler'] = annotorious.Annotorious.prototype.addHandler;
 annotorious.Annotorious.prototype['addPlugin'] = annotorious.Annotorious.prototype.addPlugin;
+annotorious.Annotorious.prototype['getItems'] = annotorious.Annotorious.prototype.getItems;
 annotorious.Annotorious.prototype['destroy'] = annotorious.Annotorious.prototype.destroy;
 annotorious.Annotorious.prototype['getActiveSelector'] = annotorious.Annotorious.prototype.getActiveSelector;
 annotorious.Annotorious.prototype['getAnnotations'] = annotorious.Annotorious.prototype.getAnnotations;
+annotorious.Annotorious.prototype['getAnnotationsAsDOM'] = annotorious.Annotorious.prototype.getAnnotationsAsDOM;
 annotorious.Annotorious.prototype['getAvailableSelectors'] = annotorious.Annotorious.prototype.getAvailableSelectors;
 annotorious.Annotorious.prototype['hideAnnotations'] = annotorious.Annotorious.prototype.hideAnnotations;
 annotorious.Annotorious.prototype['hideSelectionWidget'] = annotorious.Annotorious.prototype.hideSelectionWidget;
@@ -13,13 +15,13 @@ annotorious.Annotorious.prototype['highlightAnnotation'] = annotorious.Annotorio
 annotorious.Annotorious.prototype['makeAnnotatable'] = annotorious.Annotorious.prototype.makeAnnotatable;
 annotorious.Annotorious.prototype['removeAll'] = annotorious.Annotorious.prototype.removeAll;
 annotorious.Annotorious.prototype['removeAnnotation'] = annotorious.Annotorious.prototype.removeAnnotation;
+annotorious.Annotorious.prototype['removeCurrentSelection'] = annotorious.Annotorious.prototype.removeCurrentSelection;
 annotorious.Annotorious.prototype['reset'] = annotorious.Annotorious.prototype.reset;
 annotorious.Annotorious.prototype['setActiveSelector'] = annotorious.Annotorious.prototype.setActiveSelector;
 annotorious.Annotorious.prototype['setProperties'] = annotorious.Annotorious.prototype.setProperties;
 annotorious.Annotorious.prototype['showAnnotations'] = annotorious.Annotorious.prototype.showAnnotations;
 annotorious.Annotorious.prototype['showSelectionWidget'] = annotorious.Annotorious.prototype.showSelectionWidget;
-annotorious.Annotorious.prototype['setTypeSelectors'] = annotorious.Annotorious.prototype.setTypeSelectors;
-
+annotorious.Annotorious.prototype['redrawGlow'] = annotorious.Annotorious.prototype.redrawGlow;
 
 /** Sets up the plugin namespace */
 if (!window['annotorious'])
