@@ -2,6 +2,8 @@ goog.provide('annotorious.plugins.selection.RectDragSelector');
 
 goog.require('goog.events');
 
+goog.require('annotorious.shape.geom.Point');
+goog.require('annotorious.shape');
 goog.require('annotorious.events.ui');
 
 /**

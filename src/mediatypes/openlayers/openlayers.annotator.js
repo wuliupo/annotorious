@@ -3,6 +3,11 @@ goog.provide('annotorious.mediatypes.openlayers.OpenLayersAnnotator');
 goog.require('annotorious.mediatypes.Annotator');
 goog.require('annotorious.templates.openlayers');
 goog.require('annotorious.mediatypes.openlayers.Viewer');
+goog.require('annotorious.Editor');
+goog.require('annotorious.Popup');
+goog.require('annotorious.events');
+goog.require('annotorious.plugins.selection.RectDragSelector');
+goog.require('annotorious.shape.geom.Point');
 
 /**
  * The OpenLayersAnnotator is responsible for handling annotation functionality

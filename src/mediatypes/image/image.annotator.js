@@ -2,15 +2,16 @@ goog.provide('annotorious.mediatypes.image.ImageAnnotator');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classes');
-goog.require('goog.dom.query');
 goog.require('goog.events');
 goog.require('goog.math');
 goog.require('goog.soy');
 goog.require('goog.style');
 
+goog.require('annotorious.events');
 goog.require('annotorious.Editor');
 goog.require('annotorious.Hint');
 goog.require('annotorious.Popup');
+goog.require('annotorious.shape.geom.Point');
 goog.require('annotorious.mediatypes.Annotator');
 goog.require('annotorious.mediatypes.image.Viewer');
 goog.require('annotorious.plugins.selection.RectDragSelector');

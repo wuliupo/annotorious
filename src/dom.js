@@ -3,6 +3,7 @@
  */
 goog.provide('annotorious.dom');
 
+goog.require('goog.math.Rect');
 goog.require('goog.fx.Dragger');
 
 /**

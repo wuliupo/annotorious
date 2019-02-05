@@ -5,12 +5,12 @@ var humanEvents = annotorious.humanEvents;
 goog.provide('annotorious.editor');
 
 goog.require('goog.dom');
-goog.require('goog.dom.query');
 goog.require('goog.soy');
-goog.require('goog.string.html.htmlSanitize');
+goog.require('goog.html.sanitizer.HtmlSanitizer');
 goog.require('goog.style');
 goog.require('goog.ui.Textarea');
 
+goog.require('annotorious.Annotation');
 goog.require('annotorious.templates');
 
 
@@ -39,16 +39,21 @@ annotorious.Editor = function(annotator) {
   this._textarea = new goog.ui.Textarea('');
 
   /** @private **/
-  this._btnCancel = goog.dom.query('.annotorious-editor-button-cancel', this.element)[0];
+  this._btnCancel = this.element.querySelector('.annotorious-editor-button-cancel');
 
   /** @private **/
-  this._btnSave = goog.dom.query('.annotorious-editor-button-save', this.element)[0];
+  this._btnSave = this.element.querySelector('.annotorious-editor-button-save');
 
   /** @private **/
   this._btnContainer = goog.dom.getParentElement(this._btnSave);
 
   /** @private **/
   this._extraFields = [];
+
+  /** @private **/
+  this.htmlSanitizer = new goog.html.sanitizer.HtmlSanitizer.Builder()
+  .withCustomNetworkRequestUrlPolicy(goog.html.SafeUrl.sanitize)
+  .build();
 
   var self = this;
   goog.events.listen(this._btnCancel, humanEvents.CLICK, function(event) {
@@ -73,7 +78,7 @@ annotorious.Editor = function(annotator) {
 
   goog.style.showElement(this.element, false);
   goog.dom.appendChild(annotator.element, this.element);
-  this._textarea.decorate(goog.dom.query('.annotorious-editor-text', this.element)[0]);
+  this._textarea.decorate(this.element.querySelector('.annotorious-editor-text'));
   annotorious.dom.makeHResizable(this.element, function() { self._textarea.resize(); });
 }
 
@@ -149,6 +154,8 @@ annotorious.Editor.prototype.getAnnotation = function() {
   var sanitized = goog.string.html.htmlSanitize(this._textarea.getValue(), function(url) {
     return url;
   });
+  var sanitized = this.htmlSanitizer.sanitize(this._textarea.getValue()).getTypedStringValue();
+
   if (this._current_annotation) {
     this._current_annotation.text = sanitized;
   } else {

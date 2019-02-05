@@ -11,6 +11,9 @@ goog.require('goog.dom.classes');
 goog.require('goog.dom.query');
 
 humanEvents = annotorious.humanEvents;
+goog.require('annotorious.events');
+goog.require('annotorious.shape.geom.Point');
+
 /**
  * The image viewer - the central entity that manages annotations
  * displayed for one image.

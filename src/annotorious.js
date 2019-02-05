@@ -1,6 +1,5 @@
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.query');
 
 goog.require('annotorious.dom');
 goog.require('annotorious.events');
@@ -9,6 +8,7 @@ goog.require('annotorious.mediatypes.image.ImageModule');
 goog.require('annotorious.mediatypes.openlayers.OpenLayersModule');
 goog.require('annotorious.mediatypes.openseadragon.OpenSeadragonModule');
 
+goog.provide('annotorious.Annotorious');
 /**
  * The main entrypoint to the application. The Annotorious class is instantiated exactly once,
  * and added to the global window object as 'window.anno'. It exposes the external JavaScript API
