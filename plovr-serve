@@ -1,0 +1,5 @@
+#!/usr/local/bin/bash
+
+BUILD_CONFIG="$1.json"
+
+/usr/bin/java -jar plovr/plovr4.jar serve $BUILD_CONFIG

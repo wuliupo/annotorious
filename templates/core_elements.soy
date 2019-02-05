@@ -4,10 +4,10 @@
  * A dummy element to be used for annotation popups later on.
  */
 {template .popup}
-<div class="annotorious-popup top-left" style="position:absolute;z-index:1">
+<div class="annotorious-popup top-left">
   <div class="annotorious-popup-buttons">
-    <a class="annotorious-popup-button annotorious-popup-button-edit" title="غلط" href="javascript:void(0);">غلط</a>
-    <a class="annotorious-popup-button annotorious-popup-button-delete" title="درست" href="javascript:void(0);">درست</a>
+    <a class="annotorious-popup-button annotorious-popup-button-edit" href="javascript:void(0);">Edit</a>
+    <a class="annotorious-popup-button annotorious-popup-button-delete" href="javascript:void(0);">Delete</a>
   </div>
   <span class="annotorious-popup-text"></span>
   <div class="annotorious-pop-selected-type"></div>
@@ -19,7 +19,7 @@
  * A basic annotation edit text form.
  */
 {template .editform}
-<div class="annotorious-editor" style="position:absolute;z-index:1">
+<div class="annotorious-editor">
   <form>
     <textarea class="annotorious-editor-text" placeholder="Add a Comment..." tabindex="1"></textarea>
     <div class="annotorious-type-selector-container"></div>
