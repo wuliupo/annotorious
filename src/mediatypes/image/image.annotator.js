@@ -127,6 +127,7 @@ annotorious.mediatypes.image.ImageAnnotator = function(item, opt_popup) {
     self.editor.setPosition(new annotorious.shape.geom.Point(bounds.left + self._image.offsetLeft,
                                                             bounds.bottom + 4 + self._image.offsetTop));
     self.editor.open(false, event);
+    goog.events.dispatchEvent(self.editor._btnSave, goog.events.EventType.CLICK);
   });
   
   this._eventBroker.addHandler(annotorious.events.EventType.SELECTION_CANCELED, function() {
